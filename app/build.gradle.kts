@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,5 +75,19 @@ dependencies {
     val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("com.google.firebase:firebase-analytics")
-//
+    implementation ("androidx.compose.ui:ui:1.6.6")
+    implementation ("androidx.compose.material:material:1.6.6")
+    implementation("androidx.credentials:credentials:1.3.0-alpha03")
+
+    // optional - needed for credentials support from play services, for devices running
+    // Android 13 and below.
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha03")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    implementation ("com.google.android.gms:play-services-auth:20.4.1")
+
+
+
+
+
+
 }
