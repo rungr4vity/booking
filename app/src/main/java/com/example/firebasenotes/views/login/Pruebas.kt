@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Pruebas(){
-    Scaffold {
-        Text(text = "Prueba Uno")
-    }
 
 }
+
