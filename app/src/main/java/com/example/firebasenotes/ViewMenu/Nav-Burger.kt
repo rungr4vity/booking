@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.rememberScaffoldState
@@ -37,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,12 +44,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.firebasenotes.R
 import com.example.firebasenotes.ViewMenu.AltCajon
 
-import com.example.firebasenotes.ViewMenu.CatArea
-import com.example.firebasenotes.ViewMenu.CatCajon
-
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
 import com.example.firebasenotes.ViewMenu.Reservar
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,16 +57,18 @@ import com.example.firebasenotes.ViewMenu.Reservar
 fun App() {
     // Controlador de navegación
     val navController = rememberNavController()
+    var isAdmin : Int = 2
 
     // Lista de secciones del Navigation Drawer
     val drawerItems = listOf(
-        Pair("Mi perfil", Icons.Default.Person),
-        Pair("Reservar", Icons.Default.AddCircle),
-        Pair("Mis Reservas", Icons.Default.DateRange),
-        Pair("Alta de Area Cajon / Areas", Icons.Default.Add),
-        Pair("Cat Areas", Icons.Default.Menu),
-        Pair("Cat Cajones", Icons.Default.Info)
+        Triple("Mi perfil", Icons.Default.Person,2),
+        Triple("Reservar cajon", Icons.Default.AddCircle,2),
+        Triple("Mis Reservas", Icons.Default.DateRange,2),
+        Triple("Alta de Cajon", Icons.Default.Add,2),
+//        Pair("Cat Areas", Icons.Default.Menu),
+//        Pair("Cat Cajones", Icons.Default.Info)
     )
+        .filter { it.third == isAdmin }
     val scaffoldState = rememberScaffoldState()
     // Crear el Navigation Drawer
     Scaffold(
@@ -95,29 +95,36 @@ fun App() {
                 composable("Mi perfil") {
                     MiPerfil()
                 }
-                composable("Reservar") {
-                    Reservar()
+                composable("Reservar cajon") {
+                    DrawerScreen(navController = navController)
                 }
                 composable("Mis reservas") {
                     MiReservas()
                 }
-                composable("Alta de Area Cajon / Areas") {
+
+
+                //Validacion con tipo de usarios
+                if (isAdmin==2) {
+                composable("Alta de Cajon") {
                     AltCajon()
                 }
-                composable("Cat Areas") {
-                    CatArea()
                 }
-                composable("Cat Cajones") {
-                    CatCajon()
-                }
+//                composable("Cat Areas") {
+//                    CatArea()
+//                }
+//                composable("Cat Cajones") {
+//                    CatCajon()
+//                }
             }
         }
     )
 }
 
 @Composable
-fun DrawerContent(drawerItems: List<Pair<String, ImageVector>>, navController: NavHostController) {
-    Column(modifier = Modifier.padding(6.dp).fillMaxSize()) {
+fun DrawerContent(drawerItems: List<Triple<String, ImageVector, Int>>, navController: NavHostController) {
+    Column(modifier = Modifier
+        .padding(6.dp)
+        .fillMaxSize()) {
         Spacer(modifier = Modifier.height(2.dp))
 
         Image(
