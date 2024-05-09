@@ -46,6 +46,10 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
     var  num_cajon by remember { mutableStateOf("") }
     var piso_edificio by remember { mutableStateOf("") }
 
+    var selectedOptionText  by remember { mutableStateOf("Empresa") }
+    var expanded  by remember { mutableStateOf(false) }
+    val options = listOf("Isita", "Verifigas")
+
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -57,26 +61,56 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
             value =  nombre_cajon,
             onValueChange = {  nombre_cajon = it },
             label = { Text("Nombre") }
-            ,modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
+            ,modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
 
         TextField(
             value =  num_cajon,
             onValueChange = {  num_cajon = it },
             label = { Text("Numero") }
-            ,modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
+            ,modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
         TextField(
             value =  piso_edificio,
             onValueChange = {  piso_edificio = it },
             label = { Text("Piso") }
-            ,modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
+            ,modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
 
+        androidx.compose.material3.ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }) {
+            OutlinedTextField(
+                value = selectedOptionText,
+                onValueChange = { },
+                label = { androidx.compose.material3.Text("Compañia") },
+                readOnly = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
+            )
+            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                options.forEach { option ->
+                    DropdownMenuItem(text = { androidx.compose.material3.Text(option) }, onClick = {
+                        selectedOptionText = option
+                        expanded = false
+                    },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
+        }
 
 
         Button(
-            onClick = { drawerViewModel.insertarDatos( num_cajon,nombre_cajon ,piso_edificio) },
+            onClick = { drawerViewModel.insertarDatos(num_cajon,nombre_cajon ,piso_edificio,selectedOptionText) },
             modifier = Modifier.padding(top = 16.dp),
 
         ) {

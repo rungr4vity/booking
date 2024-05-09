@@ -57,7 +57,7 @@ fun MyReservas() {
         ExposedDropdownMenuBox(expanded = expansion_empresa, onExpandedChange = {expansion_empresa = !expansion_empresa} ) {
             OutlinedTextField(
                 value = menEmpresa,
-                onValueChange = {  },
+                onValueChange = {  },//cambia el valor
                 label = { Text("Compañia") },
                 readOnly = false,
                 modifier = Modifier

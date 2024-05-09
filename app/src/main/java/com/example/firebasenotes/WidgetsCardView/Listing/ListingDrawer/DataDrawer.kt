@@ -5,5 +5,6 @@ data class DataDrawer(
     val Nombre: String ="",
     val Piso: String ="",
     val id: Int =0,
+    val Empresa: String ="",
 
 )

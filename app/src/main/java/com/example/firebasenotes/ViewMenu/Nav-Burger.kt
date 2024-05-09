@@ -61,9 +61,9 @@ fun App() {
 
     // Lista de secciones del Navigation Drawer
     val drawerItems = listOf(
-        Triple("Mi perfil", Icons.Default.Person,2),
+        Triple("Home", Icons.Default.Person,2),
         Triple("Reservar cajon", Icons.Default.AddCircle,2),
-        Triple("Mis Reservas", Icons.Default.DateRange,2),
+        Triple("Mis reservas", Icons.Default.DateRange,2),
         Triple("Alta de Cajon", Icons.Default.Add,2),
 //        Pair("Cat Areas", Icons.Default.Menu),
 //        Pair("Cat Cajones", Icons.Default.Info)
@@ -90,9 +90,10 @@ fun App() {
         content = {
             NavHost(
                 navController = navController as NavHostController,
-                startDestination = "Mi perfil"
+                startDestination = "Home"
             ) {
-                composable("Mi perfil") {
+
+                composable("Home") {
                     MiPerfil()
                 }
                 composable("Reservar cajon") {
