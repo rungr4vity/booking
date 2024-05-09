@@ -12,7 +12,6 @@ import com.example.firebasenotes.WidgetsCardView.DViewModel
 fun MiReservas(){
     Scaffold {
         Text(text = "Mis Reservas")
-        var vm = DViewModel()
-        DScreen(vm)
+
     }
 }

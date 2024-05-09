@@ -52,26 +52,21 @@ class DrawerViewModel : ViewModel() {
 
     var id: Int = 0
 
-    fun insertarDatos(num_cajon: String, nombre_cajon: String, piso_edificio: String) {
+    fun insertarDatos(num_cajon: String, nombre_cajon: String, piso_edificio: String, selectedOptionText: String) {
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
             val data = hashMapOf(
-                "Numero " to num_cajon,
+                "Numero" to num_cajon,
                 "Nombre" to nombre_cajon,
-                "id" to id,
                 "Piso" to piso_edificio,
+                "Empresa" to selectedOptionText
             )
 
             try {
                 val parkingRef = db.collection("cajones")
                 parkingRef.add(data).await()
-                id++
             } catch (e: Exception) {
 
             }
         }
-    }
-
-
-
-}
+    }}
