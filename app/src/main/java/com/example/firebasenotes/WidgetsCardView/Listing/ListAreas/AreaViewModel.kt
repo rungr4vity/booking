@@ -1,5 +1,7 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
+import android.annotation.SuppressLint
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +37,18 @@ class AreaViewModel : ViewModel(){
         }
     }
 
+    fun InsertDatosArea(capacidadDpersona:String,nombreArea:String,mobiliaria:String,descripcion:String){
+        viewModelScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            val date = hashMapOf(
+                    "capacidadDpersonas" to capacidadDpersona,
+                    "nombreArea" to nombreArea,
+                    "mobiliaria" to mobiliaria,
+                    "descripcion" to descripcion
 
+                    )
+            db.collection("areas").add(date).await()
+        }
+    }
 
 }

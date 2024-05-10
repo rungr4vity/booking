@@ -52,11 +52,11 @@ class DrawerViewModel : ViewModel() {
 
     var id: Int = 0
 
-    fun insertarDatos(num_cajon: String, nombre_cajon: String, piso_edificio: String, selectedOptionText: String) {
+    fun insertarDatos(numo_cajon: String, nombre_cajon: String, piso_edificio: String, selectedOptionText: String) {
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
             val data = hashMapOf(
-                "Numero" to num_cajon,
+                "Numero" to numo_cajon,
                 "Nombre" to nombre_cajon,
                 "Piso" to piso_edificio,
                 "Empresa" to selectedOptionText

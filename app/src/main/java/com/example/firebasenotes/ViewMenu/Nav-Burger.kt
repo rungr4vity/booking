@@ -47,6 +47,10 @@ import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
 import com.example.firebasenotes.ViewMenu.Reservar
+import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AltaArea
+import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
+import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DetalleAlta
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
 
 
@@ -61,11 +65,12 @@ fun App() {
 
     // Lista de secciones del Navigation Drawer
     val drawerItems = listOf(
-        Triple("Home", Icons.Default.Person,2),
-        Triple("Reservar cajon", Icons.Default.AddCircle,2),
-        Triple("Mis reservas", Icons.Default.DateRange,2),
+//        Triple("Home", Icons.Default.Person,2),
+//        Triple("Reservar cajon", Icons.Default.AddCircle,2),
+//        Triple("Mis reservas", Icons.Default.DateRange,2),
         Triple("Alta de Cajon", Icons.Default.Add,2),
-//        Pair("Cat Areas", Icons.Default.Menu),
+       Triple("Cat Areas", Icons.Default.Menu,2),
+        Triple("Alta de area", Icons.Default.Add,2),
 //        Pair("Cat Cajones", Icons.Default.Info)
     )
         .filter { it.third == isAdmin }
@@ -104,18 +109,25 @@ fun App() {
                 }
 
 
-                //Validacion con tipo de usarios
                 if (isAdmin==2) {
                 composable("Alta de Cajon") {
                     AltCajon()
                 }
                 }
-//                composable("Cat Areas") {
-//                    CatArea()
-//                }
-//                composable("Cat Cajones") {
-//                    CatCajon()
-//                }
+                composable("DetalleCajon") {
+                    Detalle()
+                }
+
+                composable("Cat Areas") {
+                  AreaScreen(navController = navController)
+                }
+                composable("Alta de area") {
+                    AltaArea(navController = navController)
+                }
+
+                composable("DetalleAlta") {
+                    DetalleAlta()
+                }
             }
         }
     )

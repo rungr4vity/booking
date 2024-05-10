@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,14 +39,14 @@ fun ComponentDrawer(
     Card(
         modifier = Modifier
             .clickable {
-                navController.navigate("Mis reservas")
+                navController.navigate( "DetalleCajon")
             }
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                imageVector = Icons.Default.AccountCircle,
+                imageVector = Icons.Default.Face,
                 contentDescription = "",
                 modifier = Modifier
                     .size(80.dp)
