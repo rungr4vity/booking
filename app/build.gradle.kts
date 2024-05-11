@@ -53,6 +53,10 @@ android {
 
 dependencies {
 
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs_nio:2.0.2")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
