@@ -20,7 +20,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,7 +62,7 @@ class ReservacionCajones : ComponentActivity() {
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
@@ -98,28 +98,28 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
             modifier = Modifier
                 .fillMaxWidth())
 
-        ExposedDropdownMenuBox(expanded = expansion_empresa, onExpandedChange = {expansion_empresa = !expansion_empresa} ) {
-            OutlinedTextField(
-                value = menEmpresa,
-                onValueChange = {  },//cambia el valor
-                label = { Text("Compañia") },
-                readOnly = false,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expansion_empresa)}
-            )
-            ExposedDropdownMenu(expanded = expansion_empresa, onDismissRequest = { expansion_empresa= false }) {
-                opsEmpresa.forEach { option ->
-                    DropdownMenuItem(text = { Text(option)}, onClick = {
-                        menEmpresa = option
-                        expansion_empresa = false
-                    },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
-                }
-            }
-        }
+//        ExposedDropdownMenuBox(expanded = expansion_empresa, onExpandedChange = {expansion_empresa = !expansion_empresa} ) {
+//            OutlinedTextField(
+//                value = menEmpresa,
+//                onValueChange = {  },//cambia el valor
+//                label = { Text("Compañia") },
+//                readOnly = false,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .menuAnchor(),
+//                trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expansion_empresa)}
+//            )
+//            ExposedDropdownMenu(expanded = expansion_empresa, onDismissRequest = { expansion_empresa= false }) {
+//                opsEmpresa.forEach { option ->
+//                    DropdownMenuItem(text = { Text(option)}, onClick = {
+//                        menEmpresa = option
+//                        expansion_empresa = false
+//                    },
+//                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+//                    )
+//                }
+//            }
+//        }
 
         ExposedDropdownMenuBox(expanded = expansion_Horarios , onExpandedChange = {expansion_Horarios  = !expansion_Horarios } ) {
             OutlinedTextField(

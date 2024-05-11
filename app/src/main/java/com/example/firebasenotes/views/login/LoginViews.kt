@@ -1,5 +1,6 @@
 package com.example.firebasenotes.views.login
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.credentials.CredentialManager
 import android.credentials.GetCredentialRequest
@@ -11,10 +12,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,42 +46,65 @@ import java.security.MessageDigest
 import java.util.UUID
 import java.util.concurrent.Flow
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginView(navController: NavController,loginVM:LoginViewModel){
+fun LoginView(navController: NavController,loginVM:LoginViewModel) {
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+    Scaffold(Modifier.fillMaxSize()
+        .padding(top = 100.dp)
     ) {
-        var email by remember { mutableStateOf("tospaces7@gmail.com") }
-        var password by remember { mutableStateOf("12345678") }
 
-        OutlinedTextField(value = email, onValueChange = {email = it}, label = {Text(text ="Email")}
-        , modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 30.dp, end = 30.dp))
 
-        OutlinedTextField(value = password, onValueChange = {password = it}, label = {Text(text ="Password")}
-            , modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 30.dp, end = 30.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
-        
-        
-        Button(onClick = {
-                         loginVM.login(email,password){
-                             navController.navigate("Home")
-                         }
-        },
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 30.dp, end = 30.dp)) {
-            Text(text = "Entrar")
+                .fillMaxSize()
+                .padding(start = 5.dp, end = 5.dp)
+        ) {
+            var email by remember { mutableStateOf("tospaces7@gmail.com") }
+            var password by remember { mutableStateOf("12345678") }
+
+
+            Text(text = "Inicio de sesión", Modifier.padding(bottom = 20.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text(text = "e-mail") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 5.dp, end = 5.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text(text = "contraseña") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 5.dp, end = 5.dp),
+
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            )
+
+
+            Button(
+                onClick = {
+                    loginVM.login(email, password) {
+                        navController.navigate("Home")
+                    }
+                },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+
+                    .fillMaxWidth()
+                    .padding(start = 5.dp, end = 5.dp)
+            ) {
+                Text(text = "Entrar")
+            }
+
+
         }
 
-
     }
-
 }
