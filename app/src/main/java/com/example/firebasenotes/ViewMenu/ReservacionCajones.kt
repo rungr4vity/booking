@@ -10,6 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -29,6 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.viewModels.NotesViewModel
@@ -76,7 +81,7 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
         var menHorarios by remember { mutableStateOf("Seleccionar su horarios") }
         var menEmpresa by remember { mutableStateOf("Isita") }
         var menEspacios by remember { mutableStateOf("Seleccionar su espacio") }
-        var emailPrueba by remember { mutableStateOf("admin@ut.com") }
+        var emailPrueba by remember { mutableStateOf("tospaces7@gmail.com") }
 
         var expansion_empresa by remember { mutableStateOf(false) }
         var expansion_Horarios by remember { mutableStateOf(false) }
@@ -90,13 +95,22 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
             mutableStateOf(false)
         }
 
-        OutlinedTextField(value = emailPrueba, onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth())
+        Text(
+            text = "Confirmar reservación: ", fontWeight = FontWeight.Bold, fontSize = 20.sp,
+            modifier = Modifier.padding(10.dp)
+        )
 
-        OutlinedTextField(value = "443", onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth())
+
+        Text(text = "Usuario:  ${emailPrueba}", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Espacio: 443", modifier = Modifier.padding(10.dp).fillMaxWidth())
+
+//        OutlinedTextField(value = emailPrueba, onValueChange = {},
+//            modifier = Modifier
+//                .fillMaxWidth())
+
+//        OutlinedTextField(value = "443", onValueChange = {},
+//            modifier = Modifier
+//                .fillMaxWidth())
 
 //        ExposedDropdownMenuBox(expanded = expansion_empresa, onExpandedChange = {expansion_empresa = !expansion_empresa} ) {
 //            OutlinedTextField(
@@ -168,8 +182,8 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
 //            }
 //        }
 
-        Button(onClick = {
-            showDialog = true }) {
+        Button(shape = RoundedCornerShape(5.dp),onClick = {
+            showDialog = true },modifier = Modifier.fillMaxWidth().padding(5.dp)) {
             Text(text = "Calendario")
         }
 
@@ -194,13 +208,13 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
             Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
         }
 
-        Button(onClick = {
+        Button(shape = RoundedCornerShape(5.dp),onClick = {
             //coding
             val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("UTC")).toLocalDate()
             loginVM.saveSpace(context,emailPrueba,menEmpresa,menHorarios,menEspacios,localFecha.dayOfMonth,localFecha.monthValue,localFecha.year) {
 
             }
-        }) {
+        }, modifier = Modifier.fillMaxWidth().padding(5.dp)) {
             Text(text = "Aceptar")
 
         }

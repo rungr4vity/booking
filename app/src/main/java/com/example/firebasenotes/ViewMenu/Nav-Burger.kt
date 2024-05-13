@@ -1,4 +1,5 @@
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 
@@ -28,10 +29,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,12 +49,15 @@ import com.example.firebasenotes.ViewMenu.AltCajon
 
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
+import com.example.firebasenotes.ViewMenu.ReservacionCajones
+import com.example.firebasenotes.ViewMenu.ReservacionCajones_extension
 import com.example.firebasenotes.ViewMenu.Reservar
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AltaArea
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DetalleAlta
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.viewModels.LoginViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -122,7 +128,8 @@ fun App() {
                 }
                 }
                 composable("DetalleCajon") {
-                    Detalle()
+                    val context = LocalContext.current
+                    Detalle(navController = navController,context)
                 }
 
                 composable("Cat Areas") {
@@ -134,6 +141,12 @@ fun App() {
 
                 composable("DetalleAlta") {
                     DetalleAlta()
+                }
+
+                composable("ReservacionCajones_extension"){
+                    val context = LocalContext.current
+                    var vm = LoginViewModel()
+                    ReservacionCajones_extension(vm,context)
                 }
             }
         }
