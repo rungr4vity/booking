@@ -1,5 +1,4 @@
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
@@ -29,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,19 +36,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.firebasenotes.R
 import com.example.firebasenotes.ViewMenu.AltCajon
 
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
-import com.example.firebasenotes.ViewMenu.ReservacionCajones
 import com.example.firebasenotes.ViewMenu.ReservacionCajones_extension
-import com.example.firebasenotes.ViewMenu.Reservar
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AltaArea
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DetalleAlta
@@ -65,6 +61,9 @@ import com.example.firebasenotes.viewModels.LoginViewModel
 @Preview
 @Composable
 fun App() {
+
+
+
     // Controlador de navegación
     val navController = rememberNavController()
     var isAdmin : Int = 2
@@ -92,7 +91,7 @@ fun App() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "PERFIL ADMIN") },
+                title = { Text(text = "MENÚ") },
                 navigationIcon = {
                     IconButton(onClick = { }) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -117,19 +116,33 @@ fun App() {
                 composable("Reservar cajon") {
                     DrawerScreen(navController = navController)
                 }
+
                 composable("Mis reservas") {
                     MiReservas()
                 }
 
-
-                if (isAdmin==2) {
                 composable("Alta de Cajon") {
                     AltCajon()
                 }
-                }
-                composable("DetalleCajon") {
+                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}",arguments = listOf(
+                    navArgument("nombre",)  { type = NavType.StringType },
+                    navArgument("company",) { type = NavType.StringType },
+                    navArgument("cajon",) { type = NavType.StringType },
+                    navArgument("piso",) { type = NavType.StringType },
+                    navArgument("esEspecial",) { type = NavType.BoolType }
+                )) {
+
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    val company = it.arguments?.getString("company") ?: ""
+                    val cajon = it.arguments?.getString("cajon") ?: ""
+                    val piso = it.arguments?.getString("piso") ?: ""
+                    val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
+
+                    val esEspecialString = if (esEspecial) "1" else "0"
+
+
                     val context = LocalContext.current
-                    Detalle(navController = navController,context)
+                    Detalle(navController = navController,context, nombre,company,cajon,piso,esEspecial)
                 }
 
                 composable("Cat Areas") {
@@ -143,10 +156,26 @@ fun App() {
                     DetalleAlta()
                 }
 
-                composable("ReservacionCajones_extension"){
+                composable("ReservacionCajones_extension/{nombre}/{company}/{cajon}/{piso}/{esEspecial}",
+                    arguments = listOf(
+                        navArgument("nombre",)  { type = NavType.StringType },
+                        navArgument("company",) { type = NavType.StringType },
+                        navArgument("cajon",) { type = NavType.StringType },
+                        navArgument("piso",) { type = NavType.StringType },
+                        navArgument("esEspecial",) { type = NavType.BoolType }
+                    )){
+
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    val company = it.arguments?.getString("company") ?: ""
+                    val cajon = it.arguments?.getString("cajon") ?: ""
+                    val piso = it.arguments?.getString("piso") ?: ""
+                    val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
+
+                    val esEspecialString = if (esEspecial) "1" else "0"
+
                     val context = LocalContext.current
                     var vm = LoginViewModel()
-                    ReservacionCajones_extension(vm,context)
+                    ReservacionCajones_extension(vm,context,nombre,company,cajon,piso,esEspecial)
                 }
             }
         }

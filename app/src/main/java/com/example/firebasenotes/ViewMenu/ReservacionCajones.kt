@@ -1,12 +1,10 @@
 package com.example.firebasenotes.ViewMenu
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +35,8 @@ import androidx.compose.ui.unit.sp
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.viewModels.NotesViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import java.time.Instant
 import java.time.ZoneId
 class ReservacionCajones : ComponentActivity() {
@@ -55,7 +55,15 @@ class ReservacionCajones : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ReservacionCajones_extension(loginVM,mContext)
+                    ReservacionCajones_extension(
+                        loginVM,
+                        mContext,
+                        "",
+                        "",
+                        "",
+                        "",
+                        false
+                    )
                 }
             }
         }
@@ -70,7 +78,15 @@ class ReservacionCajones : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
+fun ReservacionCajones_extension(
+    loginVM: LoginViewModel,
+    context: Context,
+    nombre: String,
+    company: String,
+    cajon: String,
+    piso: String,
+    esEspecial: Boolean
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -78,18 +94,24 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
     ) {
 
         val VM = LoginViewModel()
+        val emailfrom = Firebase.auth.currentUser?.email ?: "No user"
+
         var menHorarios by remember { mutableStateOf("Seleccionar su horarios") }
-        var menEmpresa by remember { mutableStateOf("Isita") }
-        var menEspacios by remember { mutableStateOf("Seleccionar su espacio") }
-        var emailPrueba by remember { mutableStateOf("tospaces7@gmail.com") }
+        var menEmpresa by remember { mutableStateOf(company) }
+        var menEspacios by remember { mutableStateOf(cajon) }
+        var emailPrueba by remember { mutableStateOf(emailfrom) }
 
         var expansion_empresa by remember { mutableStateOf(false) }
         var expansion_Horarios by remember { mutableStateOf(false) }
         var expansion_Espacios by remember { mutableStateOf(false) }
 
         val opsHorarios = listOf("9:00 a.m - 1:00 p.m", "1:00 p.m - 6:00 p.m", "Todo el dia")
+            //Constantes.horarios
+            //listOf("9:00 a.m - 1:00 p.m", "1:00 p.m - 6:00 p.m", "Todo el dia")
         val opsEmpresa = listOf("Isita", "Verifigas")
         val opsEspacios = listOf("441", "443","167","316 (P.Aguirre)","310 (A.Garza)")
+
+
         var state = rememberDatePickerState()
         var showDialog by remember {
             mutableStateOf(false)
@@ -101,8 +123,10 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
         )
 
 
-        Text(text = "Usuario:  ${emailPrueba}", modifier = Modifier.padding(10.dp).fillMaxWidth())
-        Text(text = "Espacio: 443", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Usuario:  ${emailfrom}", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Espacio: ${cajon}", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Piso: ${piso}", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Especial:  ${if(esEspecial) "Si" else "No"}", modifier = Modifier.padding(10.dp).fillMaxWidth())
 
 //        OutlinedTextField(value = emailPrueba, onValueChange = {},
 //            modifier = Modifier
@@ -211,7 +235,7 @@ fun ReservacionCajones_extension(loginVM: LoginViewModel, context: Context) {
         Button(shape = RoundedCornerShape(5.dp),onClick = {
             //coding
             val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("UTC")).toLocalDate()
-            loginVM.saveSpace(context,emailPrueba,menEmpresa,menHorarios,menEspacios,localFecha.dayOfMonth,localFecha.monthValue,localFecha.year) {
+            loginVM.saveSpace(context,emailfrom,company,menHorarios,menEspacios,localFecha.dayOfMonth,localFecha.monthValue,localFecha.year) {
 
             }
         }, modifier = Modifier.fillMaxWidth().padding(5.dp)) {

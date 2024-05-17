@@ -1,6 +1,7 @@
 package com.example.firebasenotes
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -23,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -31,6 +33,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.firebasenotes.viewModels.LoginViewModel
 
 
 class InputActivity: ComponentActivity() {
@@ -45,7 +49,7 @@ class InputActivity: ComponentActivity() {
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -55,7 +59,7 @@ fun RegisterScreen() {
     var selectedOptionText  by remember { mutableStateOf("Isita") }
     var expanded  by remember { mutableStateOf(false) }
     val options = listOf("Isita", "Verifigas")
-
+    var context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -145,7 +149,17 @@ fun RegisterScreen() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /* Realizar registro */ },
+            onClick = {
+                      var vm = LoginViewModel()
+
+
+                      vm.signInWithEmailAndPassword(context,email, password,firstName, lastName,selectedOptionText,2 ) {
+
+                          Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                          navController.navigate("Home")
+                      }
+
+            },
             enabled = isValid(firstName, lastName, email, password),
             modifier = Modifier.fillMaxWidth()
         ) {

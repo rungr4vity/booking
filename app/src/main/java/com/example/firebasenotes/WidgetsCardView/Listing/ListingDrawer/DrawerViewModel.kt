@@ -1,25 +1,9 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.firebasenotes.WidgetsCardView.Data
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -43,6 +27,7 @@ class DrawerViewModel : ViewModel() {
     init {
         getData()
     }
+
     private fun getData() {
         viewModelScope.launch {
             stateDrawer.value =
@@ -50,21 +35,26 @@ class DrawerViewModel : ViewModel() {
         }
     }
 
-    var id: Int = 0
-
-    fun insertarDatos(numo_cajon: String, nombre_cajon: String, piso_edificio: String, selectedOptionText: String) {
+    fun insertarDatos(
+        numo_cajon: String, nombre_cajon: String, piso_edificio: String,
+        selectedOptionText: String, descripcion: String,
+        imagenEstacionamiento: String, esEspecial : Boolean
+    ) {
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
             val data = hashMapOf(
-                "Numero" to numo_cajon,
-                "Nombre" to nombre_cajon,
-                "Piso" to piso_edificio,
-                "Empresa" to selectedOptionText
+                "numero" to numo_cajon,
+                "nombre" to nombre_cajon,
+                "piso" to piso_edificio,
+                "empresa" to selectedOptionText,
+                "descripcion" to descripcion,
+                "imagenEstacionamiento" to imagenEstacionamiento,
+                "esEspecial" to esEspecial
             )
-
             try {
-                val parkingRef = db.collection("cajones")
-                parkingRef.add(data).await()
+                val documentRef = db.collection("cajones").add(data).await()
+                val id = documentRef.id
+                db.collection("cajones").document(id).update("id", id).await()
             } catch (e: Exception) {
 
             }
