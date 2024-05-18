@@ -10,10 +10,10 @@ data class spaces (
     val email:String,
     val company: String,
     val horario: String,
-    val espacio: String,
+    val espacio: Int,
     val day: Int,
     val month: Int,
     val year: Int,
-    val fecha: String,
+    val fecha: Int,
 
     )

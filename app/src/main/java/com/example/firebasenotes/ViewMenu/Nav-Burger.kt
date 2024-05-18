@@ -53,6 +53,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DetalleAlta
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
 
 
@@ -73,10 +74,7 @@ fun App() {
         Triple("Home", Icons.Default.Person, 2),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
         Triple("Mis reservas", Icons.Default.DateRange, 2),
-
-
-
-//        Triple("Alta de Cajon", Icons.Default.Add,2),
+        Triple("Viaje", Icons.Default.AddCircle, 2),
 //        Triple("Cat Areas", Icons.Default.Menu,2),
 //        Triple("Alta de area", Icons.Default.Add,2),
         
@@ -167,7 +165,7 @@ fun App() {
 
                     val nombre = it.arguments?.getString("nombre") ?: ""
                     val company = it.arguments?.getString("company") ?: ""
-                    val cajon = it.arguments?.getString("cajon") ?: ""
+                    val cajon = it.arguments?.getString("cajon") ?: "0"
                     val piso = it.arguments?.getString("piso") ?: ""
                     val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
 
@@ -177,6 +175,20 @@ fun App() {
                     var vm = LoginViewModel()
                     ReservacionCajones_extension(vm,context,nombre,company,cajon,piso,esEspecial)
                 }
+
+
+                composable("Viaje2/{motivo}", arguments = listOf(
+                    navArgument("motivo",) { type = NavType.StringType },
+                )) {
+
+                    val motivo = it.arguments?.getString("motivo") ?: "Viaje de negocios"
+                    ViajeDetalle("")
+                }
+
+                composable("Viaje") {
+                    ViajeDetalle("Viaje de negocios")
+                }
+
             }
         }
     )

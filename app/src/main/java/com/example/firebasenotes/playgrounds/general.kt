@@ -1,7 +1,4 @@
-package com.example.firebasenotes.plyagrounds
-
-import android.widget.Toast
-import kotlinx.coroutines.coroutineScope
+package com.example.firebasenotes.playgrounds
 
 fun main () {
 

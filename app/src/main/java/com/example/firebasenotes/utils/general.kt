@@ -18,12 +18,12 @@ interface general {
         )
 
         // me trae todas las reservaciones mayores a hoy
-        suspend fun getHorarios() {
+        suspend fun getHorarios(fecha: Int) {
 
             val lista = Constantes.horarios
             var allUsers = mutableListOf<Any>()
             val db = FirebaseFirestore.getInstance()
-            val usuarios = db.collection("reservacionCajones").whereGreaterThan("fecha", 2045).get()
+            val usuarios = db.collection("reservacionCajones").whereGreaterThan("fecha", fecha).get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {
                         Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
@@ -36,21 +36,21 @@ interface general {
             var str: String = ""
         }
 
-        suspend fun getHorariosHoy():MutableList<horarios2> {
+        suspend fun getHorariosHoy(fecha: Int,espacio: Int):MutableList<horarios2> {
 
             val lista = Constantes.horarios
             var horarios: MutableList<horarios2> = mutableListOf()
 
             val db = FirebaseFirestore.getInstance()
             val usuarios = db.collection("reservacionCajones")
-                .whereEqualTo("fecha", 2047)
-                .whereEqualTo("espacio",441)
+                .whereEqualTo("fecha", fecha)
+                .whereEqualTo("espacio",espacio)
 
                 .get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {
-                        Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
-                        Log.d(ContentValues.TAG, "${document.get("horario").toString()}")
+                        //Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
+                        //Log.d(ContentValues.TAG, "${document.get("horario").toString()}")
                         horarios = mutableListOf(
                             horarios2(1,document.get("horario").toString())
                         )

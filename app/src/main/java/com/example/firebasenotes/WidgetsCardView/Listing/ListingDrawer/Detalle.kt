@@ -66,7 +66,7 @@ fun Detalle(
                 )
 
                 Text(text = " $nombre  - $company", modifier = Modifier.padding(10.dp))
-                Text(text = "Cajon: $cajon", modifier = Modifier.padding(10.dp))
+                Text(text = "Cajon: ${cajon}", modifier = Modifier.padding(10.dp))
                 Text(text = "Piso: $piso", modifier = Modifier.padding(10.dp))
 
                 if (esEspecial) {
@@ -97,7 +97,7 @@ fun Detalle(
                         .fillMaxWidth()
 
                 ) {
-                    Text(text = "Reservar $cajon")
+                    Text(text = "Reservar ${cajon}")
                 }
             }
         }

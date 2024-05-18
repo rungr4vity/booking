@@ -123,9 +123,9 @@ fun ReservacionCajones_extension(
         )
 
 
-        Text(text = "Usuario:  ${emailfrom}", modifier = Modifier.padding(10.dp).fillMaxWidth())
-        Text(text = "Espacio: ${cajon}", modifier = Modifier.padding(10.dp).fillMaxWidth())
-        Text(text = "Piso: ${piso}", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Usuario:  $emailfrom", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Espacio: $cajon", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Piso: $piso", modifier = Modifier.padding(10.dp).fillMaxWidth())
         Text(text = "Especial:  ${if(esEspecial) "Si" else "No"}", modifier = Modifier.padding(10.dp).fillMaxWidth())
 
 //        OutlinedTextField(value = emailPrueba, onValueChange = {},
@@ -235,7 +235,7 @@ fun ReservacionCajones_extension(
         Button(shape = RoundedCornerShape(5.dp),onClick = {
             //coding
             val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("UTC")).toLocalDate()
-            loginVM.saveSpace(context,emailfrom,company,menHorarios,menEspacios,localFecha.dayOfMonth,localFecha.monthValue,localFecha.year) {
+            loginVM.saveSpace(context,emailfrom,company,menHorarios,cajon,localFecha.dayOfMonth,localFecha.monthValue,localFecha.year) {
 
             }
         }, modifier = Modifier.fillMaxWidth().padding(5.dp)) {

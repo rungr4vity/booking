@@ -128,7 +128,7 @@ class LoginViewModel:ViewModel(){
                 state = state.copy(isLoading = true)
                 delay(1000)
                 //general.getHorarios()
-                var horariosActual = general.getHorariosHoy()
+                var horariosActual = general.getHorariosHoy(2047,441)
                 var originales = mutableListOf(
                     general.Companion.horarios2(1, "9:00 a.m - 1:00 p.m"),
                     general.Companion.horarios2(2, "1:00 p.m - 6:00 p.m"),
@@ -172,24 +172,31 @@ class LoginViewModel:ViewModel(){
         onSuccess: () -> Unit) {
 
 
-        val document = espacio + day.toString() + month.toString() + year.toString()
+        val document = espacio.toString() + day.toString() + month.toString() + year.toString()
 
         val dateTimeString = year.toString() + "-" + month.toString() + "-" + day.toString()
 
         //val timest = Timestamp.
         //val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         //val dateTime = LocalDateTime.parse(dateTimeString, formatter)
+        var espacioInt:Int = 0
+        try {
+            espacioInt = espacio.trim().toInt()
+        }catch (e:Exception){
+            Log.d("ERROR", "ERROR:${e.localizedMessage}")
+        }
+
 
         val space = spaces(
-            id = espacio + day.toString() + month.toString() + year.toString(),
+            id = espacio.toString() + day.toString() + month.toString() + year.toString(),
             email = email,
             horario = horario,
-            espacio = espacio,
+            espacio = espacioInt,
             company = company,
             day = day,
             month = month,
             year = year,
-            fecha = dateTimeString
+            fecha = year.toInt() + month.toInt()  + day.toInt()
         )
 
         var str= ""
