@@ -37,18 +37,45 @@ class AreaViewModel : ViewModel(){
         }
     }
 
-    fun InsertDatosArea(capacidadDpersona:String,nombreArea:String,mobiliaria:String,descripcion:String){
+
+    //CLASEE PARA AGREGAR REGISTRO
+    fun InsertDatosArea(capacidadDpersona:String, nombreArea:String, mobiliaria:String, descripcion:String) {
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
             val date = hashMapOf(
-                    "capacidadDpersonas" to capacidadDpersona,
-                    "nombreArea" to nombreArea,
-                    "mobiliaria" to mobiliaria,
-                    "descripcion" to descripcion
+                "capacidadDpersonas" to capacidadDpersona,
+                "nombreArea" to nombreArea,
+                "mobiliaria" to mobiliaria,
+                "descripcion" to descripcion
+            )
+            // Agregar un nuevo documento con un ID
+            db.collection("areas").add(date).addOnSuccessListener { documentReference ->
+                // Obtener el ID generado
+                val id = documentReference.id
+                db.collection("areas").document(id).update("id", id) }.await()
+        }
+    }
+}
 
-                    )
-            db.collection("areas").add(date).await()
+//CLASEE PARA ELIMINAR REGISTRO
+class AreaViewModelDOS : ViewModel() {
+    val stateareaa = mutableStateOf<List<DataAreas>>(emptyList())
+
+    init {
+        getData()
+    }
+
+    private fun getData() {
+        viewModelScope.launch {
+            stateareaa.value = DataFromArea()
         }
     }
 
+    fun deleteArea(areaId: String) {
+        viewModelScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("areas").document(areaId).delete().await()
+            getData()
+        }
+    }
 }

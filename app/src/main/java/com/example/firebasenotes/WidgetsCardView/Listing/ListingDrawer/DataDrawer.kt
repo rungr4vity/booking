@@ -1,10 +1,16 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
 data class DataDrawer(
-    val Numero: String ="",
-    val Nombre: String ="",
-    val Piso: String ="",
-    val id: Int =0,
-    val Empresa: String ="",
+    val numero: String ="",
+    val nombre: String ="",
+    val piso: String ="",
+    val id: String="",
+    val empresa: String ="",
+    val descripcion:String= "",
+    val imagenEstacionamiento:String= "",
+    val esEspecial: Boolean = false
+
 
 )
+
+

@@ -85,11 +85,14 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha03")
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.0")
     implementation ("com.google.android.gms:play-services-auth:20.4.1")
+    implementation ("com.google.android.material:material:1.5.0-alpha01")
 
 
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
 
 
-
+    implementation ("com.google.firebase:firebase-storage-ktx:20.0.0")
+    implementation ("com.google.firebase:firebase-database-ktx:20.0.0")
+    implementation("io.coil-kt:coil-compose:1.4.0")
 
 }

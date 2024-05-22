@@ -30,7 +30,7 @@ class ReservationViewModel : ViewModel() {
 suspend fun DataFromReservation(): MutableList<DataReservations> {
     val db = FirebaseFirestore.getInstance()
     val reservas = mutableListOf<DataReservations>()
-    val querySnapshot = db.collection("spaces").get().await()
+    val querySnapshot = db.collection("reservacionCajones").get().await()
     querySnapshot.query
 
 
