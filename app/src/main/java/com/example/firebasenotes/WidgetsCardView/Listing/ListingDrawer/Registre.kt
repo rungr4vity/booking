@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
@@ -23,12 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-import com.google.firebase.components.ComponentRegistrar
 @Preview
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -45,6 +42,10 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
     var  nombre_cajon by remember { mutableStateOf("") }
     var  num_cajon by remember { mutableStateOf("") }
     var piso_edificio by remember { mutableStateOf("") }
+    var desc by remember { mutableStateOf("") }
+    var esEspecial by remember { mutableStateOf("") }
+    var img by remember { mutableStateOf("") }
+
 
     var selectedOptionText  by remember { mutableStateOf("Empresa") }
     var expanded  by remember { mutableStateOf(false) }
@@ -98,7 +99,9 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
             )
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 options.forEach { option ->
-                    DropdownMenuItem(text = { androidx.compose.material3.Text(option) }, onClick = {
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text(option) },
+                        onClick = {
                         selectedOptionText = option
                         expanded = false
                     },
@@ -110,7 +113,13 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
 
 
         Button(
-            onClick = { drawerViewModel.insertarDatos(num_cajon,nombre_cajon ,piso_edificio,selectedOptionText) },
+            onClick = { drawerViewModel.insertarDatos(num_cajon,nombre_cajon ,piso_edificio,selectedOptionText
+            ,desc,img,esEspecial = false)
+                      num_cajon = ""
+                      nombre_cajon = ""
+                      piso_edificio = ""
+                      selectedOptionText = "Empresa"
+                      },
             modifier = Modifier.padding(top = 16.dp),
 
         ) {
