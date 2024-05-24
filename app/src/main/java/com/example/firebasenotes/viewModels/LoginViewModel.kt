@@ -99,7 +99,7 @@ class LoginViewModel:ViewModel(){
         //val endTime = Timestamp.now() // Assume this is the ending timestamp
 
         // Perform compound query
-        db.collection("reservacionCajones")
+        db.collection("ReservacionCajones")
 
             .whereGreaterThan("fecha",2046)
             //.whereGreaterThanOrEqualTo("fecha", 2046)
@@ -292,7 +292,7 @@ class LoginViewModel:ViewModel(){
     suspend fun getHorariosHoy(fecha: Int,espacio: Int):MutableList <horariosModel> {
         var horarios = mutableListOf<horariosModel>()
         val db = FirebaseFirestore.getInstance()
-        val usuarios = db.collection("reservacionCajones")
+        val usuarios = db.collection("ReservacionCajones")
             .whereEqualTo("fecha", fecha)
             .whereEqualTo("espacio",espacio)
 
@@ -411,7 +411,7 @@ class LoginViewModel:ViewModel(){
         viewModelScope.launch {
             try {
 
-                FirebaseFirestore.getInstance().collection("reservacionCajones").document(document)
+                FirebaseFirestore.getInstance().collection("ReservacionCajones").document(document)
                     .set(space)
                     .addOnSuccessListener {
                         Toast.makeText(context, "Parking agregado", Toast.LENGTH_SHORT).show()

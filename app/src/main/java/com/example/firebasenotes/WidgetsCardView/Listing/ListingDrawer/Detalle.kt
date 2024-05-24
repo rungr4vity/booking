@@ -14,6 +14,11 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +27,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.example.firebasenotes.viewModels.LoginViewModel
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +53,22 @@ fun Detalle(
         ,
 
     ) {
+        var data = System.currentTimeMillis()
+        var suma = 0
+        data?.let {
+            val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
+            //Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
+            suma = (localDate.dayOfMonth + localDate.month.value + localDate.year)
+        }
+
+        viewModel.getData(suma,cajon.trim().toInt())
+        val opsHorarios: List<String> by viewModel.horarios.observeAsState(listOf())
+
+        var menHorarios by remember { mutableStateOf(opsHorarios) }
+
+
+
+
         Column(modifier = Modifier
             .padding(10.dp)
             ) {
@@ -71,17 +94,24 @@ fun Detalle(
                 Text(text = "Cajon: ${cajon}", modifier = Modifier.padding(10.dp))
                 Text(text = "Piso: $piso", modifier = Modifier.padding(10.dp))
 
-                if (esEspecial) {
-                    Text(text = "Cajón especial *", modifier = Modifier.padding(10.dp))
-                } else {
-                    Text(text = "Cajón normal", modifier = Modifier.padding(10.dp))
-                }
+
 
                 Text(
-                    text = "Disponible *",
+                    text = "Disponible",
                     fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
                     modifier = Modifier.padding(10.dp)
                 )
+                menHorarios.forEach {
+                    Text(text = it,
+                        fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
+                        modifier = Modifier.padding(10.dp),
+                        )
+                }
+
+
+
+
+
 
                 Button(
                     onClick = {
@@ -104,6 +134,12 @@ fun Detalle(
 
                 ) {
                     Text(text = "Reservar ${cajon}")
+                } // end button
+
+                if (esEspecial) {
+                    Text(text = "Cajón especial *", modifier = Modifier.padding(10.dp))
+                } else {
+                    Text(text = "Cajón normal", modifier = Modifier.padding(10.dp))
                 }
             }
         }
