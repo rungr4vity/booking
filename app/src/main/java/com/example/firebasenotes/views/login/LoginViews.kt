@@ -52,6 +52,7 @@ import java.util.concurrent.Flow
 @Composable
 fun LoginView(navController: NavController,loginVM:LoginViewModel) {
     var state = loginVM.state
+    var context = LocalContext.current
 
     Scaffold(
         Modifier
@@ -72,7 +73,9 @@ fun LoginView(navController: NavController,loginVM:LoginViewModel) {
                     .fillMaxSize()
                     .padding(start = 5.dp, end = 5.dp)
             ) {
-                var email by remember { mutableStateOf("tospaces7@gmail.com") }
+                //luis.montemayor@isita.com.mx
+                //1412918Luis
+                var email by remember { mutableStateOf("homer@op.com") }
                 var password by remember { mutableStateOf("12345678") }
 
 
@@ -104,7 +107,7 @@ fun LoginView(navController: NavController,loginVM:LoginViewModel) {
                     onClick = {
 
 
-                        loginVM.login(email, password) {
+                        loginVM.login(context,email, password) {
                             navController.navigate("Home")
                         }
 

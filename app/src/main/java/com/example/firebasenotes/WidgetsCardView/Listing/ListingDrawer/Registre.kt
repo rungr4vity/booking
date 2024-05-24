@@ -40,7 +40,7 @@ fun Registre(){
 @Composable
 fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
     var  nombre_cajon by remember { mutableStateOf("") }
-    var  num_cajon by remember { mutableStateOf("") }
+    var  num_cajon by remember { mutableStateOf(0) }
     var piso_edificio by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
     var esEspecial by remember { mutableStateOf("") }
@@ -68,8 +68,8 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
         )
 
         TextField(
-            value =  num_cajon,
-            onValueChange = {  num_cajon = it },
+            value =  num_cajon.toString(),
+            onValueChange = {  num_cajon = it.toInt() },
             label = { Text("Numero") }
             ,modifier = Modifier
                 .fillMaxWidth()

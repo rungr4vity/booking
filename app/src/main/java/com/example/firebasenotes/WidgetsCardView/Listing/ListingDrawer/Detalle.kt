@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.example.firebasenotes.viewModels.LoginViewModel
 import java.time.LocalDate
 
 
@@ -34,7 +35,8 @@ fun Detalle(
     company: String,
     cajon: String,
     piso: String,
-    esEspecial: Boolean
+    esEspecial: Boolean,
+    viewModel: LoginViewModel = LoginViewModel()
 ){
     Scaffold(
         modifier = Modifier
@@ -83,6 +85,10 @@ fun Detalle(
 
                 Button(
                     onClick = {
+
+
+
+
                         navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}",
                             navOptions { // Use the Kotlin DSL for building NavOptions
                             anim {

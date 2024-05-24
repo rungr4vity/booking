@@ -46,7 +46,7 @@ class InputActivity: ComponentActivity() {
         }
     }
 }
-@Preview
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavController) {
@@ -153,7 +153,7 @@ fun RegisterScreen(navController: NavController) {
                       var vm = LoginViewModel()
 
 
-                      vm.signInWithEmailAndPassword(context,email, password,firstName, lastName,selectedOptionText,2 ) {
+                      vm.signInWithEmailAndPassword(context,email, password,firstName, lastName,selectedOptionText,2,false,false,false,false,password) {
 
                           Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
                           navController.navigate("Home")

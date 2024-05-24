@@ -1,6 +1,7 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,11 +28,26 @@ import androidx.navigation.navOptions
 @Composable
 fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController) {
     val cajones = drawerViewModel.stateDrawer.value
-    LazyColumn {
-        items(cajones) { cajon ->
-            ComponentDrawer(cajon = cajon, navController = navController)
+
+
+
+        LazyColumn {
+            try {
+
+            items(cajones) { cajon ->
+                ComponentDrawer(cajon = cajon, navController = navController)
+            }
+
+            }catch (e:Exception){
+                    Log.e("ErrorLazy",e.toString())
+            }
         }
-    }
+
+
+
+
+
+
 }
 
 @Composable
@@ -43,20 +59,14 @@ fun ComponentDrawer(
         modifier = Modifier
             .clickable {
 
-                navController.navigate( "DetalleCajon/${cajon.nombre}/${cajon.empresa}/ ${cajon.numero}/ ${cajon.piso}/${cajon.esEspecial}",
+                navController.navigate( "DetalleCajon/${cajon.nombre}/${cajon.empresa}/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}",
                     navOptions { // Use the Kotlin DSL for building NavOptions
                         anim {
                             enter = android.R.animator.fade_in
                             exit = android.R.animator.fade_out
                         }
-
                 }
-
                 )
-
-
-
-
             }
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
@@ -85,7 +95,7 @@ fun ComponentDrawer(
 
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Cajon: ${cajon.numero}",
+                    text = "Cajon: ${cajon.numero.toString()}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))

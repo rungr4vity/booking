@@ -1,5 +1,6 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,14 +11,22 @@ import kotlinx.coroutines.tasks.await
 suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     val db = FirebaseFirestore.getInstance()
     val cajon = mutableListOf<DataDrawer>()
-    val querySnapshot = db.collection("cajones").get().await()
-    querySnapshot.query
-    for (document in querySnapshot.documents) {
-        val cajones = document.toObject(DataDrawer::class.java)
-        cajones?.let {
-            cajon.add(it)
+
+    try {
+        val querySnapshot = db.collection("cajones").get().await()
+        querySnapshot.query
+        for (document in querySnapshot.documents) {
+            val cajones = document.toObject(DataDrawer::class.java)
+            cajones?.let {
+                cajon.add(it)
+            }
         }
+
+    }catch (e: Exception){
+        Log.e("Errorsuspend", e.toString())
     }
+
+
     return cajon
 }
 
@@ -36,7 +45,7 @@ class DrawerViewModel : ViewModel() {
     }
 
     fun insertarDatos(
-        numo_cajon: String, nombre_cajon: String, piso_edificio: String,
+        numo_cajon: Int, nombre_cajon: String, piso_edificio: String,
         selectedOptionText: String, descripcion: String,
         imagenEstacionamiento: String, esEspecial : Boolean
     ) {
