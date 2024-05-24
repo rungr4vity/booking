@@ -1,5 +1,3 @@
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -8,10 +6,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -55,12 +55,13 @@ fun UploadImageScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
+            , colors = ButtonDefaults.buttonColors(Color.Red)
         ) {
             Text("Subir Imagen")
         }
         // Botón para seleccionar una imagen
         Button(
-            onClick = { getContent.launch("image/*") },
+            onClick = { getContent.launch("image/*") }, colors = ButtonDefaults.buttonColors(Color.Red),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)

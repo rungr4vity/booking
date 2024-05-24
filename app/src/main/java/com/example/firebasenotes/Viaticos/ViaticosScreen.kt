@@ -39,7 +39,7 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
     val viaticos = viaticosViewModel.viaticos.value
     var MensajeVisible by remember { mutableStateOf(false)}
 
-        if (viaticos.puedeFacturar) {
+        if (viaticos.puedeFacturar == true) {
         Scaffold() {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "¡Buen Día!, Bienvenido", fontSize = 13.sp)
@@ -50,7 +50,7 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    if (viaticos.tieneViajeActivo) {
+                    if (viaticos.tieneViajeActivo == true) {
 
                         Card(modifier = Modifier.size(120.dp)) {
                             Column(
@@ -81,7 +81,7 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                         .padding(bottom = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    if (viaticos.tieneViajeActivo) {
+                    if (viaticos.tieneViajeActivo == true) {
                         Button(
                             onClick = { MensajeVisible= true  },
                             modifier = Modifier

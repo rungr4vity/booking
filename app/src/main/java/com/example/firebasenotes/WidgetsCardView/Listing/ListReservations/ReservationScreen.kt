@@ -57,7 +57,7 @@ fun ComponentReservation(reserv : DataReservations ){
                     .fillMaxWidth()
             ) {
                 Text(text = reserv.email, style = TextStyle(fontSize = 16.sp))
-                Text(text = reserv.company, style = TextStyle(fontSize = 16.sp))
+                Text(text = reserv.company ?: "", style = TextStyle(fontSize = 16.sp))
                 Text(text = reserv.espacio, style = TextStyle(fontSize = 16.sp))
 
             }

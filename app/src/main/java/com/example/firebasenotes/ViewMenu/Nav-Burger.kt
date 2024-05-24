@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
@@ -37,11 +36,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.firebasenotes.Prueba.DDViaticos
+import androidx.navigation.navArgument
+import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
+import com.example.firebasenotes.UsersAdmin.detalleUser
+
+import com.example.firebasenotes.UsersAdmin.listUsers
+import com.example.firebasenotes.Viaticos.DataViaticos
 import com.example.firebasenotes.Viaticos.ViaticosScreen
 import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
@@ -55,6 +60,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaElimin
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.pruebass.DataTypeId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,13 +73,16 @@ fun App() {
 
     val drawerItems = listOf(
         Triple("Mi Perfil", Icons.Default.Person, 2),
-//        Triple("Alta de Cajon", Icons.Default.Add, 2),
+        Triple("Alta de Cajon", Icons.Default.Add, 2),
         Triple("Cat Areas", Icons.Default.Menu, 2),
-        Triple("Alta de area", Icons.Default.Add, 2),
+        Triple("Alta de area", Icons.Default.Add, 1),
 //        Triple("Reservar cajon", Icons.Default.AddCircle, 2),
 //        Triple("Reservar Area", Icons.Default.AddCircle, 2),
 //        Triple("Cat Cajones", Icons.Default.Menu, 2),
-        Triple("Viaticos", Icons.Default.DateRange, 2)
+        Triple("Viaticos", Icons.Default.DateRange, 2),
+        Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
+
+
 
     )
         .filter { it.third == isAdmin }
@@ -98,7 +107,7 @@ fun App() {
                 startDestination = "Home"
             ) {
                 composable("Home") {
-                    MiPerfil()
+                    //MiPerfil()
                 }
                 composable("Reservar cajon") {
                     DrawerScreen(navController = navController)
@@ -106,11 +115,11 @@ fun App() {
                 composable("Mis reservas") {
                     MiReservas()
                 }
-                if (isAdmin == 1) {
+
                     composable("Alta de Cajon") {
                         AltCajon()
                     }
-                }
+
                 composable("DetalleCajon") {
                     Detalle()
                 }
@@ -119,17 +128,18 @@ fun App() {
                 }
                 composable("Alta de area") {
                     AltaArea(navController = navController)
+
                 }
                 composable("DetalleAlta") {
-                    DetalleAlta()
+                    //DetalleAlta()
+
+
                 }
                 composable("Actualizar") {
                     ActualizarPerfil()
                 }
                 composable("Mi Perfil") {
                     PerfilScreen(navController =navController)
-
-
                 }
                 composable("Cat Cajones") {
                     DeleteDrawer(navController = navController)
@@ -145,6 +155,38 @@ fun App() {
                 }
                 composable("viaticosAdd") {
                     DDViaticos(navController = navController)
+                }
+                composable("Lista de Usuarios") {
+                    listUsers(navController = navController)
+                }
+                composable(
+                    "detalleUser/{nombres}/{apellidos}/{empresa}/{email}/{puedeFacturar}/{usuarioHabilitado}",
+                    arguments = listOf(
+                        navArgument("nombres") { type = NavType.StringType },
+                        navArgument("apellidos") { type = NavType.StringType },
+                        navArgument("empresa") { type = NavType.StringType },
+                        navArgument("email") { type = NavType.StringType },
+                        navArgument("puedeFacturar") { type = NavType.BoolType },
+                        navArgument("usuarioHabilitado") { type = NavType.BoolType }
+                    )
+                ) { backStackEntry ->
+                    val nombres = backStackEntry.arguments?.getString("nombres") ?: ""
+                    val apellidos = backStackEntry.arguments?.getString("apellidos") ?: ""
+                    val empresa = backStackEntry.arguments?.getString("empresa") ?: ""
+                    val email = backStackEntry.arguments?.getString("email") ?: ""
+                    val puedeFacturar = backStackEntry.arguments?.getBoolean("puedeFacturar") ?: false
+                    val usuarioHabilitado = backStackEntry.arguments?.getBoolean("usuarioHabilitado") ?: false
+
+                    // Llama a la función detalleUser y pasa los datos del usuario
+                    detalleUser(
+                        navController = navController,
+                        nombres = nombres,
+                        apellidos = apellidos,
+                        empresa = empresa,
+                        email = email,
+                        puedeFacturar = puedeFacturar,
+                        usuarioHabilitado = usuarioHabilitado
+                    )
                 }
             }
         }

@@ -28,7 +28,7 @@ getData()
     }
 suspend fun DataUser(email : String):DataViaticos {
     val db = FirebaseFirestore.getInstance()
-    val querySnapshot = db.collection("users")
+    val querySnapshot = db.collection("Usuarios")
         .whereEqualTo("email", email)
         .get()
         .await()

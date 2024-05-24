@@ -113,7 +113,7 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
 
 
         Button(
-            onClick = { drawerViewModel.insertarDatos(num_cajon,nombre_cajon ,piso_edificio,selectedOptionText
+            onClick = { drawerViewModel.insertarDatos(num_cajon.toInt(),nombre_cajon ,piso_edificio,selectedOptionText
             ,desc,img,esEspecial = false)
                       num_cajon = ""
                       nombre_cajon = ""

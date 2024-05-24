@@ -71,7 +71,7 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel()) {
             OutlinedTextField(
                 value = userData.empresa,
                 onValueChange = { ddViewModel.state.value = userData.copy(empresa = it) },
-                readOnly = true,
+                readOnly = false,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = extende) },
                 colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
             )
@@ -105,13 +105,13 @@ fun updateDataInFirebase(data: Data) {
     val db = FirebaseFirestore.getInstance()
     val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
     if (!currentUserEmail.isNullOrEmpty()) {
-        db.collection("users")
+        db.collection("Usuarios")
             .whereEqualTo("email", currentUserEmail)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
                     val docId = querySnapshot.documents[0].id
-                    db.collection("users").document(docId).set(data)
+                    db.collection("Usuarios").document(docId).set(data)
 
                 }
             }
