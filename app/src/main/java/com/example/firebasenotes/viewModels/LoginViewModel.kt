@@ -33,23 +33,15 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.type.DateTime
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.Exception
 
 class LoginViewModel:ViewModel(){
 
-
-    private val _horarios = MutableLiveData<MutableList<String>>(mutableListOf())
-    val horarios: LiveData<MutableList<String>> get() = _horarios
-
-
-
-
-
-
-
-
+    private val _horarios = MutableLiveData<MutableList<horariosModel>>(mutableListOf())
+    val horarios: LiveData<MutableList<horariosModel>> get() = _horarios
 
     var state by mutableStateOf(mainState())
         private set
@@ -64,18 +56,32 @@ class LoginViewModel:ViewModel(){
 
        viewModelScope.launch {
 
+
+
+
+           //let listaDeTurnos = ["Matutino 7Am - 12Pm", "Vespertino 12Am - 5Pm", "Nocturno 5Am - 10Pm", "Dia Completo"]
+
+
+           val today = LocalDate.now()
+           val dayOfYear = today.dayOfYear
+
            var filtered = emptyList<horariosModel>()
-           var horariosActual = getHorariosHoy(fecha,espacio)
+           var horariosActual = getHorarios(espacio,today.year,dayOfYear)
+
            var originales = mutableListOf(
-                  horariosModel(1, "9:00 a.m - 2:00 p.m"),
-                  horariosModel(2, "1:00 p.m - 6:00 p.m"),
-                  horariosModel(3, "6:00 p.m - 9:00 p.m")
+                  horariosModel(0, "Matutino 7Am - 12Pm"),
+                  horariosModel(1, "Vespertino 12Am - 5Pm"),
+                  horariosModel(2, "Nocturno 5Am - 10Pm"),
+                  horariosModel(3, "Dia Completo")
            )
 
            filtered = originales.filterNot { it in horariosActual }
 
            filtered.forEach {
-               updatedList.add(it.nombre)
+               updatedList.add(
+                   horariosModel(it.valor,it.nombre)
+                   //it.nombre
+               )
                _horarios.value = updatedList
            }
 
@@ -289,11 +295,15 @@ class LoginViewModel:ViewModel(){
 //        return filtered
 //    }
 
-    suspend fun getHorariosHoy(fecha: Int,espacio: Int):MutableList <horariosModel> {
+    suspend fun getHorarios(espacio: Int,year: Int, dayOfTheYear: Int):MutableList <horariosModel> {
         var horarios = mutableListOf<horariosModel>()
         val db = FirebaseFirestore.getInstance()
+
+
         val usuarios = db.collection("ReservacionCajones")
-            .whereEqualTo("fecha", fecha)
+
+            .whereEqualTo("day", dayOfTheYear)
+            .whereEqualTo("year",year)
             .whereEqualTo("espacio",espacio)
 
             .get()
@@ -369,41 +379,42 @@ class LoginViewModel:ViewModel(){
 
     fun saveSpace(
         context: Context,
-        email: String,
-        company: String,
-        horario: String,
-        espacio: String,
-        day: Int,
-        month:Int,
-        year: Int,
+        ano: Int,
+        dia:  Int,
+        id: String,
+        idEstacionamiento: String,
+        idUsuario: String,
+        turno: Int,
         onSuccess: () -> Unit) {
 
 
-        val document = espacio.toString() + day.toString() + month.toString() + year.toString()
 
-        val dateTimeString = year.toString() + "-" + month.toString() + "-" + day.toString()
+//        var espacioInt:Int = 0
+//        try {
+//            espacioInt = espacio.trim().toInt()
+//        }catch (e:Exception){
+//            Log.d("ERROR", "ERROR:${e.localizedMessage}")
+//        }
 
-        //val timest = Timestamp.
-        //val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        //val dateTime = LocalDateTime.parse(dateTimeString, formatter)
-        var espacioInt:Int = 0
-        try {
-            espacioInt = espacio.trim().toInt()
-        }catch (e:Exception){
-            Log.d("ERROR", "ERROR:${e.localizedMessage}")
-        }
+
+//        id = espacio.toString() + day.toString() + year.toString(),
+//        email = email,
+//        horario = horario,
+//        espacio = espacioInt,
+//        company = company,
+//        day = day,
+//        year = year,
+//        fecha = year.toInt() + day.toInt(),
+//        turno = turno,
 
 
         val space = spaces(
-            id = espacio.toString() + day.toString() + month.toString() + year.toString(),
-            email = email,
-            horario = horario,
-            espacio = espacioInt,
-            company = company,
-            day = day,
-            month = month,
-            year = year,
-            fecha = year.toInt() + month.toInt()  + day.toInt()
+             ano = ano,
+             dia = dia,
+             id = id,
+             idEstacionamiento = idEstacionamiento,
+             idUsuario = idUsuario,
+             turno = turno,
         )
 
         var str= ""
@@ -411,13 +422,14 @@ class LoginViewModel:ViewModel(){
         viewModelScope.launch {
             try {
 
-                FirebaseFirestore.getInstance().collection("ReservacionCajones").document(document)
+                FirebaseFirestore.getInstance().collection("ReservacionEstacionamiento")
+                    .document()
                     .set(space)
                     .addOnSuccessListener {
-                        Toast.makeText(context, "Parking agregado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Estacionamiento agregado", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
-                        Toast.makeText(context, "error al agregar espacio", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "error al agregar estadcionamiento", Toast.LENGTH_SHORT).show()
                     }
 
             } catch (e:Exception){

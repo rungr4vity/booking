@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.firebasenotes.models.horariosModel
-import com.example.firebasenotes.playgrounds.getInfo
+
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
 import com.example.firebasenotes.utils.general
 import com.example.firebasenotes.viewModels.LoginViewModel
@@ -74,7 +74,7 @@ class ReservacionCajones : ComponentActivity() {
                         "",
                         "",
                         "",
-                        false
+                        false,""
                     )
                 }
             }
@@ -97,7 +97,8 @@ fun ReservacionCajones_extension(
     company: String,
     cajon: String,
     piso: String,
-    esEspecial: Boolean
+    esEspecial: Boolean,
+    idEstacionamiento: String
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -110,6 +111,8 @@ fun ReservacionCajones_extension(
 
 
         val emailfrom = Firebase.auth.currentUser?.email ?: "No user"
+        var turno by remember { mutableStateOf(0) }
+        var idEstacionamientoMutable by remember { mutableStateOf(idEstacionamiento) }
 
         var menHorarios by remember { mutableStateOf("Seleccionar su horarios") }
         var menEmpresa by remember { mutableStateOf(company) }
@@ -120,20 +123,20 @@ fun ReservacionCajones_extension(
         var expansion_Horarios by remember { mutableStateOf(false) }
         var expansion_Espacios by remember { mutableStateOf(false) }
 
-
+        var dayOfyear: Int = 0
         var state = rememberDatePickerState()
         var data = state.selectedDateMillis ?: System.currentTimeMillis()
         var suma = 0
         data?.let {
             val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
+            dayOfyear = localDate.dayOfYear
             Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
-
             suma = (localDate.dayOfMonth + localDate.month.value + localDate.year)
 
         }
 
         loginVM.getData(suma,cajon.trim().toInt())
-        val opsHorarios: List<String> by loginVM.horarios.observeAsState(listOf())
+        val opsHorarios: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
 
 
 
@@ -158,10 +161,18 @@ fun ReservacionCajones_extension(
         )
 
 
-        Text(text = "Usuario:  $emailfrom", modifier = Modifier.padding(10.dp).fillMaxWidth())
-        Text(text = "Espacio: $cajon", modifier = Modifier.padding(10.dp).fillMaxWidth())
-        Text(text = "Piso: $piso", modifier = Modifier.padding(10.dp).fillMaxWidth())
-        Text(text = "Especial:  ${if(esEspecial) "Si" else "No"}", modifier = Modifier.padding(10.dp).fillMaxWidth())
+        Text(text = "Usuario:  $emailfrom", modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth())
+        Text(text = "Espacio: $cajon", modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth())
+        Text(text = "Piso: $piso", modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth())
+        Text(text = "Especial:  ${if(esEspecial) "Si" else "No"}", modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth())
 
 //        OutlinedTextField(value = emailPrueba, onValueChange = {},
 //            modifier = Modifier
@@ -223,7 +234,9 @@ fun ReservacionCajones_extension(
 //        }
 
         Button(shape = RoundedCornerShape(5.dp),onClick = {
-            showDialog = true },modifier = Modifier.fillMaxWidth().padding(5.dp)) {
+            showDialog = true },modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)) {
             Text(text = "Calendario")
         }
 
@@ -259,8 +272,9 @@ fun ReservacionCajones_extension(
             )
             ExposedDropdownMenu(expanded = expansion_Horarios , onDismissRequest = { expansion_Horarios  = false }) {
                 opsHorarios.forEach { option ->
-                    DropdownMenuItem(text = { Text(option.toString())}, onClick = {
-                        menHorarios = option.toString()
+                    DropdownMenuItem(text = { Text(option.nombre)}, onClick = {
+                        turno = option.valor
+                        menHorarios = option.nombre
                         expansion_Horarios  = false
                     },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -273,10 +287,18 @@ fun ReservacionCajones_extension(
         Button(shape = RoundedCornerShape(5.dp),onClick = {
             //coding
             val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("UTC")).toLocalDate()
-            loginVM.saveSpace(context,emailfrom,company,menHorarios,cajon,localFecha.dayOfMonth,localFecha.monthValue,localFecha.year) {
+            val idUsuario = Firebase.auth.currentUser?.uid ?: ""
+//            loginVM.saveSpace(context,emailfrom,company,menHorarios,cajon,dayOfyear,localFecha.year,turno) {
+//
+//            }
+
+            loginVM.saveSpace(context,localFecha.year,dayOfyear,"",idEstacionamientoMutable,idUsuario,turno) {
 
             }
-        }, modifier = Modifier.fillMaxWidth().padding(5.dp)) {
+
+        }, modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)) {
             Text(text = "Aceptar")
 
         }

@@ -6,12 +6,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.example.firebasenotes.WidgetsCardView.DScreen
 import com.example.firebasenotes.WidgetsCardView.DViewModel
+import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.ReservationScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MiReservas(){
     Scaffold {
-        Text(text = "Mis Reservas")
-
+        ReservationScreen()
     }
 }

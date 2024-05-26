@@ -122,12 +122,13 @@ fun App() {
                 composable("Alta de Cajon") {
                     AltCajon()
                 }
-                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}",arguments = listOf(
+                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",arguments = listOf(
                     navArgument("nombre",)  { type = NavType.StringType },
                     navArgument("company",) { type = NavType.StringType },
                     navArgument("cajon",) { type = NavType.StringType },
                     navArgument("piso",) { type = NavType.StringType },
-                    navArgument("esEspecial",) { type = NavType.BoolType }
+                    navArgument("esEspecial",) { type = NavType.BoolType },
+                    navArgument("idEstacionamiento",) { type = NavType.StringType }
                 )) {
 
                     val nombre = it.arguments?.getString("nombre") ?: ""
@@ -137,10 +138,11 @@ fun App() {
                     val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
 
                     val esEspecialString = if (esEspecial) "1" else "0"
+                    val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
 
 
                     val context = LocalContext.current
-                    Detalle(navController = navController,context, nombre,company,cajon,piso,esEspecial)
+                    Detalle(navController = navController,context, nombre,company,cajon,piso,esEspecial,idEstacionamiento)
                 }
 
                 composable("Cat Areas") {
@@ -154,13 +156,14 @@ fun App() {
                     DetalleAlta()
                 }
 
-                composable("ReservacionCajones_extension/{nombre}/{company}/{cajon}/{piso}/{esEspecial}",
+                composable("ReservacionCajones_extension/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",
                     arguments = listOf(
                         navArgument("nombre",)  { type = NavType.StringType },
                         navArgument("company",) { type = NavType.StringType },
                         navArgument("cajon",) { type = NavType.StringType },
                         navArgument("piso",) { type = NavType.StringType },
-                        navArgument("esEspecial",) { type = NavType.BoolType }
+                        navArgument("esEspecial",) { type = NavType.BoolType },
+                        navArgument("idEstacionamiento",) { type = NavType.StringType }
                     )){
 
                     val nombre = it.arguments?.getString("nombre") ?: ""
@@ -170,10 +173,11 @@ fun App() {
                     val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
 
                     val esEspecialString = if (esEspecial) "1" else "0"
+                    val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
 
                     val context = LocalContext.current
                     var vm = LoginViewModel()
-                    ReservacionCajones_extension(vm,context,nombre,company,cajon,piso,esEspecial)
+                    ReservacionCajones_extension(vm,context,nombre,company,cajon,piso,esEspecial,idEstacionamiento)
                 }
 
 

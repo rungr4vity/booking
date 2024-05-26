@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.viewModels.LoginViewModel
 import java.time.Instant
 import java.time.LocalDate
@@ -43,6 +44,7 @@ fun Detalle(
     cajon: String,
     piso: String,
     esEspecial: Boolean,
+    idEstacionamiento: String,
     viewModel: LoginViewModel = LoginViewModel()
 ){
     Scaffold(
@@ -62,11 +64,8 @@ fun Detalle(
         }
 
         viewModel.getData(suma,cajon.trim().toInt())
-        val opsHorarios: List<String> by viewModel.horarios.observeAsState(listOf())
-
+        val opsHorarios: List<horariosModel> by viewModel.horarios.observeAsState(listOf())
         var menHorarios by remember { mutableStateOf(opsHorarios) }
-
-
 
 
         Column(modifier = Modifier
@@ -77,8 +76,6 @@ fun Detalle(
                 onClick = { /*TODO*/ }
 
             ) {
-
-
 
                 Text(
                     text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
@@ -93,6 +90,7 @@ fun Detalle(
                 Text(text = " $nombre  - $company", modifier = Modifier.padding(10.dp))
                 Text(text = "Cajon: ${cajon}", modifier = Modifier.padding(10.dp))
                 Text(text = "Piso: $piso", modifier = Modifier.padding(10.dp))
+                Text(text = "id: $idEstacionamiento", modifier = Modifier.padding(10.dp))
 
 
 
@@ -102,7 +100,7 @@ fun Detalle(
                     modifier = Modifier.padding(10.dp)
                 )
                 menHorarios.forEach {
-                    Text(text = it,
+                    Text(text = it.nombre,
                         fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
                         modifier = Modifier.padding(10.dp),
                         )
@@ -119,7 +117,7 @@ fun Detalle(
 
 
 
-                        navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}",
+                        navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}/${idEstacionamiento}",
                             navOptions { // Use the Kotlin DSL for building NavOptions
                             anim {
                                 enter = R.animator.fade_in

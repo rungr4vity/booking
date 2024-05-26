@@ -29,8 +29,6 @@ import androidx.navigation.navOptions
 fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController) {
     val cajones = drawerViewModel.stateDrawer.value
 
-
-
         LazyColumn {
             try {
 
@@ -42,12 +40,6 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                     Log.e("ErrorLazy",e.toString())
             }
         }
-
-
-
-
-
-
 }
 
 @Composable
@@ -59,7 +51,7 @@ fun ComponentDrawer(
         modifier = Modifier
             .clickable {
 
-                navController.navigate( "DetalleCajon/${cajon.nombre}/${cajon.empresa}/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}",
+                navController.navigate( "DetalleCajon/${cajon.nombre}/${cajon.empresa}/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}",
                     navOptions { // Use the Kotlin DSL for building NavOptions
                         anim {
                             enter = android.R.animator.fade_in
@@ -102,6 +94,12 @@ fun ComponentDrawer(
                 Text(
                     text = "Piso: ${cajon.piso}",
                     style = TextStyle(fontSize = 12.sp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "id: ${cajon.id}",
+                    style = TextStyle(fontSize = 12.sp),
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
             }
 
