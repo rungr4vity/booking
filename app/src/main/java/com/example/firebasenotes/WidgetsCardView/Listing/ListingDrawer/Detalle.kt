@@ -55,17 +55,61 @@ fun Detalle(
         ,
 
     ) {
+        val today = LocalDate.now()
+        val dayOfYear = today.dayOfYear
+
         var data = System.currentTimeMillis()
         var suma = 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         data?.let {
             val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
             //Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
             suma = (localDate.dayOfMonth + localDate.month.value + localDate.year)
+
+            //viewModel.getData(dayOfYear,localDate.year,idEstacionamiento)
         }
 
-        viewModel.getData(suma,cajon.trim().toInt())
+
         val opsHorarios: List<horariosModel> by viewModel.horarios.observeAsState(listOf())
         var menHorarios by remember { mutableStateOf(opsHorarios) }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         Column(modifier = Modifier
@@ -99,12 +143,38 @@ fun Detalle(
                     fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
                     modifier = Modifier.padding(10.dp)
                 )
+
+
+
+
+
+
+
+
+
+
+
+
                 menHorarios.forEach {
                     Text(text = it.nombre,
                         fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
                         modifier = Modifier.padding(10.dp),
                         )
                 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

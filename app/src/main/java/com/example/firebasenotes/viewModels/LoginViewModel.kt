@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,54 +44,57 @@ class LoginViewModel:ViewModel(){
     private val _horarios = MutableLiveData<MutableList<horariosModel>>(mutableListOf())
     val horarios: LiveData<MutableList<horariosModel>> get() = _horarios
 
+
+
+    private val _datePicker = MutableLiveData<MutableMap<Int,String>>()
+    val horarios_datePicker: LiveData<MutableMap<Int,String>> get() = _datePicker
+
+
+
     var state by mutableStateOf(mainState())
         private set
 
     private val auth : FirebaseAuth = Firebase.auth
 
-   fun getData(fecha:Int,espacio:Int){
 
-       println()
+
+    fun getData(dia:Int,ano:Int,idEstacionamiento:String) {
+
+
+        viewModelScope.launch() {
+            EliminarDisponibilidad(getHorarios(ano,dia,idEstacionamiento))
+        }
+    }
+   fun getData_old(dia:Int,ano:Int,idEstacionamiento:String){
+
+       // me trae lo que esta disponible
        val updatedList = _horarios.value ?: mutableListOf()
 
-
        viewModelScope.launch {
-
-
-
-
-           //let listaDeTurnos = ["Matutino 7Am - 12Pm", "Vespertino 12Am - 5Pm", "Nocturno 5Am - 10Pm", "Dia Completo"]
-
-
            val today = LocalDate.now()
            val dayOfYear = today.dayOfYear
 
            var filtered = emptyList<horariosModel>()
-           var horariosActual = getHorarios(espacio,today.year,dayOfYear)
+
+           var horariosActual = getHorarios(ano,dia,idEstacionamiento)
 
            var originales = mutableListOf(
                   horariosModel(0, "Matutino 7Am - 12Pm"),
                   horariosModel(1, "Vespertino 12Am - 5Pm"),
                   horariosModel(2, "Nocturno 5Am - 10Pm"),
-                  horariosModel(3, "Dia Completo")
+                  //horariosModel(3, "")
            )
 
-           filtered = originales.filterNot { it in horariosActual }
+           //high order function
+           // boiling code
+           filtered = originales.filter { it in horariosActual }
 
            filtered.forEach {
                updatedList.add(
                    horariosModel(it.valor,it.nombre)
-                   //it.nombre
                )
                _horarios.value = updatedList
            }
-
-
-//           getHorariosHoy(2052,445).forEach {
-//               updatedList.add(it.nombre)
-//               _horarios.value = updatedList
-//           }
-
 
 
        }
@@ -295,24 +299,44 @@ class LoginViewModel:ViewModel(){
 //        return filtered
 //    }
 
-    suspend fun getHorarios(espacio: Int,year: Int, dayOfTheYear: Int):MutableList <horariosModel> {
+
+
+
+
+    // funcion que me regresa los registros de la base de datos
+    suspend fun getHorarios(ano:Int,dia:Int,idEstacionamiento: String):MutableList <horariosModel> {
         var horarios = mutableListOf<horariosModel>()
+
         val db = FirebaseFirestore.getInstance()
 
 
-        val usuarios = db.collection("ReservacionCajones")
 
-            .whereEqualTo("day", dayOfTheYear)
-            .whereEqualTo("year",year)
-            .whereEqualTo("espacio",espacio)
+        val usuarios = db.collection("ReservacionEstacionamiento")
+
+            .whereEqualTo("ano", ano)
+            .whereEqualTo("dia",dia)
+            .whereEqualTo("idEstacionamiento",idEstacionamiento.trim())
 
             .get()
             .addOnSuccessListener { documents ->
+
+
+
                 for (document in documents) {
 
-                    horarios = mutableListOf(
-                        horariosModel(1,
-                            document.data?.get("horario").toString()
+
+                    //Log.d("HORARIO_count", "ERROR:${document.data?.get("turno").toString().toInt()}")
+                    horarios.add(
+                        horariosModel(
+                            document.data?.get("turno").toString().toInt(),
+
+                            when(document.data?.get("turno").toString().trim().toInt()){
+                                0 -> "Matutino 7Am - 12Pm".trim()
+                                1 -> "Vespertino 12Am - 5Pm".trim()
+                                2 -> "Nocturno 5Am - 10Pm".trim()
+                                else -> ""
+                            }
+
                         )
                     )
                 }
@@ -324,9 +348,71 @@ class LoginViewModel:ViewModel(){
         return horarios
     }
 
+
+
+    suspend fun EliminarDisponibilidad(reservaciones:MutableList<horariosModel>): Unit {
+
+
+        var copiadiccionarioDeTurnos:MutableMap<Int,String> = mutableMapOf<Int,String>(
+            0 to "Matutino 7Am - 12Pm",
+            1 to "Vespertino 12Am - 5Pm",
+            2 to "Nocturno 5Am - 10Pm",
+            3 to "Todo el día",
+        )
+
+        var updatedList = _datePicker.value ?: emptyMap<Int,String>().toMutableMap()
+
+        var matutino:String = ""
+        var vespertino:String = ""
+        var nocturno:String = ""
+
+
+        for(i in reservaciones){
+            copiadiccionarioDeTurnos.remove(i.valor)
+            when(i.valor) {
+                0 -> {
+                    matutino = "Red"
+                }
+                1 -> {
+                    vespertino = "Red"
+                }
+                2 -> {
+                    nocturno = "Red"
+                }
+                3 -> {
+                    // limpia la copia
+                    matutino = "Red"
+                    vespertino = "Red"
+                    nocturno = "Red"
+                    copiadiccionarioDeTurnos.clear()
+                }
+                else -> {
+                    Log.d("else_EliminarDisponibilidad","break")
+                }
+            }
+
+            if (copiadiccionarioDeTurnos.count() < 4){
+                copiadiccionarioDeTurnos.remove(3)
+            }
+        }
+
+
+
+        //updatedList = copiaDiccionarioTurnos
+        //_datePicker.postValue(updatedList)
+
+        _datePicker.value = copiadiccionarioDeTurnos
+
+    }
+
+    private fun llenarDiccionario(copiaDiccionarioTurnos:MutableMap<Int,String>) {
+        TODO("Not yet implemented")
+        _datePicker.value = copiaDiccionarioTurnos
+
+    }
+
+
     fun login(context: Context,email:String , password:String, onSuccess: () -> Unit){
-
-
         viewModelScope.launch {
             try {
 
