@@ -50,7 +50,7 @@ fun LoginView(navController: NavController,loginVM:LoginViewModel){
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        var email by remember { mutableStateOf("tospaces7@gmail.com") }
+        var email by remember { mutableStateOf("c@op.com") }
         var password by remember { mutableStateOf("12345678") }
 
         OutlinedTextField(value = email, onValueChange = {email = it}, label = {Text(text ="Email")}

@@ -37,16 +37,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.firebasenotes.Prueba.DDViaticos
+import androidx.navigation.navArgument
+import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
+import com.example.firebasenotes.UsersAdmin.detalleUser
+
+import com.example.firebasenotes.UsersAdmin.listUsers
+import com.example.firebasenotes.Viaticos.DataViaticos
 import com.example.firebasenotes.Viaticos.ViaticosScreen
 import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
 import com.example.firebasenotes.ViewMenu.Mipefil.ActualizarPerfil
+import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.ViewMenu.Mipefil.PerfilScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AltaArea
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
@@ -55,33 +62,35 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaElimin
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.pruebass.DataTypeId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Preview
 @Composable
-fun App() {
+fun App(ddViewModel: DDViewModel = viewModel()) {
+    val userData = ddViewModel.state.value
     val navController = rememberNavController()
-    var isAdmin: Int = 2
 
     val drawerItems = listOf(
-        Triple("Mi Perfil", Icons.Default.Person, 2),
-//        Triple("Alta de Cajon", Icons.Default.Add, 2),
-        Triple("Cat Areas", Icons.Default.Menu, 2),
-        Triple("Alta de area", Icons.Default.Add, 2),
-//        Triple("Reservar cajon", Icons.Default.AddCircle, 2),
-//        Triple("Reservar Area", Icons.Default.AddCircle, 2),
-//        Triple("Cat Cajones", Icons.Default.Menu, 2),
-        Triple("Viaticos", Icons.Default.DateRange, 2)
+        Triple("Mi Perfil", Icons.Default.Person, 2 ),
+        Triple("Alta de Cajon", Icons.Default.Add, 1),
+        Triple("Cat Areas", Icons.Default.Menu, 1),
+        Triple("Alta de area", Icons.Default.Add, 1),
+        Triple("Reservar cajon", Icons.Default.AddCircle, 2),
+        Triple("Reservar Area", Icons.Default.AddCircle, 2),
+        Triple("Cat Cajones", Icons.Default.Menu, 1),
+        Triple("Viaticos", Icons.Default.DateRange, 2),
+        Triple("Lista de Usuarios", Icons.Default.DateRange, 1),
+        Triple("Mis reservas", Icons.Default.DateRange, 2),
 
-    )
-        .filter { it.third == isAdmin }
+    ).filter { it.third == userData.typeId }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "PERFIL ADMIN") },
+                title = { Text(text = "¡Bienvenido!, ${userData.nombres}") },
                 navigationIcon = {
                     IconButton(onClick = { }) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -106,11 +115,11 @@ fun App() {
                 composable("Mis reservas") {
                     MiReservas()
                 }
-                if (isAdmin == 1) {
+
                     composable("Alta de Cajon") {
                         AltCajon()
                     }
-                }
+
                 composable("DetalleCajon") {
                     Detalle()
                 }
@@ -119,17 +128,18 @@ fun App() {
                 }
                 composable("Alta de area") {
                     AltaArea(navController = navController)
+
                 }
                 composable("DetalleAlta") {
                     DetalleAlta()
+
+
                 }
                 composable("Actualizar") {
                     ActualizarPerfil()
                 }
                 composable("Mi Perfil") {
                     PerfilScreen(navController =navController)
-
-
                 }
                 composable("Cat Cajones") {
                     DeleteDrawer(navController = navController)
@@ -146,6 +156,38 @@ fun App() {
                 composable("viaticosAdd") {
                     DDViaticos(navController = navController)
                 }
+                composable("Lista de Usuarios") {
+                    listUsers(navController = navController)
+                }
+                composable(
+                    "detalleUser/{nombres}/{apellidos}/{empresa}/{email}/{puedeFacturar}/{usuarioHabilitado}",
+                    arguments = listOf(
+                        navArgument("nombres") { type = NavType.StringType },
+                        navArgument("apellidos") { type = NavType.StringType },
+                        navArgument("empresa") { type = NavType.StringType },
+                        navArgument("email") { type = NavType.StringType },
+                        navArgument("puedeFacturar") { type = NavType.BoolType },
+                        navArgument("usuarioHabilitado") { type = NavType.BoolType }
+                    )
+                ) { backStackEntry ->
+                    val nombres = backStackEntry.arguments?.getString("nombres") ?: ""
+                    val apellidos = backStackEntry.arguments?.getString("apellidos") ?: ""
+                    val empresa = backStackEntry.arguments?.getString("empresa") ?: ""
+                    val email = backStackEntry.arguments?.getString("email") ?: ""
+                    val puedeFacturar = backStackEntry.arguments?.getBoolean("puedeFacturar") ?: false
+                    val usuarioHabilitado = backStackEntry.arguments?.getBoolean("usuarioHabilitado") ?: false
+
+                    // Llama a la función detalleUser y pasa los datos del usuario
+                    detalleUser(
+                        navController = navController,
+                        nombres = nombres,
+                        apellidos = apellidos,
+                        empresa = empresa,
+                        email = email,
+                        puedeFacturar = puedeFacturar,
+                        usuarioHabilitado = usuarioHabilitado
+                    )
+                }
             }
         }
     )
@@ -154,8 +196,10 @@ fun App() {
 @Composable
 fun DrawerContent(
     drawerItems: List<Triple<String, ImageVector, Any>>,
-    navController: NavHostController
+    navController: NavHostController,
+    ddViewModel: DDViewModel = viewModel()
 ) {
+    val userData = ddViewModel.state.value
     Column(
         modifier = Modifier
             .padding(6.dp)
@@ -172,8 +216,8 @@ fun DrawerContent(
                 .size(100.dp)
                 .clip(CircleShape)
         )
-        Text(text = "ADMIN", fontSize = 12.sp)
-        Text(text = "admin@ut.com", fontSize = 12.sp)
+        Text(text = "${userData.nombres} ${userData.apellidos}", fontSize = 12.sp)
+        Text(text = userData.email, fontSize = 12.sp)
         Spacer(modifier = Modifier.height(22.dp))
         drawerItems.forEach { (title, icon) ->
             DrawerItem(title = title, icon = icon) {

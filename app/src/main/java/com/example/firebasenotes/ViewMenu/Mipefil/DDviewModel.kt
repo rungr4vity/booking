@@ -30,7 +30,7 @@ class DDViewModel : ViewModel() {
 
     private suspend fun getUserData(email: String): Data {
         val db = FirebaseFirestore.getInstance()
-        val querySnapshot = db.collection("users")
+        val querySnapshot = db.collection("Usuarios")
             .whereEqualTo("email", email)
             .get()
             .await()

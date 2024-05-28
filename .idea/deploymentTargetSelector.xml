@@ -13,19 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="prueba (1)">
+      <SelectionState runConfigName="TextFieldWithDropdown">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="UploadImageScreen (1)">
+      <SelectionState runConfigName="DropdownTextFieldExample">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DDViaticos">
+      <SelectionState runConfigName="PreviewDropdownTextFieldExample">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="App">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ViaticosScreen">
+      <SelectionState runConfigName="ReservationScreen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

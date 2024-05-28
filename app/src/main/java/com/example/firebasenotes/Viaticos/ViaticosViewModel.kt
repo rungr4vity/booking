@@ -3,7 +3,6 @@ package com.example.firebasenotes.Viaticos
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.firebasenotes.ViewMenu.Mipefil.Data
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
@@ -28,7 +27,7 @@ getData()
     }
 suspend fun DataUser(email : String):DataViaticos {
     val db = FirebaseFirestore.getInstance()
-    val querySnapshot = db.collection("users")
+    val querySnapshot = db.collection("Usuarios")
         .whereEqualTo("email", email)
         .get()
         .await()
