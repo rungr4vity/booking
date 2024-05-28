@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
@@ -52,6 +53,7 @@ import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
 import com.example.firebasenotes.ViewMenu.Mipefil.ActualizarPerfil
+import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.ViewMenu.Mipefil.PerfilScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AltaArea
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
@@ -67,30 +69,28 @@ import com.example.firebasenotes.pruebass.DataTypeId
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Preview
 @Composable
-fun App() {
+fun App(ddViewModel: DDViewModel = viewModel()) {
+    val userData = ddViewModel.state.value
     val navController = rememberNavController()
-    var isAdmin: Int = 2
 
     val drawerItems = listOf(
-        Triple("Mi Perfil", Icons.Default.Person, 2),
-        Triple("Alta de Cajon", Icons.Default.Add, 2),
-        Triple("Cat Areas", Icons.Default.Menu, 2),
+        Triple("Mi Perfil", Icons.Default.Person, 2 ),
+        Triple("Alta de Cajon", Icons.Default.Add, 1),
+        Triple("Cat Areas", Icons.Default.Menu, 1),
         Triple("Alta de area", Icons.Default.Add, 1),
-//        Triple("Reservar cajon", Icons.Default.AddCircle, 2),
-//        Triple("Reservar Area", Icons.Default.AddCircle, 2),
-//        Triple("Cat Cajones", Icons.Default.Menu, 2),
+        Triple("Reservar cajon", Icons.Default.AddCircle, 2),
+        Triple("Reservar Area", Icons.Default.AddCircle, 2),
+        Triple("Cat Cajones", Icons.Default.Menu, 1),
         Triple("Viaticos", Icons.Default.DateRange, 2),
-        Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
+        Triple("Lista de Usuarios", Icons.Default.DateRange, 1),
+        Triple("Mis reservas", Icons.Default.DateRange, 2),
 
-
-
-    )
-        .filter { it.third == isAdmin }
+    ).filter { it.third == userData.typeId }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "PERFIL ADMIN") },
+                title = { Text(text = "¡Bienvenido!, ${userData.nombres}") },
                 navigationIcon = {
                     IconButton(onClick = { }) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -107,7 +107,7 @@ fun App() {
                 startDestination = "Home"
             ) {
                 composable("Home") {
-                    //MiPerfil()
+                    MiPerfil()
                 }
                 composable("Reservar cajon") {
                     DrawerScreen(navController = navController)
@@ -131,7 +131,7 @@ fun App() {
 
                 }
                 composable("DetalleAlta") {
-                    //DetalleAlta()
+                    DetalleAlta()
 
 
                 }
@@ -196,8 +196,10 @@ fun App() {
 @Composable
 fun DrawerContent(
     drawerItems: List<Triple<String, ImageVector, Any>>,
-    navController: NavHostController
+    navController: NavHostController,
+    ddViewModel: DDViewModel = viewModel()
 ) {
+    val userData = ddViewModel.state.value
     Column(
         modifier = Modifier
             .padding(6.dp)
@@ -214,8 +216,8 @@ fun DrawerContent(
                 .size(100.dp)
                 .clip(CircleShape)
         )
-        Text(text = "ADMIN", fontSize = 12.sp)
-        Text(text = "admin@ut.com", fontSize = 12.sp)
+        Text(text = "${userData.nombres} ${userData.apellidos}", fontSize = 12.sp)
+        Text(text = userData.email, fontSize = 12.sp)
         Spacer(modifier = Modifier.height(22.dp))
         drawerItems.forEach { (title, icon) ->
             DrawerItem(title = title, icon = icon) {

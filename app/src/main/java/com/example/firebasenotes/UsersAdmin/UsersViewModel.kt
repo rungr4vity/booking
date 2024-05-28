@@ -53,10 +53,13 @@ class UsersViewModel : ViewModel() {
                     db.collection("Usuarios").document(docId).update(
                         mapOf(
                             "puedeFacturar" to userData.puedeFacturar,
-                            "usuarioHabilitado" to userData.usuarioHabilitado
+                            "usuarioHabilitado" to userData.usuarioHabilitado,
+                            "typeId" to userData.typeId
+
                         )
                     )
                 }
             }
         }
-    }}
+    }
+}

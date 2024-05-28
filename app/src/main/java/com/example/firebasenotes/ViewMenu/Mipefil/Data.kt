@@ -12,7 +12,7 @@ data class Data(
     val nombres : String="",
     val puedeFacturar : Boolean ?=true,
     val tieneViajeActivo : Boolean ?=true,
-    val typeId: Int=0,
+    val typeId: Int?=0,
     val usuarioHabilitado: Boolean?=true,
     val userID : String ?="",
     val token : String ?=""
