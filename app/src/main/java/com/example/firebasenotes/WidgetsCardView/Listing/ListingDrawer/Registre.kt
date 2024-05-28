@@ -40,7 +40,7 @@ fun Registre(){
 @Composable
 fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
     var  nombre_cajon by remember { mutableStateOf("") }
-    var  num_cajon by remember { mutableStateOf(0) }
+    var  num_cajon by remember { mutableStateOf("") }
     var piso_edificio by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
     var esEspecial by remember { mutableStateOf("") }
@@ -68,8 +68,8 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
         )
 
         TextField(
-            value =  num_cajon.toString(),
-            onValueChange = {  num_cajon = it.toInt() },
+            value =  num_cajon,
+            onValueChange = {  num_cajon = it },
             label = { Text("Numero") }
             ,modifier = Modifier
                 .fillMaxWidth()
@@ -99,7 +99,9 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
             )
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 options.forEach { option ->
-                    DropdownMenuItem(text = { androidx.compose.material3.Text(option) }, onClick = {
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text(option) },
+                        onClick = {
                         selectedOptionText = option
                         expanded = false
                     },
@@ -111,12 +113,18 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
 
 
         Button(
-            onClick = { drawerViewModel.insertarDatos(num_cajon,nombre_cajon ,piso_edificio,selectedOptionText
-                ,desc,img,esEspecial = false) },
+            onClick = { drawerViewModel.insertarDatos(num_cajon.toInt(),nombre_cajon ,piso_edificio,selectedOptionText
+            ,desc,img,esEspecial = false)
+                      num_cajon = ""
+                      nombre_cajon = ""
+                      piso_edificio = ""
+                      selectedOptionText = "Empresa"
+                      },
             modifier = Modifier.padding(top = 16.dp),
 
-            ) {
+        ) {
             Text("Insertar Datos")
         }
     }
 }
+

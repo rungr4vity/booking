@@ -1,13 +1,8 @@
-package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
+package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,9 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,32 +22,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.google.firebase.components.Component
-
 
 @Composable
-fun AreaScreen (
-    areaViewModel: AreaViewModel = viewModel(),
-    navController: NavController
-) {
-    val are = areaViewModel.statearea.value
-
+fun DeleteDrawer(deleteDrawerViewModel: DeleteDrawerViewModel= viewModel(),navController: NavController){
+    val drawer = deleteDrawerViewModel.delete.value
     LazyColumn {
-        items(are) { areas ->
-            ComponentAreas(ar = areas, navController = navController)
+        items(drawer) {cajones->
+            ComponentDrawer(cajones = cajones, navController = navController, deleteDrawerViewModel = deleteDrawerViewModel)
+
         }
     }
 }
+
 @Composable
-fun ComponentAreas(
-    ar: DataAreas,
-    navController: NavController
-) {
+fun ComponentDrawer(cajones: DataDrawer,
+                    deleteDrawerViewModel: DeleteDrawerViewModel= viewModel(),
+                    navController: NavController){
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -74,39 +60,34 @@ fun ComponentAreas(
 
             Column(modifier = Modifier.weight(2f)) {
                 Text(
-                    text = "Nombre de área: ${ar.nombreArea}",
+                    text = "Nombre: ${cajones.nombre}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Descripción: ${ar.descripcion}",
+                    text = "Descripción: ${cajones.descripcion}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Capacidad de personas: ${ar.capacidadDpersonas}",
+                    text = "Piso: ${cajones.piso}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Mobiliaria: ${ar.mobiliaria}",
+                    text = "NumeroSSSS: ${cajones.numero}",
                     style = TextStyle(fontSize = 12.sp)
                 )
             }
 
             Spacer(modifier = Modifier.width(16.dp))
+            IconButton(
+                onClick = { deleteDrawerViewModel.deleteData(cajones.id) },
+                modifier = Modifier.align(Alignment.CenterVertically)
 
-            // Navegación al detalle
-            Text(
-                text = "Detalle",
-                modifier = Modifier
-                    .clickable {
-                        navController.navigate("DetalleAlta")
-                    }
-                    .align(Alignment.CenterVertically)
-                    .padding(end = 16.dp),
-                color = Color.Blue
-            )
+            ){
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = Color.Red)
+            }
         }
     }
 }

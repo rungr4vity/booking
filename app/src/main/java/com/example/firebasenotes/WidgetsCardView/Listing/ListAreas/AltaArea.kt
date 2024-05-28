@@ -61,7 +61,13 @@ fun AltaArea(areaViewModel: AreaViewModel = viewModel(),navController: NavContro
                 .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp))
 
         Button(
-            onClick = { areaViewModel.InsertDatosArea(capacidad, nombre,mobiliaria,desc) },
+            onClick = { areaViewModel.InsertDatosArea(capacidad, nombre,mobiliaria,desc)
+                      capacidad=""
+                nombre=""
+                mobiliaria=""
+                desc=""
+                      },
+
             modifier = Modifier.padding(top = 16.dp),
 
             ) {

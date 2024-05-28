@@ -15,11 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,60 +36,66 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navArgument
+import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
-import com.example.firebasenotes.ViewMenu.AltCajon
+import com.example.firebasenotes.UsersAdmin.detalleUser
 
+import com.example.firebasenotes.UsersAdmin.listUsers
+import com.example.firebasenotes.Viaticos.DataViaticos
+import com.example.firebasenotes.Viaticos.ViaticosScreen
+import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
 import com.example.firebasenotes.ViewMenu.ReservacionCajones_extension
+import com.example.firebasenotes.ViewMenu.Mipefil.ActualizarPerfil
+import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
+import com.example.firebasenotes.ViewMenu.Mipefil.PerfilScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AltaArea
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DetalleAlta
+import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaEliminar
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
+import com.example.firebasenotes.pruebass.DataTypeId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Preview
 @Composable
-fun App() {
-
-
-
-    // Controlador de navegación
+fun App(ddViewModel: DDViewModel = viewModel()) {
+    val userData = ddViewModel.state.value
     val navController = rememberNavController()
-    var isAdmin : Int = 2
 
-    // Lista de secciones del Navigation Drawer
     val drawerItems = listOf(
-        Triple("Home", Icons.Default.Person, 2),
+        Triple("Mi Perfil", Icons.Default.Person, 2 ),
+        Triple("Alta de Cajon", Icons.Default.Add, 1),
+        Triple("Cat Areas", Icons.Default.Menu, 1),
+        Triple("Alta de area", Icons.Default.Add, 1),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
+        Triple("Reservar Area", Icons.Default.AddCircle, 2),
+        Triple("Cat Cajones", Icons.Default.Menu, 1),
+        Triple("Viaticos", Icons.Default.DateRange, 2),
+        Triple("Lista de Usuarios", Icons.Default.DateRange, 1),
         Triple("Mis reservas", Icons.Default.DateRange, 2),
-        Triple("Viaje", Icons.Default.AddCircle, 2),
-//        Triple("Cat Areas", Icons.Default.Menu,2),
-//        Triple("Alta de area", Icons.Default.Add,2),
-        
 
+    ).filter { it.third == userData.typeId }
 
-
-//        Pair("Cat Cajones", Icons.Default.Info)
-    )
-        .filter { it.third == isAdmin }
-    val scaffoldState = rememberScaffoldState()
-    // Crear el Navigation Drawer
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "MENÚ") },
+                title = { Text(text = "¡Bienvenido!, ${userData.nombres}") },
                 navigationIcon = {
                     IconButton(onClick = { }) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -114,7 +120,6 @@ fun App() {
                 composable("Reservar cajon") {
                     DrawerScreen(navController = navController)
                 }
-
                 composable("Mis reservas") {
                     MiReservas()
                 }
@@ -144,16 +149,70 @@ fun App() {
                     val context = LocalContext.current
                     Detalle(navController = navController,context, nombre,company,cajon,piso,esEspecial,idEstacionamiento)
                 }
-
                 composable("Cat Areas") {
-                  AreaScreen(navController = navController)
+                    ModAreaEliminar(areaViewModelDOS = viewModel(), navController = navController)
                 }
                 composable("Alta de area") {
                     AltaArea(navController = navController)
-                }
 
+                }
                 composable("DetalleAlta") {
                     DetalleAlta()
+
+
+                }
+                composable("Actualizar") {
+                    ActualizarPerfil()
+                }
+                composable("Mi Perfil") {
+                    PerfilScreen(navController =navController)
+                }
+                composable("Cat Cajones") {
+                    DeleteDrawer(navController = navController)
+                }
+                composable("Reservar Area") {
+                    AreaScreen(areaViewModel = viewModel(), navController = navController)
+                }
+                composable("Viaticos") {
+                    ViaticosScreen(navController = navController)
+                }
+                composable("imgViaticos") {
+                    UploadImageScreen()
+                }
+                composable("viaticosAdd") {
+                    DDViaticos(navController = navController)
+                }
+                composable("Lista de Usuarios") {
+                    listUsers(navController = navController)
+                }
+                composable(
+                    "detalleUser/{nombres}/{apellidos}/{empresa}/{email}/{puedeFacturar}/{usuarioHabilitado}",
+                    arguments = listOf(
+                        navArgument("nombres") { type = NavType.StringType },
+                        navArgument("apellidos") { type = NavType.StringType },
+                        navArgument("empresa") { type = NavType.StringType },
+                        navArgument("email") { type = NavType.StringType },
+                        navArgument("puedeFacturar") { type = NavType.BoolType },
+                        navArgument("usuarioHabilitado") { type = NavType.BoolType }
+                    )
+                ) { backStackEntry ->
+                    val nombres = backStackEntry.arguments?.getString("nombres") ?: ""
+                    val apellidos = backStackEntry.arguments?.getString("apellidos") ?: ""
+                    val empresa = backStackEntry.arguments?.getString("empresa") ?: ""
+                    val email = backStackEntry.arguments?.getString("email") ?: ""
+                    val puedeFacturar = backStackEntry.arguments?.getBoolean("puedeFacturar") ?: false
+                    val usuarioHabilitado = backStackEntry.arguments?.getBoolean("usuarioHabilitado") ?: false
+
+                    // Llama a la función detalleUser y pasa los datos del usuario
+                    detalleUser(
+                        navController = navController,
+                        nombres = nombres,
+                        apellidos = apellidos,
+                        empresa = empresa,
+                        email = email,
+                        puedeFacturar = puedeFacturar,
+                        usuarioHabilitado = usuarioHabilitado
+                    )
                 }
 
                 composable("ReservacionCajones_extension/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",
@@ -199,10 +258,17 @@ fun App() {
 }
 
 @Composable
-fun DrawerContent(drawerItems: List<Triple<String, ImageVector, Int>>, navController: NavHostController) {
-    Column(modifier = Modifier
-        .padding(6.dp)
-        .fillMaxSize()) {
+fun DrawerContent(
+    drawerItems: List<Triple<String, ImageVector, Any>>,
+    navController: NavHostController,
+    ddViewModel: DDViewModel = viewModel()
+) {
+    val userData = ddViewModel.state.value
+    Column(
+        modifier = Modifier
+            .padding(6.dp)
+            .fillMaxSize()
+    ) {
         Spacer(modifier = Modifier.height(2.dp))
 
         Image(
@@ -211,28 +277,27 @@ fun DrawerContent(drawerItems: List<Triple<String, ImageVector, Int>>, navContro
             modifier = Modifier
                 .padding(6.dp)
                 .align(Alignment.CenterHorizontally)
-                .size(150.dp)
-                .clip(
-                    CircleShape
-                )
+                .size(100.dp)
+                .clip(CircleShape)
         )
-Text(text = "ADMIN", fontSize = 25.sp)
-        Text(text = "admin@ut.com", fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(54.dp))
-        // Mostrar los elementos del Navigation Drawer con iconos
+        Text(text = "${userData.nombres} ${userData.apellidos}", fontSize = 12.sp)
+        Text(text = userData.email, fontSize = 12.sp)
+        Spacer(modifier = Modifier.height(22.dp))
         drawerItems.forEach { (title, icon) ->
             DrawerItem(title = title, icon = icon) {
-                // Navegar a la pantalla correspondiente al seleccionar un elemento del Drawer
                 navController.navigate(title)
             }
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(26.dp))
         }
     }
 }
 
 @Composable
 fun DrawerItem(title: String, icon: ImageVector, onClick: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable(onClick = onClick)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
         Icon(imageVector = icon, contentDescription = null)
         Spacer(modifier = Modifier.width(12.dp))
         Text(
@@ -245,7 +310,9 @@ fun DrawerItem(title: String, icon: ImageVector, onClick: () -> Unit) {
 @Composable
 fun MainContent(selectedSection: String) {
     Column(modifier = Modifier.padding(16.dp)) {
-
-        Text(text = "Sección seleccionada: $selectedSection", style = MaterialTheme.typography.labelMedium)
+        Text(
+            text = "Sección seleccionada: $selectedSection",
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }
