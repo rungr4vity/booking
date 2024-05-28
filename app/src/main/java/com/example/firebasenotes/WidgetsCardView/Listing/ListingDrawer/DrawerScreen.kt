@@ -1,5 +1,7 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
+import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,17 +20,26 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 
 @Composable
 fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController) {
     val cajones = drawerViewModel.stateDrawer.value
-    LazyColumn {
-        items(cajones) { cajon ->
-            ComponentDrawer(cajon = cajon, navController = navController)
+
+        LazyColumn {
+            try {
+
+            items(cajones) { cajon ->
+                ComponentDrawer(cajon = cajon, navController = navController)
+            }
+
+            }catch (e:Exception){
+                    Log.e("ErrorLazy",e.toString())
+            }
         }
-    }
 }
 
 @Composable
@@ -39,7 +50,15 @@ fun ComponentDrawer(
     Card(
         modifier = Modifier
             .clickable {
-                navController.navigate( "DetalleCajon")
+
+                navController.navigate( "DetalleCajon/${cajon.nombre}/${cajon.empresa}/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}",
+                    navOptions { // Use the Kotlin DSL for building NavOptions
+                        anim {
+                            enter = android.R.animator.fade_in
+                            exit = android.R.animator.fade_out
+                        }
+                }
+                )
             }
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
@@ -65,15 +84,22 @@ fun ComponentDrawer(
                     text = "Empresa: ${cajon.empresa}",
                     style = TextStyle(fontSize = 12.sp)
                 )
+
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Cajon: ${cajon.numero}",
+                    text = "Cajon: ${cajon.numero.toString()}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Piso: ${cajon.piso}",
                     style = TextStyle(fontSize = 12.sp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "id: ${cajon.id}",
+                    style = TextStyle(fontSize = 12.sp),
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
             }
 

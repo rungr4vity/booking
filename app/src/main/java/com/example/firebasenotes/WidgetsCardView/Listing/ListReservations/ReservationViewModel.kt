@@ -1,14 +1,15 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListReservations
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DataDrawer
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-
 
 class ReservationViewModel : ViewModel() {
     val statereservation = mutableStateOf<List<DataReservations>>(emptyList())
@@ -18,19 +19,24 @@ class ReservationViewModel : ViewModel() {
     }
     private fun getData() {
         viewModelScope.launch {
-            statereservation.value = com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataFromReservation()
+            try {
+                statereservation.value = com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataFromReservation()
+            }catch (e:Exception){
+                Log.e("Error en listado de reservas", e.toString())
+            }
+
         }
     }
-
-
-
 }
 
 
 suspend fun DataFromReservation(): MutableList<DataReservations> {
     val db = FirebaseFirestore.getInstance()
     val reservas = mutableListOf<DataReservations>()
-    val querySnapshot = db.collection("reservacionCajones").get().await()
+    val email = FirebaseAuth.getInstance().currentUser?.email
+    val querySnapshot = db.collection("ReservacionCajones")
+        .whereEqualTo("email", email)
+        .get().await()
     querySnapshot.query
 
 
@@ -42,4 +48,3 @@ suspend fun DataFromReservation(): MutableList<DataReservations> {
     }
     return reservas
 }
-

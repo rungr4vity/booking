@@ -8,5 +8,5 @@ import com.example.firebasenotes.viewModels.LoginViewModel
 
 @Composable
 fun RegisterView(navController: NavController, loginVM: LoginViewModel){
-    RegisterScreen()
+    RegisterScreen(navController)
 }

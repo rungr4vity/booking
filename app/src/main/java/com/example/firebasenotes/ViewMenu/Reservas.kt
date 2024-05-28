@@ -11,6 +11,5 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.Reserv
 fun MiReservas(){
     Scaffold {
         ReservationScreen()
-
     }
 }

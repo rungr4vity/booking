@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navArgument
 import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
 import com.example.firebasenotes.UsersAdmin.detalleUser
@@ -52,6 +54,7 @@ import com.example.firebasenotes.Viaticos.ViaticosScreen
 import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
 import com.example.firebasenotes.ViewMenu.MiReservas
+import com.example.firebasenotes.ViewMenu.ReservacionCajones_extension
 import com.example.firebasenotes.ViewMenu.Mipefil.ActualizarPerfil
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.ViewMenu.Mipefil.PerfilScreen
@@ -62,6 +65,8 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaElimin
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.viaje.ViajeDetalle
+import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.pruebass.DataTypeId
 
 
@@ -75,14 +80,14 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
     val drawerItems = listOf(
         Triple("Mi Perfil", Icons.Default.Person, 2 ),
-        Triple("Alta de Cajon", Icons.Default.Add, 1),
-        Triple("Cat Areas", Icons.Default.Menu, 1),
-        Triple("Alta de area", Icons.Default.Add, 1),
+        Triple("Alta de Cajon", Icons.Default.Add, 2),
+        Triple("Cat Areas", Icons.Default.Menu, 2),
+        Triple("Alta de area", Icons.Default.Add, 2),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
         Triple("Reservar Area", Icons.Default.AddCircle, 2),
-        Triple("Cat Cajones", Icons.Default.Menu, 1),
+        Triple("Cat Cajones", Icons.Default.Menu, 2),
         Triple("Viaticos", Icons.Default.DateRange, 2),
-        Triple("Lista de Usuarios", Icons.Default.DateRange, 1),
+        Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
         Triple("Mis reservas", Icons.Default.DateRange, 2),
 
     ).filter { it.third == userData.typeId }
@@ -95,10 +100,12 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     IconButton(onClick = { }) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
                     }
+
                 }
             )
         },
         drawerContent = {
+            // Contenido del Navigation Drawer
             DrawerContent(drawerItems, navController)
         },
         content = {
@@ -106,6 +113,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 navController = navController as NavHostController,
                 startDestination = "Home"
             ) {
+
                 composable("Home") {
                     MiPerfil()
                 }
@@ -116,12 +124,30 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     MiReservas()
                 }
 
-                    composable("Alta de Cajon") {
-                        AltCajon()
-                    }
+                composable("Alta de Cajon") {
+                    AltCajon()
+                }
+                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",arguments = listOf(
+                    navArgument("nombre",)  { type = NavType.StringType },
+                    navArgument("company",) { type = NavType.StringType },
+                    navArgument("cajon",) { type = NavType.StringType },
+                    navArgument("piso",) { type = NavType.StringType },
+                    navArgument("esEspecial",) { type = NavType.BoolType },
+                    navArgument("idEstacionamiento",) { type = NavType.StringType }
+                )) {
 
-                composable("DetalleCajon") {
-                    Detalle()
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    val company = it.arguments?.getString("company") ?: ""
+                    val cajon = it.arguments?.getString("cajon") ?: ""
+                    val piso = it.arguments?.getString("piso") ?: ""
+                    val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
+
+                    val esEspecialString = if (esEspecial) "1" else "0"
+                    val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
+
+
+                    val context = LocalContext.current
+                    Detalle(navController = navController,context, nombre,company,cajon,piso,esEspecial,idEstacionamiento)
                 }
                 composable("Cat Areas") {
                     ModAreaEliminar(areaViewModelDOS = viewModel(), navController = navController)
@@ -188,6 +214,44 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         usuarioHabilitado = usuarioHabilitado
                     )
                 }
+
+                composable("ReservacionCajones_extension/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",
+                    arguments = listOf(
+                        navArgument("nombre",)  { type = NavType.StringType },
+                        navArgument("company",) { type = NavType.StringType },
+                        navArgument("cajon",) { type = NavType.StringType },
+                        navArgument("piso",) { type = NavType.StringType },
+                        navArgument("esEspecial",) { type = NavType.BoolType },
+                        navArgument("idEstacionamiento",) { type = NavType.StringType }
+                    )){
+
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    val company = it.arguments?.getString("company") ?: ""
+                    val cajon = it.arguments?.getString("cajon") ?: "0"
+                    val piso = it.arguments?.getString("piso") ?: ""
+                    val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
+
+                    val esEspecialString = if (esEspecial) "1" else "0"
+                    val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
+
+                    val context = LocalContext.current
+                    var vm = LoginViewModel()
+                    ReservacionCajones_extension(vm,context,nombre,company,cajon,piso,esEspecial,idEstacionamiento)
+                }
+
+
+                composable("Viaje2/{motivo}", arguments = listOf(
+                    navArgument("motivo",) { type = NavType.StringType },
+                )) {
+
+                    val motivo = it.arguments?.getString("motivo") ?: "Viaje de negocios"
+                    ViajeDetalle("")
+                }
+
+                composable("Viaje") {
+                    ViajeDetalle("Viaje de negocios")
+                }
+
             }
         }
     )

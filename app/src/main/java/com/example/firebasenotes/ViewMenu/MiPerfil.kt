@@ -23,6 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.firebasenotes.R
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.text.font.FontWeight
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Preview
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -35,10 +38,26 @@ fun MiPerfil() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.Home, modifier = Modifier.size(100.dp),
-                contentDescription = "", // Cambia el tamaño según lo desees
-            )
+            Text(text = "Hola: ${Firebase.auth.currentUser?.email ?: ""}", fontWeight = FontWeight.Medium, color = Color.Black, modifier = Modifier.padding(top = 15.dp))
+
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                Image(
+                    painter = painterResource(id = R.drawable.img_1),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(bottom = 15.dp))
+            }
+
+
+
+
+
+//            Icon(
+//
+//                imageVector = Icons.Default.Home, modifier = Modifier.size(100.dp),
+//                contentDescription = "", // Cambia el tamaño según lo desees
+//            )
         }
     }
 }
