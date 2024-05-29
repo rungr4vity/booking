@@ -46,6 +46,7 @@ import com.example.firebasenotes.viewModels.NotesViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 
 class ReservacionCajones : ComponentActivity() {
@@ -157,8 +158,8 @@ fun ReservacionCajones_extension(
         var data = state.selectedDateMillis ?: System.currentTimeMillis()
         var suma = 0
 
-        //var today = LocalDate.now()
-        //var dayOfYear = today.dayOfYear
+        var today = LocalDate.now()
+        var dayOfYear = today.dayOfYear
 
         var data_listado = System.currentTimeMillis()
         var suma_listado = 0
@@ -390,20 +391,19 @@ fun ReservacionCajones_extension(
 
         Button(shape = RoundedCornerShape(5.dp),onClick = {
             //coding
-            //val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("MST")).toLocalDate()
-            //val idUsuario = Firebase.auth.currentUser?.uid ?: ""
-//            loginVM.saveSpace(context,emailfrom,company,menHorarios,cajon,dayOfyear,localFecha.year,turno) {
-//
-//            }
+            val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("MST")).toLocalDate()
+            val idUsuario = Firebase.auth.currentUser?.uid ?: ""
 
-//            loginVM.saveSpace(context,localFecha.year,dayOfyear,"",idEstacionamientoMutable,idUsuario,turno) {
-//
-//            }
+            var hoy = LocalDate.now()
+            var dayOfYear_hoy = hoy.dayOfYear
+
+           loginVM.saveSpace(context,localFecha.year,dayOfYear_hoy,"",idEstacionamientoMutable,idUsuario,turno) {
+            }
 
         }, modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
-            Text(text = "Aceptar")
+            Text(text = "Aceptar reservacion")
 
         }
 
