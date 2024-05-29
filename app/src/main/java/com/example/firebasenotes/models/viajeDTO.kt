@@ -1,15 +1,18 @@
 package com.example.firebasenotes.models
 
+import android.icu.text.DecimalFormat
 import com.google.firebase.Timestamp
 
-data class viajesDTO (
+data class viajeDTO (
 
-    val id: String,
-    val motivo: String,
-    val fechaInicioval : Timestamp,
-    val fechaFinval : Timestamp,
-    val clienteval : String,
-    val idUsuarioval : String,
-    val destinoval : String,
+    val activo: Boolean = false,
+    val cliente: String = "",
+    val destino : String = "",
+    val fechaFin : Timestamp= Timestamp.now(),
+    val fechaInicio : Timestamp= Timestamp.now(),
+    val id: String= "",
+    val idUsuario : String= "",
+    val motivo: String= "",
+    val presupuesto : Double= 0.0,
 
     )

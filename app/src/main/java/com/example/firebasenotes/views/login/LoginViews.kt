@@ -73,10 +73,13 @@ fun LoginView(navController: NavController,loginVM:LoginViewModel) {
                     .fillMaxSize()
                     .padding(start = 5.dp, end = 5.dp)
             ) {
+                //homer@op.com
+                //12345678
+
                 //luis.montemayor@isita.com.mx
                 //1412918Luis
-                var email by remember { mutableStateOf("homer@op.com") }
-                var password by remember { mutableStateOf("12345678") }
+                var email by remember { mutableStateOf("luis.montemayor@isita.com.mx") }
+                var password by remember { mutableStateOf("1412918Luis") }
 
 
                 Text(text = "Inicio de sesión", Modifier.padding(bottom = 20.dp))
