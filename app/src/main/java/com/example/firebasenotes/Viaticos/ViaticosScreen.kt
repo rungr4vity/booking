@@ -126,7 +126,12 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
 
                         //abrirFormularioGastoButton
                         Button(
-                            onClick = { navController.navigate("viaticosAdd")  },
+                            onClick = {
+
+                                navController.navigate("viaticosAdd/${viajes.id}")
+
+
+                                      },
                             modifier = Modifier
                                 .padding(start = 8.dp)
                                 .weight(1f)
