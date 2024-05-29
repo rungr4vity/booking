@@ -179,9 +179,20 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("imgViaticos") {
                     UploadImageScreen()
                 }
-                composable("viaticosAdd") {
-                    DDViaticos(navController = navController)
+
+
+                composable("viaticosAdd/{viajeId}", arguments = listOf(
+                    navArgument("viajeId") { type = NavType.StringType },
+                )) {
+                    backStackEntry ->
+                    val viajeId = backStackEntry.arguments?.getString("viajeId") ?: ""
+                    DDViaticos(navController = navController,viajeId)
                 }
+
+
+
+
+
                 composable("Lista de Usuarios") {
                     listUsers(navController = navController)
                 }
