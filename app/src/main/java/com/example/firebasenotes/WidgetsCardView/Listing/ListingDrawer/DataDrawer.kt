@@ -6,10 +6,7 @@ data class DataDrawer(
     val piso: String ="",
     val id: String="",
     val empresa: String ="",
-    val descripcion:String= "",
-    val imagenEstacionamiento:String= "",
     val esEspecial: Boolean ?= false
-
 )
 
 

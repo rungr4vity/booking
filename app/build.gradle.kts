@@ -59,6 +59,9 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
 
 
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation ("javax.xml.parsers:jaxp-api:1.4.5")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

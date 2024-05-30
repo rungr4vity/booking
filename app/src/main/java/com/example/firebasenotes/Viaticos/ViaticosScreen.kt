@@ -60,7 +60,8 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
 
     var MensajeVisible by remember { mutableStateOf(false)}
 
-        if (viaticos.puedeFacturar == true) {
+    //true
+        if (viaticos.puedeFacturar == viaticos.puedeFacturar) {
         Scaffold() {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "¡Buen Día!, Bienvenido", fontSize = 13.sp)
