@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,11 +47,11 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
     var esEspecial by remember { mutableStateOf("") }
     var img by remember { mutableStateOf("") }
 
-
     var selectedOptionText  by remember { mutableStateOf("Empresa") }
     var expanded  by remember { mutableStateOf(false) }
     val options = listOf("Isita", "Verifigas")
 
+    var context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -113,8 +114,8 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
 
 
         Button(
-            onClick = { drawerViewModel.insertarDatos(num_cajon.toInt(),nombre_cajon ,piso_edificio,selectedOptionText
-            ,desc,img,esEspecial = false)
+            onClick = { drawerViewModel.insertarDatos(context,num_cajon.toInt(),nombre_cajon ,piso_edificio,selectedOptionText
+            ,esEspecial = false)
                       num_cajon = ""
                       nombre_cajon = ""
                       piso_edificio = ""

@@ -40,8 +40,8 @@ fun FilePickerForm() {
                     var mystring = fileContent.toString()
                     var str = ""
 
-                    toXml.toReadXML(uri.path.toString(),mystring)
-
+                    toXml.toReadXML(uri.path.toString(),mystring,"","","","","","","",
+                        "","")
                 }
             }
         }

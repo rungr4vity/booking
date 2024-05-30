@@ -1,5 +1,6 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,16 +32,17 @@ import androidx.navigation.NavController
 @Composable
 fun DeleteDrawer(deleteDrawerViewModel: DeleteDrawerViewModel= viewModel(),navController: NavController){
     val drawer = deleteDrawerViewModel.delete.value
+    val context = LocalContext.current
     LazyColumn {
         items(drawer) {cajones->
-            ComponentDrawer(cajones = cajones, navController = navController, deleteDrawerViewModel = deleteDrawerViewModel)
+            ComponentDrawer(context,cajones = cajones, navController = navController, deleteDrawerViewModel = deleteDrawerViewModel)
 
         }
     }
 }
 
 @Composable
-fun ComponentDrawer(cajones: DataDrawer,
+fun ComponentDrawer(context: Context, cajones: DataDrawer,
                     deleteDrawerViewModel: DeleteDrawerViewModel= viewModel(),
                     navController: NavController){
     Card(
@@ -63,11 +66,7 @@ fun ComponentDrawer(cajones: DataDrawer,
                     text = "Nombre: ${cajones.nombre}",
                     style = TextStyle(fontSize = 12.sp)
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Descripción: ${cajones.descripcion}",
-                    style = TextStyle(fontSize = 12.sp)
-                )
+
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Piso: ${cajones.piso}",
@@ -82,7 +81,7 @@ fun ComponentDrawer(cajones: DataDrawer,
 
             Spacer(modifier = Modifier.width(16.dp))
             IconButton(
-                onClick = { deleteDrawerViewModel.deleteData(cajones.id) },
+                onClick = { deleteDrawerViewModel.deleteData(context,cajones.id) },
                 modifier = Modifier.align(Alignment.CenterVertically)
 
             ){

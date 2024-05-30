@@ -1,5 +1,9 @@
+
+
+
 package com.example.firebasenotes.bill
 
+import com.example.firebasenotes.models.GastoDTO
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -8,41 +12,86 @@ import javax.xml.parsers.DocumentBuilderFactory
 interface toXml {
     companion object {
 
-        fun toReadXML(path: String,theXML: String): String {
+        fun toReadXML(path: String,theXML: String,
+                      idUsuario: String,
+                      idViaje:String,
+                      imagen: String,
+                      importe: String,
+                      pdf: String,xml: String,comentario: String,descripcion: String,total: String): GastoDTO {
 
-            val filePath = path
-            //"app/src/main/java/com/example/bill/playgrounds/example.xml"
-            val xmlFile = File(filePath)
+            //val filePath = path
+            //val xmlFile = File(path)
 
-            // Parse the XML file
-            val documentBuilderFactory = DocumentBuilderFactory.newInstance()
-            val documentBuilder = documentBuilderFactory.newDocumentBuilder()
-            //val document: Document = documentBuilder.parse(xmlFile)
 
+            var gastoDTO = GastoDTO()
+
+            val documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val document: Document = documentBuilder.parse(theXML.byteInputStream())
 
-            // Normalize the XML structure
+            // Normalize XML structure
             document.documentElement.normalize()
 
-            // Get all book elements
-            val nodeList = document.getElementsByTagName("book")
+            // Read root element
+            // root = compobante
+            val root: Element = document.documentElement
+            println("Root element: ${root.nodeName}")
 
-            for (i in 0 until nodeList.length) {
-                val node = nodeList.item(i)
 
-                if (node.nodeType == org.w3c.dom.Node.ELEMENT_NODE) {
-                    val element = node as Element
+            //val comprobante = root.getElementsByTagName("cfdi:Comprobante").item(0) as Element
+            gastoDTO.fecha = root.getAttribute("Fecha").toString()
+            gastoDTO.folio = root.getAttribute("Folio").toString()
+            gastoDTO.formaPago = root.getAttribute("FormaPago").toInt()
+            gastoDTO.lugarExpedicion = root.getAttribute("LugarExpedicion").toString()
+            gastoDTO.metodoPago = root.getAttribute("MetodoPago").toString()
+            gastoDTO.lugarExpedicion = root.getAttribute("LugarExpedicion").toString()
+            gastoDTO.moneda = root.getAttribute("Moneda").toString()
+            gastoDTO.subTotal = root.getAttribute("SubTotal").toString().toDouble()
+            gastoDTO.total = root.getAttribute("Total").toString().toString()
 
-                    // Extract data from the XML elements
-                    val title = element.getElementsByTagName("title").item(0).textContent
-                    val author = element.getElementsByTagName("author").item(0).textContent
+            val concepto = root.getElementsByTagName("cfdi:Concepto").item(0) as Element
+            gastoDTO.claveProdServ = concepto.getAttribute("ClaveProdServ").toInt()
+            gastoDTO.importe = concepto.getAttribute("Importe").toString()
 
-                    println("Book Title: $title")
-                    println("Author: $author")
+            gastoDTO.comentario = comentario
+            gastoDTO.descripcion = descripcion
+            gastoDTO.pdf = pdf
+            gastoDTO.total = total
+            gastoDTO.xml = xml
+            gastoDTO.idUsuario = idUsuario
+            gastoDTO.idViaje = idViaje
+            gastoDTO.imagen = imagen
+            gastoDTO.importe = importe
+            gastoDTO.esDeducible = true
+
+
+            // Read Emisor
+            val emisor = root.getElementsByTagName("cfdi:Emisor").item(0) as Element
+            gastoDTO.emisorNombre = emisor.getAttribute("Nombre")
+
+            // Read Receptor
+            val receptor = root.getElementsByTagName("cfdi:Receptor").item(0) as Element
+            gastoDTO.emisorRegimen = receptor.getAttribute("RegimenFiscalReceptor")
+            gastoDTO.emisorRfc = receptor.getAttribute("Rfc")
+
+
+            gastoDTO.esDeducible = true
+
+
+            val impuestos = root.getElementsByTagName("cfdi:Impuestos")
+            for(x in 0 until impuestos.length) {
+                val impuesto = impuestos.item(x) as Element
+
+                val valor = impuesto.getAttributeNode("TotalImpuestosTrasladados")
+                if (valor != null){
+                    gastoDTO.impuesto = valor.nodeValue
+                    //println("Impuestos TotalImpuestosTrasladados: ${impuesto.getAttributeNode("TotalImpuestosTrasladados")}")
                 }
+
             }
 
-            return  ""
+
+//
+            return  gastoDTO
         }
     }
 }

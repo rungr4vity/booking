@@ -65,6 +65,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaElimin
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.pruebass.DataTypeId
@@ -89,6 +90,8 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Viaticos", Icons.Default.DateRange, 2),
         Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
         Triple("Mis reservas", Icons.Default.DateRange, 2),
+        Triple("XML", Icons.Default.DateRange, 2),
+
 
     ).filter { it.third == userData.typeId }
 
@@ -113,6 +116,9 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 navController = navController as NavHostController,
                 startDestination = "Home"
             ) {
+                composable("XML") {
+                    FilePickerForm()
+                }
 
                 composable("Home") {
                     MiPerfil()
@@ -154,12 +160,9 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
                 composable("Alta de area") {
                     AltaArea(navController = navController)
-
                 }
                 composable("DetalleAlta") {
                     DetalleAlta()
-
-
                 }
                 composable("Actualizar") {
                     ActualizarPerfil()
@@ -177,8 +180,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     ViaticosScreen(navController = navController)
                 }
                 composable("imgViaticos") {
-                    UploadImageScreen()
-                }
+                    UploadImageScreen()                }
 
 
                 composable("viaticosAdd/{viajeId}", arguments = listOf(
@@ -188,10 +190,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val viajeId = backStackEntry.arguments?.getString("viajeId") ?: ""
                     DDViaticos(navController = navController,viajeId)
                 }
-
-
-
-
 
                 composable("Lista de Usuarios") {
                     listUsers(navController = navController)
