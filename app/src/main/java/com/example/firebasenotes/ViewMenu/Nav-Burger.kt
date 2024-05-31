@@ -90,7 +90,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Viaticos", Icons.Default.DateRange, 2),
         Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
         Triple("Mis reservas", Icons.Default.DateRange, 2),
-        Triple("XML", Icons.Default.DateRange, 2),
 
 
     ).filter { it.third == userData.typeId }
@@ -116,10 +115,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 navController = navController as NavHostController,
                 startDestination = "Home"
             ) {
-                composable("XML") {
-                    FilePickerForm()
-                }
-
                 composable("Home") {
                     MiPerfil()
                 }

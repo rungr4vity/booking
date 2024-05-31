@@ -45,7 +45,6 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
     val gastosTotales: Double by viaticosViewModel.gastosTotales.observeAsState(0.0)
 
     LaunchedEffect(Unit) {
-
         viaticosViewModel.backButton()
     }
 
@@ -53,15 +52,13 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
 //       gastos = viaticosViewModel.gastosTotales.value
 //    }
 
-
     //var gastosTotales = viaticosViewModel.gastosTotales.value
     val viaticos = viaticosViewModel.viaticos.value
     val viajes = viaticosViewModel.viajes.value
-
     var MensajeVisible by remember { mutableStateOf(false)}
 
-    //true
-        if (viaticos.puedeFacturar == viaticos.puedeFacturar) {
+         //false // original
+        if (viaticos.puedeFacturar == true) {
         Scaffold() {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "¡Buen Día!, Bienvenido", fontSize = 13.sp)
@@ -102,12 +99,6 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
 
                 Spacer(modifier = Modifier.height(205.dp))
 
-
-
-
-
-
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -124,14 +115,9 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                         ) {
                             Text("Cerrar Viaje")
                         }
-
-                        //abrirFormularioGastoButton
                         Button(
                             onClick = {
-
                                 navController.navigate("viaticosAdd/${viajes.id}")
-
-
                                       },
                             modifier = Modifier
                                 .padding(start = 8.dp)
@@ -181,11 +167,10 @@ fun Descr(viaticosViewModel: ViaticosViewModel= viewModel()){
     val viaticos = viaticosViewModel.viaticos.value
     Scaffold() {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "¡Buen Día!, Bienvenido", fontSize = 13.sp)
-            Text(text = "Hoy es: ", fontSize = 11.sp, color = Color.Gray)
-            Text(text = "${viaticos.nombres} ${viaticos.apellidos}", fontSize = 13.sp)
+            Text(text = "¡Buen Día!, Bienvenido ${viaticos.nombres} ${viaticos.apellidos}", fontSize = 13.sp)
+            Text(text = "Hoy es: ${Date().toString()}", fontSize = 11.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(240.dp))
-            Text(text = "AQUI DEBE DE IR CARDS Y BOTONES")
+            Text(text = "No se encontro ningun viaje activo")
         }
     }
 }

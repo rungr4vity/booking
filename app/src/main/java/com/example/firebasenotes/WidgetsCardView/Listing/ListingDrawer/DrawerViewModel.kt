@@ -20,15 +20,23 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
 
     try {
         for (document in querySnapshot.documents) {
-            val cajones = document.toObject(DataDrawer::class.java)
-            cajones?.let {
-                cajon.add(it)
-            }
+
+            println()
+            var numero = document.data?.get("numero") as Long
+
+            cajon.add(
+                DataDrawer(
+                    numero.toInt(),
+                document.data?.get("nombre") as String,
+                document.data?.get("piso") as String,
+                document.id,
+                document.data?.get("empresa") as String,
+                document.data?.get("esEspecial") as Boolean))
+
         }
     }catch (e:Exception){
         Log.e("Error",e.message.toString())
     }
-
     return cajon
 }
 
