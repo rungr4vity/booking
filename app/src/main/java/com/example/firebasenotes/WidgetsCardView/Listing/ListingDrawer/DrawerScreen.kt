@@ -9,7 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,13 +31,12 @@ import androidx.navigation.navOptions
 fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController) {
     val cajones = drawerViewModel.stateDrawer.value
 
+    println(cajones)
         LazyColumn {
             try {
-
             items(cajones) { cajon ->
                 ComponentDrawer(cajon = cajon, navController = navController)
             }
-
             }catch (e:Exception){
                     Log.e("ErrorLazy",e.toString())
             }
@@ -65,7 +66,7 @@ fun ComponentDrawer(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                imageVector = Icons.Default.Face,
+                imageVector = Icons.Default.AddCircle,
                 contentDescription = "",
                 modifier = Modifier
                     .size(80.dp)
@@ -94,12 +95,6 @@ fun ComponentDrawer(
                 Text(
                     text = "Piso: ${cajon.piso}",
                     style = TextStyle(fontSize = 12.sp)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "id: ${cajon.id}",
-                    style = TextStyle(fontSize = 12.sp),
-                    modifier = Modifier.padding(bottom = 10.dp)
                 )
             }
 

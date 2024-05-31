@@ -41,16 +41,18 @@ class ViaticosViewModel: ViewModel(){
 
         private fun getData() {
         viewModelScope.launch {
-            val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
-            if (!currentUserEmail.isNullOrEmpty()) {
-                viaticos.value = DataUser(currentUserEmail)
-                viajes.value = obtenerUltimoViaje()
-                //gastosTotales.value = obtenerGastos(viajes.value.id).map { it.total.toDouble() }.sum() }
-                _gastosTotales.value = obtenerGastos(viajes.value.id).map { it.total.toDouble() }.sum() }
+
+            try {
+                val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+                if (!currentUserEmail.isNullOrEmpty()) {
+                    viaticos.value = DataUser(currentUserEmail)
+                    viajes.value = obtenerUltimoViaje()
+                    //gastosTotales.value = obtenerGastos(viajes.value.id).map { it.total.toDouble() }.sum() }
+                    _gastosTotales.value = obtenerGastos(viajes.value.id).map { it.total.toDouble() }.sum() }
+            }catch (e: Exception){
+                Log.e("Error_getData",e.message.toString())
             }
-
-
-        }
+        } }
 
         suspend fun DataUser(email: String): DataViaticos {
             val db = FirebaseFirestore.getInstance()
@@ -94,6 +96,7 @@ class ViaticosViewModel: ViewModel(){
                     .get()
                     .await()
 
+                println()
                 querySnapshot.documents.forEach {
                     gastos.add(
                         GastoDTO(
@@ -106,17 +109,7 @@ class ViaticosViewModel: ViewModel(){
 
                 }
 
-
-                //            return querySnapshot.documents.map {
-//
-//                GastoDTO(Timestamp.now().toDate(),0,0.0,"","","","","",
-//                    "","","",0,"","","",
-//                    it.get("importe").toString(),false,"","","")
-//            }
-
-
                 return gastos.toList()
-
 
             } catch (e: Exception) {
                 emptyList<GastoDTO>()
@@ -161,11 +154,6 @@ class ViaticosViewModel: ViewModel(){
                 //Log.e("Error_obtenerUltimoViaje",e.message.toString())
             }
 
-
-            //result ?: viajeDTO()
-//        } else {
-//            viajeDTO()
-            //}
         }
 
 

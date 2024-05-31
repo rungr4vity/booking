@@ -2,7 +2,6 @@ package com.example.firebasenotes.Viaticos.FacturaAdd
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,16 +19,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.firebasenotes.bill.toXml
 import com.example.firebasenotes.models.GastoDTO
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.UUID
 
 @Composable
 fun DDViaticos(navController: NavController,viajeId: String) {
 
 
-
+    println()
     var fecha by remember { mutableStateOf("") }
     var monto by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
@@ -47,6 +51,28 @@ fun DDViaticos(navController: NavController,viajeId: String) {
         imageUri = uri
     }
 
+
+    var selectedFileName by remember { mutableStateOf("No file selected") }
+    var fileContent by remember { mutableStateOf("") }
+    var gastoDTO_mutable by remember { mutableStateOf(GastoDTO()) }
+    var xmlUri by remember { mutableStateOf<Uri?>(null) }
+    var mystring by remember { mutableStateOf("") }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri: Uri? ->
+            uri?.let {
+                xmlUri = uri
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    fileContent = reader.readText()
+                    selectedFileName = uri.path ?: "Unknown file"
+                    mystring = fileContent.toString()
+
+                }
+            }
+        }
+    )
     var showSnackbar by remember { mutableStateOf(false) }
 
     Column(
@@ -147,19 +173,82 @@ fun DDViaticos(navController: NavController,viajeId: String) {
                 }
             }
         } else if (selectedItem == "Deducible") {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             Column(Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = " ")
+                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = " ",
+
+                        modifier = Modifier.clickable {
+
+                        //launcher.launch("image/*")
+                        filePickerLauncher.launch(arrayOf("text/xml"))
+                        })
+
+
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Adjunta XML")
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = " ")
+                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = " ",
+
+                        modifier = Modifier.clickable {
+
+                            filePickerLauncher.launch(arrayOf("text/pdf"))
+                            //launcher.launch("image/*")
+
+                    })
+
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Adjunta Pdf")
                 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 Spacer(modifier = Modifier.height(8.dp))
                 TextField(
@@ -190,9 +279,28 @@ fun DDViaticos(navController: NavController,viajeId: String) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                btn_EnviarGasto(context,monto,viajeId,imageUri) {
-                    showSnackbar = true
+
+
+
+
+
+
+                if (selectedItem == "Deducible") {
+                    btn_EnviarGastoDeducible(context,monto,viajeId, xmlUri,mystring) {
+                        showSnackbar = true
+                    }
+                }else{
+                    btn_EnviarGasto(context,monto,viajeId,imageUri) {
+                        showSnackbar = true
+                    }
                 }
+
+
+
+
+
+
+
             }
         }
 
@@ -225,7 +333,81 @@ fun btn_EnviarGasto(context:Context,monto:String,viajeId:String, imageUri: Uri?,
         Text(text = "Enviar Gastos", color = Color.White)
     }
 }
+@Composable
+fun btn_EnviarGastoDeducible(context:Context,monto:String,viajeId:String, xmlUri: Uri?,mystring:String, onUploadSuccess: () -> Unit) {
+    Button(
+        onClick = {
 
+
+
+            xmlUri?.let {
+                uploadXMLToFirebase(context,xmlUri,xmlUri,viajeId,monto, mystring, onUploadSuccess){
+                    Toast.makeText(context, "Se agrego gasto deducible", Toast.LENGTH_SHORT).show()
+                }
+            }
+        },
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+    ) {
+        Text(text = "Enviar Gastos", color = Color.White)
+    }
+}
+
+fun AltaGastoDeducible(context:Context,gastoDTO: GastoDTO): Unit {
+
+    var instance = FirebaseFirestore.getInstance()
+
+    instance.collection("Gastos")
+        .add(gastoDTO).addOnSuccessListener {
+            Toast.makeText(context, "Gasto deducible agregado!", Toast.LENGTH_SHORT).show()
+        }
+        .addOnFailureListener { e ->
+            Toast.makeText(context, "Error al agregar gasto deducible : ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+
+
+}
+fun uploadXMLToFirebase(
+    context: Context,
+    xmlUri: Uri,
+    pdfUri: Uri,
+    viajeId: String,
+    monto: String,
+    mystring: String,
+    onUploadSuccess: () -> Unit,
+    function: () -> Unit
+): Unit {
+    val storageReference = FirebaseStorage.getInstance().reference
+    val idUsuario = FirebaseAuth.getInstance().currentUser?.uid
+    val xmlRef = storageReference.child("xmls/${UUID.randomUUID()}.xml")
+
+    xmlRef.putFile(xmlUri)
+        .addOnSuccessListener {
+            xmlRef.downloadUrl.addOnSuccessListener { uri ->
+                val downloadUrl = uri.toString()
+
+
+                var gastodto = toXml.toReadXML(
+                    uri.path.toString(),
+                    mystring,
+                    idUsuario ?: "",
+                    viajeId,"",
+                    "","",
+                    downloadUrl,"",
+                    "",
+                    "")
+
+                AltaGastoDeducible(
+                    context,
+                    gastodto
+                )
+                onUploadSuccess()
+            }
+        }
+        .addOnFailureListener {
+            Toast.makeText(context, "Error al cargar XML gasto deducible", Toast.LENGTH_SHORT).show()
+        }
+}
 fun AltaGastoNoDeducible(context: Context, esDeducible: Boolean, fecha:String, total:String, descripcion:String,
                          emisorNombre:String, imagen:String, idViaje:String): Unit {
 
@@ -245,16 +427,14 @@ fun AltaGastoNoDeducible(context: Context, esDeducible: Boolean, fecha:String, t
     instance.collection("Gastos")
         .add(gastoDTo).addOnSuccessListener {
             Toast.makeText(context, "Alta Gasto No Deducible", Toast.LENGTH_SHORT).show()
-            Log.d("Firebase_gasto", "DocumentSnapshot added with ID: ${it.id}")
         }
         .addOnFailureListener { e ->
-            Log.w("Firebase", "Error adding document", e)
+            Toast.makeText(context, "Error al agregar gasto No deducible : ${e.message}", Toast.LENGTH_SHORT).show()
         }
 }
 fun uploadImageToFirebase(context: Context,monto:String,viajeId: String, imageUri: Uri, onUploadSuccess: () -> Unit) {
     val storageReference = FirebaseStorage.getInstance().reference
     val imageRef = storageReference.child("images/${UUID.randomUUID()}.jpg")
-
 
     imageRef.putFile(imageUri)
         .addOnSuccessListener {
