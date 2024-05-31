@@ -21,7 +21,6 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     try {
         for (document in querySnapshot.documents) {
 
-            println()
             var numero = document.data?.get("numero") as Long
 
             cajon.add(
