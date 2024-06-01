@@ -62,7 +62,7 @@ fun ComponenteModArea(areas: DataAreas,navController: NavController,
 
             Column(modifier = Modifier.weight(2f)) {
                 Text(
-                    text = "Nombre de área: ${areas.nombreArea}",
+                    text = "Nombre de área: ${areas.nombre}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -72,12 +72,12 @@ fun ComponenteModArea(areas: DataAreas,navController: NavController,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Capacidad de personas: ${areas.capacidadDpersonas}",
+                    text = "Capacidad de personas: ${areas.capacidad}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Mobiliaria: ${areas.mobiliaria}",
+                    text = "Mobiliaria: ${areas.mobilaria}",
                     style = TextStyle(fontSize = 12.sp)
                 )
             }

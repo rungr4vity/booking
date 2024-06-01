@@ -1,5 +1,6 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.DismissDirection
@@ -63,7 +65,7 @@ fun ComponentAreas(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                imageVector = Icons.Default.AccountCircle,
+                imageVector = Icons.Default.Create,
                 contentDescription = "",
                 modifier = Modifier
                     .size(80.dp)
@@ -74,22 +76,27 @@ fun ComponentAreas(
 
             Column(modifier = Modifier.weight(2f)) {
                 Text(
-                    text = "Nombre de área: ${ar.nombreArea}",
+                    text = "${ar.nombre}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Descripción: ${ar.descripcion}",
+                    text = "${ar.descripcion}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Capacidad de personas: ${ar.capacidadDpersonas}",
+                    text = "Personas: ${ar.capacidad}",
                     style = TextStyle(fontSize = 12.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Mobiliaria: ${ar.mobiliaria}",
+                    text = "Mobiliaria: ${ar.mobilaria}",
+                    style = TextStyle(fontSize = 12.sp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "id: ${ar.id}",
                     style = TextStyle(fontSize = 12.sp)
                 )
             }
@@ -101,7 +108,22 @@ fun ComponentAreas(
                 text = "Detalle",
                 modifier = Modifier
                     .clickable {
-                        navController.navigate("DetalleAlta")
+                        //navController.navigate("DetalleAlta")
+                       try
+                       {
+                           var id = {
+                               if(ar.id != null || ar.id != ""){
+                                   ar.id
+                               } else { "N/A" }
+                           }
+
+                           navController.navigate("DetalleOficinas/${ar.capacidad}/${ar.descripcion}/NA/${ar.mobilaria}/${ar.nombre}/${ar.id}")
+                       }
+                       catch (e:Exception)
+                       {
+                           Log.e("Error_AreaScreen", e.message.toString())
+                       }
+
                     }
                     .align(Alignment.CenterVertically)
                     .padding(end = 16.dp),
