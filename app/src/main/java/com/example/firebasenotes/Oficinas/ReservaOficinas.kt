@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
@@ -44,7 +46,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ComponentAreas
 import com.example.firebasenotes.models.horariosModel
+import com.example.firebasenotes.models.oficinasDTO
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.viewModels.NotesViewModel
@@ -80,7 +84,7 @@ class ReservaOficinas : ComponentActivity() {
                         "",
                         "",
                         "",
-                        oficinasVM)
+                        )
 
 
                 }
@@ -106,54 +110,12 @@ fun ReservaOficinas_extension(
     mobilaria: String,
     nombre: String,
     idArea: String,
-    viewModel: OficinasViewModel = OficinasViewModel()
+    //viewModel: OficinasViewModel = OficinasViewModel()
 ) {
+    //val stateOficinas = viewModel.stateOficina.value
+    val viewModel = OficinasViewModel()
+    val oficinasHorarios: List<oficinasDTO> by viewModel.horariosOficinas.observeAsState(listOf())
 
-    @Composable
-    fun ComposableLifecycle(
-        lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
-        onEvent: (LifecycleOwner, Lifecycle.Event) -> Unit
-    ) {
-
-        DisposableEffect(lifecycleOwner) {
-            val observer = LifecycleEventObserver { source, event ->
-                onEvent(source, event)
-            }
-            lifecycleOwner.lifecycle.addObserver(observer)
-
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
-        }
-    }
-
-    val TAG = "SecondScreen"
-    ComposableLifecycle { _, event ->
-        when (event) {
-            Lifecycle.Event.ON_CREATE -> {
-                Log.d(TAG, "onCreate")
-
-
-
-            }
-            Lifecycle.Event.ON_START -> {
-                Log.d(TAG, "On Start")
-            }
-            Lifecycle.Event.ON_RESUME -> {
-                Log.d(TAG, "On Resume")
-            }
-            Lifecycle.Event.ON_PAUSE -> {
-                Log.d(TAG, "On Pause")
-            }
-            Lifecycle.Event.ON_STOP -> {
-                Log.d(TAG, "On Stop")
-            }
-            Lifecycle.Event.ON_DESTROY -> {
-                Log.d(TAG, "On Destroy")
-            }
-            else -> {}
-        }
-    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -161,69 +123,37 @@ fun ReservaOficinas_extension(
             .fillMaxSize()
     ) {
 
-        var dayOfyear: Int = 0
+        Log.d("entramos","OK")
+
         var state = rememberDatePickerState()
         var data = state.selectedDateMillis ?: System.currentTimeMillis()
-        var suma = 0
 
-        var today = LocalDate.now()
-        var dayOfYear = today.dayOfYear
-
-        var data_listado = System.currentTimeMillis()
-        var suma_listado = 0
+        val today = LocalDate.now()
+        val dayOfYear = today.dayOfYear
+        var localDate = LocalDate.now()
 
         data?.let {
-
-
-            val defaultZoneId = ZoneId.systemDefault()
-            Log.d("zoneID",defaultZoneId.toString())
-
-            //UTC
-            val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("GMT")).toLocalDate()
+            localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("GMT")).toLocalDate()
             Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
-            //suma_listado = (localDate.dayOfMonth + localDate.month.value + localDate.year)
-
-            //loginVM.getData(localDate.dayOfYear,localDate.year,idEstacionamiento)
-            Log.d("data_listado",data_listado.toString())
         }
 
+        //viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
+        Log.d("data_listadoOficinas",oficinasHorarios.toString())
 
         //val opsHorarios_listado: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
         //var menHorarios_listado by remember { mutableStateOf(opsHorarios_listado) }
 
         val emailfrom = Firebase.auth.currentUser?.email ?: "No user"
-        var turno by remember { mutableStateOf(0) }
-
-        //var idEstacionamientoMutable by remember { mutableStateOf(idEstacionamiento) }
-
-        var menHorarios by remember { mutableStateOf("Seleccionar su horarios") }
-        //var menEmpresa by remember { mutableStateOf(company) }
-        //var menEspacios by remember { mutableStateOf(cajon) }
-        var emailPrueba by remember { mutableStateOf(emailfrom) }
-
-        var expansion_empresa by remember { mutableStateOf(false) }
-        var expansion_Horarios by remember { mutableStateOf(false) }
-        var expansion_Espacios by remember { mutableStateOf(false) }
-
-        //val opsHorarios_old: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
-        //val opsHorarios: MutableMap<Int,String> by loginVM.horarios_datePicker.observeAsState(mutableMapOf())
-
-        val opsEmpresa = listOf("Isita", "Verifigas")
-        val opsEspacios = listOf("441", "443","167","316 (P.Aguirre)","310 (A.Garza)")
 
         var textoInicio by rememberSaveable { mutableStateOf("") }
         var textoFin by rememberSaveable { mutableStateOf("") }
 
-        var showDialog by remember {
-            mutableStateOf(false)
-        }
-
+        var showDialog by remember { mutableStateOf(false) }
 
         Text(
             text = "Confirmar reservación: ", fontWeight = FontWeight.Bold, fontSize = 20.sp,
             modifier = Modifier.padding(10.dp)
         )
-
 
         Text(text = "Usuario:  $emailfrom", modifier = Modifier
             .padding(10.dp)
@@ -241,12 +171,20 @@ fun ReservaOficinas_extension(
             .padding(10.dp)
             .fillMaxWidth())
 
-//        Button(shape = RoundedCornerShape(5.dp),onClick = {
-//            showDialog = true },modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(5.dp)) {
-//            Text(text = "Calendario")
-//        }
+
+
+
+        //======================================================================================================================
+
+        // =======================================================================================================================
+
+
+        Button(shape = RoundedCornerShape(5.dp),onClick = {
+            showDialog = true },modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)) {
+            Text(text = "Calendario")
+        }
 
         val timePicker = TimePickerDialog(
             context,
@@ -271,8 +209,8 @@ fun ReservaOficinas_extension(
                 timePicker.show()
                       },
             modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)) {
+                .fillMaxWidth()
+                .padding(5.dp)) {
             Text(text = "Inicio")
         }
 
@@ -300,27 +238,22 @@ fun ReservaOficinas_extension(
 
 
         Button(shape = RoundedCornerShape(5.dp),onClick = {
-
             //val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("MST")).toLocalDate()
             val idUsuario = Firebase.auth.currentUser?.uid ?: ""
 
-            var hoy = LocalDate.now()
-            var dayOfYear_hoy = hoy.dayOfYear
+            val hoy = LocalDate.now()
+            val dayOfYear_hoy = hoy.dayOfYear
 
             viewModel.reservacionOficina(
                 context,
-                hoy.year.toString(),
-                dayOfYear_hoy.toString(),
+                hoy.year,
+                dayOfYear_hoy,
                 textoInicio,
                 textoFin,
                 "",
                 idArea,
                 idUsuario
             )
-
-//            loginVM.saveSpace(context,localFecha.year,dayOfYear_hoy,"",idEstacionamientoMutable,idUsuario,turno)
-//            {
-//            }
 
         }, modifier = Modifier
             .fillMaxWidth()
@@ -330,13 +263,10 @@ fun ReservaOficinas_extension(
         }
 
 
-
-
         if(showDialog) {
             DatePickerDialog(
                 onDismissRequest = { showDialog = false },
                 confirmButton = {
-
 
                     Button(onClick = {
                         showDialog = false
