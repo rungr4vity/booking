@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -53,6 +54,8 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ComponentArea
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.models.oficinasDTO
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
+import com.example.firebasenotes.utils.ValidacionesHora
+import com.example.firebasenotes.utils.ValidacionesHora.minutesToHour
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.viewModels.NotesViewModel
 import com.google.firebase.Firebase
@@ -223,21 +226,40 @@ fun ReservaOficinas_extension(
         Button(shape = RoundedCornerShape(5.dp)
 
             ,onClick = {
+
+
             val idUsuario = Firebase.auth.currentUser?.uid ?: ""
 
             //val hoy = LocalDate.now()
             //val dayOfYear_hoy = hoy.dayOfYear
 
-            viewModel.reservacionOficina(
-                context,
-                localDate.year,
-                localDate.dayOfYear,
-                textoInicio,
-                textoFin,
-                "",
-                idArea,
-                idUsuario
+                // example
+                // print(isValidTimeRange(Time(8, 9), Time(8, 10)))
+
+                val hour1 = textoInicio.split(":")
+                val hour2 = textoFin.split(":")
+
+            val isValid = ValidacionesHora.isValidTimeRange(
+                ValidacionesHora.Time(hour1[0].toInt(), hour1[1].toInt()),
+                ValidacionesHora.Time(hour2[0].toInt(), hour2[1].toInt())
             )
+
+                if(isValid){
+
+                    Toast.makeText(context,"Adelante",Toast.LENGTH_LONG).show()
+                } else{
+                    Toast.makeText(context,"Rango de hora invalido",Toast.LENGTH_LONG).show()
+                }
+//            viewModel.reservacionOficina(
+//                context,
+//                localDate.year,
+//                localDate.dayOfYear,
+//                textoInicio,
+//                textoFin,
+//                "",
+//                idArea,
+//                idUsuario
+//            )
 
         }, modifier = Modifier
             .fillMaxWidth()
