@@ -159,7 +159,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         mobilaria,
                         nombre,
                         idArea,
-                        viewModel
                     )
                 }
 

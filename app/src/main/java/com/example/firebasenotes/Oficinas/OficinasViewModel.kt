@@ -82,7 +82,6 @@ class OficinasViewModel:ViewModel() {
         val horaFin = horafinal.split(":")[0].toInt()
         val minutosFin = horafinal.split(":")[1].toInt()
 
-
         //var _inicialInt = horaInicial.replace(":",".")
         //var _finalInt = horafinal.replace(":",".")
 
@@ -96,8 +95,8 @@ class OficinasViewModel:ViewModel() {
             inicialInt,
             finalInt,
             id,
-            idArea,
-            idUsuario)
+            idArea.trim(),
+            idUsuario.trim())
 
         viewModelScope.launch {
                         try {

@@ -2,6 +2,7 @@ package com.example.firebasenotes.Oficinas
 import android.R
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 
 import androidx.compose.foundation.layout.Column
 
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.example.firebasenotes.models.horariosModel
+import com.example.firebasenotes.models.oficinasDTO
 import com.example.firebasenotes.viewModels.LoginViewModel
 import java.time.Instant
 import java.time.LocalDate
@@ -44,7 +46,6 @@ fun DetalleOficinas(
     mobilaria: String,
     nombre: String,
     idArea: String,
-    viewModel: OficinasViewModel = OficinasViewModel()
 ){
 
     // first comment
@@ -58,19 +59,28 @@ fun DetalleOficinas(
         ) {
 
 
-
+        val viewModel: OficinasViewModel = OficinasViewModel()
         val today = LocalDate.now()
         val dayOfYear = today.dayOfYear
 
-        var data = System.currentTimeMillis()
+        val data = System.currentTimeMillis()
         var suma = 0
 
         data?.let {
             val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
             suma = (localDate.dayOfMonth + localDate.month.value + localDate.year)
+            viewModel.ReservacionOficinasDia(localDate.year, localDate.dayOfYear,idArea)
+
         }
+
+        val oficinasHorarios: List<oficinasDTO> by viewModel.horariosOficinas.observeAsState(listOf())
+
+        Log.d("total2", "suma")
+
         //val opsHorarios: List<horariosModel> by viewModel.horarios.observeAsState(listOf())
         //var menHorarios by remember { mutableStateOf(opsHorarios) }
+
+
 
         Column(modifier = Modifier
             .padding(10.dp)
@@ -82,6 +92,9 @@ fun DetalleOficinas(
                     text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp)
                 )
+
+
+
                 Text(
                     text = "Fecha ${LocalDate.now()}", fontWeight = FontWeight.Thin, fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp)
@@ -89,11 +102,22 @@ fun DetalleOficinas(
                 Text(text = " $nombre", modifier = Modifier.padding(10.dp))
                 Text(text = "Capacidad: ${capacidad}", modifier = Modifier.padding(10.dp))
                 Text(text = "$descripcion", modifier = Modifier.padding(10.dp))
+
+
                 Text(
-                    text = "Disponible",
+                    text = "Reservado: ",
                     fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
                     modifier = Modifier.padding(10.dp)
                 )
+                oficinasHorarios.forEach {
+                    Text(text = "Horario: ${String.format("%.2f",(it.horaInicial.toFloat() / 60))}  " +
+                            ": ${String.format("%.2f",(it.horafinal.toFloat() / 60))}",
+                        fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
+                        modifier = Modifier.padding(10.dp))
+
+                }
+
+
 
                 Button(
                     onClick = {
