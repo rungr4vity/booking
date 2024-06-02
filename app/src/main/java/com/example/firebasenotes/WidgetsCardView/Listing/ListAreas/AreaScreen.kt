@@ -94,11 +94,11 @@ fun ComponentAreas(
                     text = "Mobiliaria: ${ar.mobilaria}",
                     style = TextStyle(fontSize = 12.sp)
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "id: ${ar.id}",
-                    style = TextStyle(fontSize = 12.sp)
-                )
+//                Spacer(modifier = Modifier.height(4.dp))
+//                Text(
+//                    text = "id: ${ar.id}",
+//                    style = TextStyle(fontSize = 12.sp)
+//                )
             }
 
             Spacer(modifier = Modifier.width(16.dp))

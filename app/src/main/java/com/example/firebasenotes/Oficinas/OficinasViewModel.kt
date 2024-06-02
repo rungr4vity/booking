@@ -36,33 +36,13 @@ suspend fun _ReservacionOficinasDia(ano:Int,dia:Int,idArea:String) : MutableList
     return reservacionOficinas
 }
 
-
 class OficinasViewModel:ViewModel() {
 
     private var _horariosOficinas = MutableLiveData<MutableList<oficinasDTO>>(mutableListOf())
     val horariosOficinas: LiveData<MutableList<oficinasDTO>> get() = _horariosOficinas
 
-
-
-
-
-
     val stateOficina = mutableStateOf<List<oficinasDTO>>(emptyList())
-    fun timeToSeconds(ttime: Int): Int {
 
-
-
-
-        // Extract hours, minutes, and seconds from the TTime digit
-        val hours = ttime / 10000
-        val minutes = (ttime / 100) % 100
-        val seconds = ttime % 100
-
-        // Convert hours, minutes, and seconds to total seconds
-        val totalSeconds = hours * 3600 + minutes * 60 + seconds
-
-        return totalSeconds
-    }
 
     fun reservacionOficina(
         context: Context,

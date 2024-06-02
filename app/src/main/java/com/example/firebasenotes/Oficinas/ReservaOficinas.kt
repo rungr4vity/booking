@@ -7,9 +7,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -140,9 +143,6 @@ fun ReservaOficinas_extension(
         //viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
         Log.d("data_listadoOficinas",oficinasHorarios.toString())
 
-        //val opsHorarios_listado: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
-        //var menHorarios_listado by remember { mutableStateOf(opsHorarios_listado) }
-
         val emailfrom = Firebase.auth.currentUser?.email ?: "No user"
 
         var textoInicio by rememberSaveable { mutableStateOf("") }
@@ -172,13 +172,6 @@ fun ReservaOficinas_extension(
             .fillMaxWidth())
 
 
-
-
-        //======================================================================================================================
-
-        // =======================================================================================================================
-
-
         Button(shape = RoundedCornerShape(5.dp),onClick = {
             showDialog = true },modifier = Modifier
             .fillMaxWidth()
@@ -202,8 +195,6 @@ fun ReservaOficinas_extension(
             }, 0, 0, true
         )
 
-
-
         Button(shape = RoundedCornerShape(5.dp),
             onClick = {
                 timePicker.show()
@@ -211,14 +202,10 @@ fun ReservaOficinas_extension(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)) {
-            Text(text = "Inicio")
+            Text(text = "Inicio: $textoInicio", modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth())
         }
-
-        Text(text = "Inicio: $textoInicio", modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth())
-
-
 
         Button(shape = RoundedCornerShape(5.dp),
             onClick = {
@@ -227,27 +214,24 @@ fun ReservaOficinas_extension(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)) {
-            Text(text = "Fin")
+
+            Text(text = "Fin: $textoFin", modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth())
         }
 
-        Text(text = "Fin: $textoFin", modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth())
+        Button(shape = RoundedCornerShape(5.dp)
 
-
-
-
-        Button(shape = RoundedCornerShape(5.dp),onClick = {
-            //val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("MST")).toLocalDate()
+            ,onClick = {
             val idUsuario = Firebase.auth.currentUser?.uid ?: ""
 
-            val hoy = LocalDate.now()
-            val dayOfYear_hoy = hoy.dayOfYear
+            //val hoy = LocalDate.now()
+            //val dayOfYear_hoy = hoy.dayOfYear
 
             viewModel.reservacionOficina(
                 context,
-                hoy.year,
-                dayOfYear_hoy,
+                localDate.year,
+                localDate.dayOfYear,
                 textoInicio,
                 textoFin,
                 "",
@@ -257,9 +241,10 @@ fun ReservaOficinas_extension(
 
         }, modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp)) {
-            Text(text = "Aceptar reservacion")
+            .padding(5.dp)
 
+        ) {
+            Text(text = "Confirmar reservacion")
         }
 
 
@@ -288,8 +273,3 @@ fun ReservaOficinas_extension(
 
         } // column
 }
-
-
-
-
-
