@@ -51,16 +51,19 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ComponentAreas
+import com.example.firebasenotes.models.TimeRange
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.models.oficinasDTO
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
 import com.example.firebasenotes.utils.ValidacionesHora
 import com.example.firebasenotes.utils.ValidacionesHora.minutesToHour
+import com.example.firebasenotes.utils.ValidacionesHora.validateAllBookings
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.viewModels.NotesViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.time.delay
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -119,6 +122,16 @@ fun ReservaOficinas_extension(
     //viewModel: OficinasViewModel = OficinasViewModel()
 ) {
     //val stateOficinas = viewModel.stateOficina.value
+
+
+
+
+
+
+
+
+
+
     val viewModel = OficinasViewModel()
     val oficinasHorarios: List<oficinasDTO> by viewModel.horariosOficinas.observeAsState(listOf())
 
@@ -144,7 +157,7 @@ fun ReservaOficinas_extension(
         }
 
         //viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
-        Log.d("data_listadoOficinas",oficinasHorarios.toString())
+        //Log.d("data_listadoOficinas",oficinasHorarios.toString())
 
         val emailfrom = Firebase.auth.currentUser?.email ?: "No user"
 
@@ -176,7 +189,10 @@ fun ReservaOficinas_extension(
 
 
         Button(shape = RoundedCornerShape(5.dp),onClick = {
-            showDialog = true },modifier = Modifier
+            textoInicio = ""
+            textoFin = ""
+            showDialog = true
+                                                          },modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
             Text(text = "Calendario")
@@ -185,6 +201,7 @@ fun ReservaOficinas_extension(
         val timePicker = TimePickerDialog(
             context,
             {
+
                     timePicker, hourSelect, minuteSelect ->
                 textoInicio = "$hourSelect:$minuteSelect"
             }, 0, 0, true
@@ -200,6 +217,7 @@ fun ReservaOficinas_extension(
 
         Button(shape = RoundedCornerShape(5.dp),
             onClick = {
+                viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
                 timePicker.show()
                       },
             modifier = Modifier
@@ -228,28 +246,62 @@ fun ReservaOficinas_extension(
             ,onClick = {
 
 
-            val idUsuario = Firebase.auth.currentUser?.uid ?: ""
+                if (textoInicio.isEmpty() || textoFin.isEmpty()) {
+                    Toast.makeText(context, "Debe seleccionar una hora de inicio y fin", Toast.LENGTH_LONG).show()
+                } else {
 
-            //val hoy = LocalDate.now()
-            //val dayOfYear_hoy = hoy.dayOfYear
+
+                //Log.d("data_listadoOficinas", oficinasHorarios.toString())
+
+                    val hour1 = textoInicio.split(":")
+                    val hour2 = textoFin.split(":")
+
+
+
+
+
+                    var timeRange = mutableListOf<TimeRange>()
+                    oficinasHorarios.forEach{
+
+                        timeRange.add(TimeRange(it.horaInicial,it.horafinal))
+                    }
+
+                    var timeRangeFin = TimeRange(
+                        hour1[0].toInt() + hour1[1].toInt(),
+                        hour2[0].toInt() + hour2[1].toInt())
+
+                    var counter = validateAllBookings(timeRange, timeRangeFin)
+
+
+                    Log.d("counter",counter.toString())
+
+
+
+
+
+                    val idUsuario = Firebase.auth.currentUser?.uid ?: ""
+
+                //val hoy = LocalDate.now()
+                //val dayOfYear_hoy = hoy.dayOfYear
 
                 // example
                 // print(isValidTimeRange(Time(8, 9), Time(8, 10)))
 
-                val hour1 = textoInicio.split(":")
-                val hour2 = textoFin.split(":")
 
-            val isValid = ValidacionesHora.isValidTimeRange(
-                ValidacionesHora.Time(hour1[0].toInt(), hour1[1].toInt()),
-                ValidacionesHora.Time(hour2[0].toInt(), hour2[1].toInt())
-            )
 
-                if(isValid){
+                val isValid = ValidacionesHora.isValidTimeRange(
+                    ValidacionesHora.Time(hour1[0].toInt(), hour1[1].toInt()),
+                    ValidacionesHora.Time(hour2[0].toInt(), hour2[1].toInt())
+                )
 
-                    Toast.makeText(context,"Adelante",Toast.LENGTH_LONG).show()
-                } else{
-                    Toast.makeText(context,"Rango de hora invalido",Toast.LENGTH_LONG).show()
+                if (isValid) {
+
+                    Toast.makeText(context, "Adelante", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Rango de hora invalido", Toast.LENGTH_LONG).show()
                 }
+
+
 //            viewModel.reservacionOficina(
 //                context,
 //                localDate.year,
@@ -261,6 +313,7 @@ fun ReservaOficinas_extension(
 //                idUsuario
 //            )
 
+            }
         }, modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
@@ -268,6 +321,7 @@ fun ReservaOficinas_extension(
         ) {
             Text(text = "Confirmar reservacion")
         }
+
 
 
         if(showDialog) {
@@ -294,4 +348,9 @@ fun ReservaOficinas_extension(
         }// end show dialog
 
         } // column
+
+
+
+
+
 }

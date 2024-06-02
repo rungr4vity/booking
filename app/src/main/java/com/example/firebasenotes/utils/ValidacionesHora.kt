@@ -25,6 +25,20 @@ object ValidacionesHora {
         // Check if the ranges overlap
         return range1.start < range2.end && range1.end > range2.start
     }
+    fun validateAllBookings(mutableList: MutableList<TimeRange>,range: TimeRange):Boolean {
+        var total = 0
+        mutableList.forEach {
+            if(doRangesOverlap(it, range)){
+                total++
+            }
+        }
+        if(total == 0){
+            return true
+        }else{
+            return false
+        }
+    }
+
 
 
     // example
@@ -38,19 +52,7 @@ object ValidacionesHora {
 
 
 
-    fun validateAllBookings(mutableList: MutableList<TimeRange>,range: TimeRange):Boolean {
-        var total = 0
-        mutableList.forEach {
-            if(doRangesOverlap(it, range)){
-                total++
-            }
-        }
-            if(total == 0){
-                return true
-            }else{
-                return false
-            }
-    }
+
 
 
 }

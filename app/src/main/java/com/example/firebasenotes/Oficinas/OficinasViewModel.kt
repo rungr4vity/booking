@@ -11,6 +11,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DataAreas
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.models.oficinasDTO
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -22,7 +23,7 @@ suspend fun _ReservacionOficinasDia(ano:Int,dia:Int,idArea:String) : MutableList
     val querySnapshot = db.collection("ReservacionOficina")
         .whereEqualTo("dia", dia)
         .whereEqualTo("ano", ano)
-        .whereEqualTo("idArea", idArea)
+        .whereEqualTo("idArea", idArea.trim())
         .get().await()
     querySnapshot.query
 
@@ -36,7 +37,11 @@ suspend fun _ReservacionOficinasDia(ano:Int,dia:Int,idArea:String) : MutableList
     return reservacionOficinas
 }
 
-class OficinasViewModel:ViewModel() {
+class OficinasViewModel(
+
+):ViewModel() {
+
+
 
     private var _horariosOficinas = MutableLiveData<MutableList<oficinasDTO>>(mutableListOf())
     val horariosOficinas: LiveData<MutableList<oficinasDTO>> get() = _horariosOficinas
@@ -103,6 +108,7 @@ class OficinasViewModel:ViewModel() {
         viewModelScope.launch {
            // stateOficina.value =
             _horariosOficinas.value = _ReservacionOficinasDia(ano,dia,idArea)
+            delay(2000)
         }
 
     }
