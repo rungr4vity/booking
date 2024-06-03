@@ -45,6 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navArgument
 import com.example.firebasenotes.Oficinas.DetalleOficinas
+import com.example.firebasenotes.Oficinas.ListadoOficinas
 import com.example.firebasenotes.Oficinas.OficinasViewModel
 import com.example.firebasenotes.Oficinas.ReservaOficinas
 import com.example.firebasenotes.Oficinas.ReservaOficinas_extension
@@ -93,6 +94,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Viaticos", Icons.Default.DateRange, 2),
         Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
         Triple("Mis reservas", Icons.Default.DateRange, 2),
+        Triple("Mis oficinas", Icons.Default.DateRange, 2),
 
 
     ).filter { it.third == userData.typeId }
@@ -131,6 +133,11 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Alta de Cajon") {
                     AltCajon()
                 }
+
+                composable("Mis Oficinas") {
+                    ListadoOficinas()
+                }
+
 
                 composable("DetalleOficinas/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",arguments = listOf(
                     navArgument("capacidad",)  { type = NavType.StringType },
