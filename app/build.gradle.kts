@@ -104,4 +104,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-database-ktx:20.0.0")
     implementation("io.coil-kt:coil-compose:1.4.0")
 
+
+    implementation ("androidx.core:core-splashscreen:1.0.1")
+
 }

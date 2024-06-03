@@ -44,6 +44,8 @@ fun DDViaticos(navController: NavController,viajeId: String) {
     val menuItems = listOf("Deducible", "No deducible")
     var selectedItem by remember { mutableStateOf("Tipo de Gasto") }
     var context = LocalContext.current
+    var xmlUri by remember { mutableStateOf<Uri?>(null) }
+    var pdfUri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -51,11 +53,20 @@ fun DDViaticos(navController: NavController,viajeId: String) {
         imageUri = uri
     }
 
+    val pdfLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        pdfUri = uri
+        //Toast.makeText(context, "PDF added to memory", Toast.LENGTH_SHORT).show()
+    }
+
 
     var selectedFileName by remember { mutableStateOf("No file selected") }
     var fileContent by remember { mutableStateOf("") }
     var gastoDTO_mutable by remember { mutableStateOf(GastoDTO()) }
-    var xmlUri by remember { mutableStateOf<Uri?>(null) }
+
+
+
     var mystring by remember { mutableStateOf("") }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -199,7 +210,6 @@ fun DDViaticos(navController: NavController,viajeId: String) {
 
                         modifier = Modifier.clickable {
 
-                        //launcher.launch("image/*")
                         filePickerLauncher.launch(arrayOf("text/xml"))
                         })
 
@@ -213,9 +223,7 @@ fun DDViaticos(navController: NavController,viajeId: String) {
                     Icon(imageVector = Icons.Default.AddCircle, contentDescription = " ",
 
                         modifier = Modifier.clickable {
-
-                            filePickerLauncher.launch(arrayOf("text/pdf"))
-                            //launcher.launch("image/*")
+                            pdfLauncher.launch("application/pdf")
 
                     })
 
@@ -286,7 +294,7 @@ fun DDViaticos(navController: NavController,viajeId: String) {
 
 
                 if (selectedItem == "Deducible") {
-                    btn_EnviarGastoDeducible(context,monto,viajeId, xmlUri,mystring) {
+                    btn_EnviarGastoDeducible(context,monto,viajeId,pdfUri, xmlUri,mystring) {
                         showSnackbar = true
                     }
                 }else{
@@ -334,17 +342,47 @@ fun btn_EnviarGasto(context:Context,monto:String,viajeId:String, imageUri: Uri?,
     }
 }
 @Composable
-fun btn_EnviarGastoDeducible(context:Context,monto:String,viajeId:String, xmlUri: Uri?,mystring:String, onUploadSuccess: () -> Unit) {
+fun btn_EnviarGastoDeducible(context:Context,monto:String,viajeId:String,pdfUri: Uri?, xmlUri: Uri?,mystring:String, onUploadSuccess: () -> Unit) {
     Button(
         onClick = {
 
+            var idPdf = ""
+            pdfUri?.let {
+
+                val storageReference = FirebaseStorage.getInstance().reference
+                val idUsuario = FirebaseAuth.getInstance().currentUser?.uid
+                val pdfRef = storageReference.child("pdfs/${UUID.randomUUID()}.pdf")
+
+                pdfRef.putFile(pdfUri)
+                    .addOnSuccessListener {
+                        pdfRef.downloadUrl.addOnSuccessListener { uri ->
+                            val downloadUrl = uri.toString()
+                            idPdf = downloadUrl
 
 
-            xmlUri?.let {
-                uploadXMLToFirebase(context,xmlUri,xmlUri,viajeId,monto, mystring, onUploadSuccess){
-                    Toast.makeText(context, "Se agrego gasto deducible", Toast.LENGTH_SHORT).show()
-                }
+
+                            xmlUri?.let {
+                                uploadXMLToFirebase(context,xmlUri,idPdf,viajeId,monto, mystring, onUploadSuccess){
+                                    Toast.makeText(context, "Se agrego gasto deducible", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+
+
+
+                        }
+                    }
+                    .addOnFailureListener {
+
+                    }
+
             }
+
+
+
+
+
+
         },
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
@@ -370,7 +408,7 @@ fun AltaGastoDeducible(context:Context,gastoDTO: GastoDTO): Unit {
 fun uploadXMLToFirebase(
     context: Context,
     xmlUri: Uri,
-    pdfUri: Uri,
+    pdf: String,
     viajeId: String,
     monto: String,
     mystring: String,
@@ -392,9 +430,9 @@ fun uploadXMLToFirebase(
                     mystring,
                     idUsuario ?: "",
                     viajeId,"",
-                    "","",
+                    "",pdf,
                     downloadUrl,"",
-                    "",
+                    "from_Android",
                     "")
 
                 AltaGastoDeducible(

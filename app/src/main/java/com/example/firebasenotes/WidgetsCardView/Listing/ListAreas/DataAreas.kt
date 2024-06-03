@@ -1,9 +1,9 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
 data class DataAreas(
-    val capacidadDpersonas: String="",
-    val nombreArea: String="",
-    val mobiliaria: String="",
+    val capacidad: String="",
     val descripcion: String="",
-    val id : String=""
+    var id : String="",
+    val mobilaria: String="",
+    val nombre: String="",
 )

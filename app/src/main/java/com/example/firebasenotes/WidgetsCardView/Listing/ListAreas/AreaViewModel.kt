@@ -13,13 +13,16 @@ import kotlinx.coroutines.tasks.await
 suspend fun DataFromArea() : MutableList <DataAreas>{
     val db = FirebaseFirestore.getInstance()
     val areas = mutableListOf<DataAreas>()
-    val querySnapshot = db.collection("areas").get().await()
+    val querySnapshot = db.collection("Oficinas").get().await()
     querySnapshot.query
 
 
     for (document in querySnapshot.documents){
-        val ar = document.toObject(DataAreas::class.java)
+        var ar = document.toObject(DataAreas::class.java)
+        ar?.id = document.id
+
         ar?.let {
+
             areas.add(it)
         }
     }

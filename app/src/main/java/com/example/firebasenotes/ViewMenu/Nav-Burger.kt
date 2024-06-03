@@ -44,6 +44,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navArgument
+import com.example.firebasenotes.Oficinas.DetalleOficinas
+import com.example.firebasenotes.Oficinas.ListadoOficinas
+import com.example.firebasenotes.Oficinas.OficinasViewModel
+import com.example.firebasenotes.Oficinas.ReservaOficinas
+import com.example.firebasenotes.Oficinas.ReservaOficinas_extension
 import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
 import com.example.firebasenotes.UsersAdmin.detalleUser
@@ -68,7 +73,6 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScr
 import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
-import com.example.firebasenotes.pruebass.DataTypeId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +94,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Viaticos", Icons.Default.DateRange, 2),
         Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
         Triple("Mis reservas", Icons.Default.DateRange, 2),
+        Triple("Mis oficinas", Icons.Default.DateRange, 2),
 
 
     ).filter { it.third == userData.typeId }
@@ -128,6 +133,43 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Alta de Cajon") {
                     AltCajon()
                 }
+
+                composable("Mis Oficinas") {
+                    ListadoOficinas()
+                }
+
+
+                composable("DetalleOficinas/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",arguments = listOf(
+                    navArgument("capacidad",)  { type = NavType.StringType },
+                    navArgument("descripcion",)  { type = NavType.StringType },
+                    navArgument("id",)  { type = NavType.StringType },
+                    navArgument("mobilaria",)  { type = NavType.StringType },
+                    navArgument("nombre",)  { type = NavType.StringType },
+                    navArgument("idArea",)  { type = NavType.StringType },
+                )){
+
+
+                    var viewModel = OficinasViewModel()
+                    val capacidad = it.arguments?.getString("capacidad") ?: ""
+                    val descripcion = it.arguments?.getString("descripcion") ?: ""
+                    val id = it.arguments?.getString("id") ?: ""
+                    val mobilaria = it.arguments?.getString("mobilaria") ?: ""
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    val idArea = it.arguments?.getString("idArea") ?: ""
+
+                    DetalleOficinas(
+                        navController = navController,
+                        LocalContext.current,
+                        capacidad,
+                        descripcion,
+                        id,
+                        mobilaria,
+                        nombre,
+                        idArea,
+                    )
+                }
+
+
                 composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",arguments = listOf(
                     navArgument("nombre",)  { type = NavType.StringType },
                     navArgument("company",) { type = NavType.StringType },
@@ -219,6 +261,34 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     )
                 }
 
+
+                composable("ReservaOficinas_extension/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",arguments = listOf(
+                    navArgument("capacidad",)  { type = NavType.StringType },
+                    navArgument("descripcion",)  { type = NavType.StringType },
+                    navArgument("id",)  { type = NavType.StringType },
+                    navArgument("mobilaria",)  { type = NavType.StringType },
+                    navArgument("nombre",)  { type = NavType.StringType },
+                    navArgument("idArea",)  { type = NavType.StringType },
+                )){
+
+                    val capacidad = it.arguments?.getString("capacidad") ?: ""
+                    val descripcion = it.arguments?.getString("descripcion") ?: ""
+                    val id = it.arguments?.getString("id") ?: ""
+                    val mobilaria = it.arguments?.getString("mobilaria") ?: ""
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    val idArea = it.arguments?.getString("idArea") ?: ""
+
+                ReservaOficinas_extension(
+                    navController = navController,
+                    LocalContext.current,
+                    capacidad,
+                    descripcion,
+                    id,
+                    mobilaria,
+                    nombre,
+                    idArea)
+                }
+
                 composable("ReservacionCajones_extension/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",
                     arguments = listOf(
                         navArgument("nombre",)  { type = NavType.StringType },
@@ -276,7 +346,7 @@ fun DrawerContent(
         Spacer(modifier = Modifier.height(2.dp))
 
         Image(
-            painter = painterResource(R.drawable.img), // Reemplaza R.drawable.logo_image con el ID de tu imagen
+            painter = painterResource(R.drawable.isita2), // Reemplaza R.drawable.logo_image con el ID de tu imagen
             contentDescription = "",
             modifier = Modifier
                 .padding(6.dp)
