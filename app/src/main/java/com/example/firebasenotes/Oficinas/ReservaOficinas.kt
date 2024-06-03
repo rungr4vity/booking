@@ -276,9 +276,9 @@ fun ReservaOficinas_extension(
                     println()
 
 
-//cuando es falso no se puede agendar
+                    //cuando es falso no se puede agendar
                     var counter = validateAllBookings(horarioRequerido,horariosReservados)
-                    Log.d("counter",counter.toString())
+                    //Log.d("counter",counter.toString())
 
 
 
@@ -299,24 +299,33 @@ fun ReservaOficinas_extension(
                     ValidacionesHora.Time(hour2[0].toInt(), hour2[1].toInt())
                 )
 
-                if (isValid) {
-
-                    Toast.makeText(context, "Adelante", Toast.LENGTH_LONG).show()
+                if (isValid && counter) {
+            viewModel.reservacionOficina(
+                context,
+                localDate.year,
+                localDate.dayOfYear,
+                textoInicio,
+                textoFin,
+                "",
+                idArea,
+                idUsuario
+            )
+                    //Toast.makeText(context, "Adelante", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(context, "Rango de hora invalido", Toast.LENGTH_LONG).show()
+                    if(!isValid){
+                        Toast.makeText(context, "Rango de hora invalido", Toast.LENGTH_LONG).show()
+                    }
+                    if(!counter) {
+                        Toast.makeText(context, "Horario no disponible", Toast.LENGTH_LONG).show()
+                    }
+
                 }
 
 
-//            viewModel.reservacionOficina(
-//                context,
-//                localDate.year,
-//                localDate.dayOfYear,
-//                textoInicio,
-//                textoFin,
-//                "",
-//                idArea,
-//                idUsuario
-//            )
+
+
+
+
 
             }
         }, modifier = Modifier
