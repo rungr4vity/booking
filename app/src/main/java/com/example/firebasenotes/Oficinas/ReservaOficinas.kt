@@ -253,26 +253,31 @@ fun ReservaOficinas_extension(
 
                 //Log.d("data_listadoOficinas", oficinasHorarios.toString())
 
+//                    val range1 = TimeRange(430, 490) //7:10-8:10
+//                    val range2 = TimeRange(475, 520) //7:55-8:40
+//                    println("Range1 and Range2 overlap: ${doRangesOverlap(range1, range2)}") // se empalma SI
+
                     val hour1 = textoInicio.split(":")
                     val hour2 = textoFin.split(":")
 
-
-
-
-
-                    var timeRange = mutableListOf<TimeRange>()
+                    // ok
+                    var horariosReservados = mutableListOf<TimeRange>()
                     oficinasHorarios.forEach{
-
-                        timeRange.add(TimeRange(it.horaInicial,it.horafinal))
+                        horariosReservados.add(TimeRange(it.horaInicial,it.horafinal))
                     }
 
-                    var timeRangeFin = TimeRange(
-                        hour1[0].toInt() + hour1[1].toInt(),
-                        hour2[0].toInt() + hour2[1].toInt())
+                    var horarioRequerido = TimeRange(
+                        hour1[0].toInt() * 60 + hour1[1].toInt(),
+                        hour2[0].toInt() * 60 + hour2[1].toInt())
 
-                    var counter = validateAllBookings(timeRange, timeRangeFin)
+                    var uno = minutesToHour(hour1[0].toInt() * 60 + hour1[1].toInt())
+                    var dos = minutesToHour(hour2[0].toInt() * 60 + hour2[1].toInt())
+
+                    println()
 
 
+//cuando es falso no se puede agendar
+                    var counter = validateAllBookings(horarioRequerido,horariosReservados)
                     Log.d("counter",counter.toString())
 
 

@@ -25,10 +25,10 @@ object ValidacionesHora {
         // Check if the ranges overlap
         return range1.start < range2.end && range1.end > range2.start
     }
-    fun validateAllBookings(mutableList: MutableList<TimeRange>,range: TimeRange):Boolean {
+    fun validateAllBookings(requerido: TimeRange,agendados: MutableList<TimeRange>):Boolean {
         var total = 0
-        mutableList.forEach {
-            if(doRangesOverlap(it, range)){
+        agendados.forEach {
+            if(doRangesOverlap(requerido, it)){
                 total++
             }
         }
