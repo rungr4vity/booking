@@ -23,7 +23,7 @@ class DDViewModel : ViewModel() {
             if (!currentUserEmail.isNullOrEmpty()) {
                 state.value = getUserData(currentUserEmail)
             } else {
-                // Handle case where user email is null or empty
+
             }
         }
     }
@@ -37,10 +37,10 @@ class DDViewModel : ViewModel() {
 
         return if (!querySnapshot.isEmpty) {
             val result = querySnapshot.documents[0].toObject(Data::class.java)
-            result ?: Data() // Return Data() if result is null
+            result ?: throw IllegalStateException("El usuario con el correo electrónico $email no tiene datos asociados.")
         } else {
-            // Handle case where no user with given email is found
-            Data()
+            throw IllegalStateException("No se encontró ningún usuario con el correo electrónico $email.")
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,12 +32,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.firebasenotes.R
 import com.google.firebase.components.Component
 
 
@@ -64,35 +67,35 @@ fun ComponentAreas(
             .fillMaxWidth()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.Create,
-                contentDescription = "",
+            Image(
+                painter = painterResource(id = R.drawable.ofi), // Reemplaza 'your_image' con el nombre de tu imagen
+                contentDescription = "Logo",
                 modifier = Modifier
-                    .size(80.dp)
-                    .padding(11.dp)
+                    .size(100.dp)
+                    .padding( horizontal = 2.dp)
+
+
             )
+
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(2f)) {
                 Text(
                     text = "${ar.nombre}",
-                    style = TextStyle(fontSize = 12.sp)
+                    style = TextStyle(fontSize = 15.sp)
+                )
+
+
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Cap. : ${ar.capacidad}",
+                    style = TextStyle(fontSize = 15.sp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${ar.descripcion}",
-                    style = TextStyle(fontSize = 12.sp)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Personas: ${ar.capacidad}",
-                    style = TextStyle(fontSize = 12.sp)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Mobiliaria: ${ar.mobilaria}",
-                    style = TextStyle(fontSize = 12.sp)
+                    text = "Mob.: ${ar.mobilaria}",
+                    style = TextStyle(fontSize = 15.sp)
                 )
 //                Spacer(modifier = Modifier.height(4.dp))
 //                Text(

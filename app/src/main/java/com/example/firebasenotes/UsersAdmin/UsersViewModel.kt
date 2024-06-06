@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebasenotes.Viaticos.DataViaticos
-import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DataAreas
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -36,8 +36,6 @@ class UsersViewModel : ViewModel() {
         return users
     }
 
-
-
     fun updateUserData(userData: DataViaticos) {
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
@@ -54,12 +52,32 @@ class UsersViewModel : ViewModel() {
                         mapOf(
                             "puedeFacturar" to userData.puedeFacturar,
                             "usuarioHabilitado" to userData.usuarioHabilitado,
-                            "typeId" to userData.typeId
-
+                            "typeId" to userData.typeId,
+                            "tieneViajeActivo" to userData.tieneViajeActivo
                         )
                     )
                 }
             }
         }
     }
+
+    fun updateTieneViajeActivo(value: Boolean) {
+        viewModelScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            val userEmail = FirebaseAuth.getInstance().currentUser?.email
+
+            if (userEmail != null) {
+                val querySnapshot = db.collection("Usuarios")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .await()
+
+                if (!querySnapshot.isEmpty) {
+                    val docId = querySnapshot.documents[0].id
+                    db.collection("Usuarios").document(docId).update("tieneViajeActivo", value).await()
+                }
+            }
+        }
+    }
+
 }

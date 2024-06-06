@@ -2,15 +2,19 @@ package com.example.firebasenotes.ViewMenu.Mipefil
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -25,16 +29,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.firebasenotes.R
+import com.example.firebasenotes.SharedPreferencesManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel()) {
+fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesManager: SharedPreferencesManager) {
     val userData = ddViewModel.state.value
     var extende by remember { mutableStateOf(false) }
     var menu = listOf("Isita", "Verifigas")
@@ -43,30 +50,53 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel()) {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            imageVector = Icons.Default.Person,
-            contentDescription = "",
-            modifier = Modifier.size(100.dp)
+        Image(
+            painter = painterResource(id = R.drawable.isita3), // Reemplaza 'your_image' con el nombre de tu imagen
+            contentDescription = "Logo",
+            modifier = Modifier
+                .size(180.dp)
+                .padding(bottom = 20.dp)
         )
         TextField(
             value = userData.nombres,
-            onValueChange = { ddViewModel.state.value = userData.copy(nombres = it) }
+            onValueChange = { ddViewModel.state.value = userData.copy(nombres = it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         )
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(18.dp))
         TextField(
             value = userData.apellidos,
-            onValueChange = { ddViewModel.state.value = userData.copy(apellidos = it) }
+            onValueChange = { ddViewModel.state.value = userData.copy(apellidos = it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         )
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(18.dp))
         TextField(
             value = userData.email,
-            onValueChange = { ddViewModel.state.value = userData.copy(email = it) }
+            onValueChange = { ddViewModel.state.value = userData.copy(email = it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         )
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(18.dp))
+        TextField(
+            value = userData.contrasena,
+            onValueChange = { ddViewModel.state.value = userData.copy(contrasena = it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
+        Spacer(modifier = Modifier.size(18.dp))
 
         ExposedDropdownMenuBox(
             expanded = extende,
-            onExpandedChange = { extende = !extende }
+            onExpandedChange = { extende = !extende },
+            modifier = Modifier
+                .fillMaxWidth()
+
+
         ) {
             OutlinedTextField(
                 value = userData.empresa,
@@ -74,10 +104,15 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel()) {
                 readOnly = false,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = extende) },
                 colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+
             )
-            ExposedDropdownMenu(expanded = extende, onDismissRequest = { extende = false }) {
+            ExposedDropdownMenu(expanded = extende, onDismissRequest = { extende = false },
+                modifier = Modifier.fillMaxWidth()) {
                 menu.forEach { opcion ->
                     DropdownMenuItem(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         text = { Text(text = opcion) },
                         onClick = {
                             ddViewModel.state.value = userData.copy(empresa = opcion)
@@ -88,35 +123,21 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel()) {
                 }
             }
         }
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(50.dp))
 
-        BTN_Actualizar(ddViewModel)
+        Button(
+            onClick = {
+                // Actualizar datos en Firebase
+                sharedPreferencesManager.updateUserData(userData)
+                // Actualizar datos en el ViewModel
+                ddViewModel.state.value = userData
+            },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+        ) {
+            Text(text = "Actualizar")
+        }
+
     }
 }
 
-@Composable
-fun BTN_Actualizar(ddViewModel: DDViewModel) {
-    Button(onClick = { updateDataInFirebase(ddViewModel.state.value) }) {
-        Text(text = "Actualizar")
-    }
-}
-
-fun updateDataInFirebase(data: Data) {
-    val db = FirebaseFirestore.getInstance()
-    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
-    if (!currentUserEmail.isNullOrEmpty()) {
-        db.collection("Usuarios")
-            .whereEqualTo("email", currentUserEmail)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    val docId = querySnapshot.documents[0].id
-                    db.collection("Usuarios").document(docId).set(data)
-
-                }
-            }
-
-    } else {
-        Log.d(TAG, "Current user email is null or empty")
-    }
-}

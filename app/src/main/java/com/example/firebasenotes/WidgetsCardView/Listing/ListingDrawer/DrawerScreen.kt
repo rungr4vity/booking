@@ -1,7 +1,9 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,12 +29,14 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.example.firebasenotes.R
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController) {
     val cajones = drawerViewModel.stateDrawer.value
 
-    println(cajones)
+    
         LazyColumn {
             try {
             items(cajones) { cajon ->
@@ -65,13 +70,15 @@ fun ComponentDrawer(
             .fillMaxWidth()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.AddCircle,
-                contentDescription = "",
+            Image(
+                painter = painterResource(id = R.drawable.est), // Reemplaza 'your_image' con el nombre de tu imagen
+                contentDescription = "Logo",
                 modifier = Modifier
-                    .size(80.dp)
-                    .padding(11.dp)
+                    .size(100.dp)
+                    .padding( horizontal = 2.dp)
+
             )
+
 
             Spacer(modifier = Modifier.width(16.dp))
 

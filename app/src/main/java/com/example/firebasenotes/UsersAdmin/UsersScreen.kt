@@ -1,5 +1,6 @@
 package com.example.firebasenotes.UsersAdmin
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,11 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.firebasenotes.R
 import com.example.firebasenotes.Viaticos.DataViaticos
 
 
@@ -51,16 +54,25 @@ fun ComponentList(use : DataViaticos, navigateToUserDetail: () -> Unit) {
             .fillMaxWidth()
             .clickable { navigateToUserDetail.invoke() } // Aquí invocamos la función
     ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = Icons.Default.AccountCircle,
-            contentDescription = "",
-            modifier = Modifier
-                .size(80.dp)
-                .padding(11.dp)
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Mostrar la imagen de la empresa
+            // Supongamos que tienes las imágenes de las empresas en tu carpeta 'res/drawable'
+            val imagen = when (use.empresa) {
+                "Isita" -> R.drawable.isita2
+                "Verifigas" -> R.drawable.verifi
+                else -> R.drawable.est // Imagen por defecto en caso de que la empresa no coincida
+            }
 
-        Spacer(modifier = Modifier.width(16.dp))
+            // Muestra la imagen de la empresa
+            Image(
+                painter = painterResource(imagen),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp)
+                    .padding(11.dp)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(2f)) {
             Text(
