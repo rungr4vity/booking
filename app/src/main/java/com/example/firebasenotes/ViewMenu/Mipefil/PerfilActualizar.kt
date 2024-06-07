@@ -41,10 +41,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesManager: SharedPreferencesManager) {
-    val userData = ddViewModel.state.value
+fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(), sharedPreferencesManager: SharedPreferencesManager) {
+    val userData by ddViewModel.state
     var extende by remember { mutableStateOf(false) }
-    var menu = listOf("Isita", "Verifigas")
+    val menu = listOf("Isita", "Verifigas")
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -59,7 +59,7 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesMan
         )
         TextField(
             value = userData.nombres,
-            onValueChange = { ddViewModel.state.value = userData.copy(nombres = it) },
+            onValueChange = { ddViewModel.updateUserData(userData.copy(nombres = it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -67,7 +67,7 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesMan
         Spacer(modifier = Modifier.size(18.dp))
         TextField(
             value = userData.apellidos,
-            onValueChange = { ddViewModel.state.value = userData.copy(apellidos = it) },
+            onValueChange = { ddViewModel.updateUserData(userData.copy(apellidos = it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -75,7 +75,7 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesMan
         Spacer(modifier = Modifier.size(18.dp))
         TextField(
             value = userData.email,
-            onValueChange = { ddViewModel.state.value = userData.copy(email = it) },
+            onValueChange = { ddViewModel.updateUserData(userData.copy(email = it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -83,7 +83,7 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesMan
         Spacer(modifier = Modifier.size(18.dp))
         TextField(
             value = userData.contrasena,
-            onValueChange = { ddViewModel.state.value = userData.copy(contrasena = it) },
+            onValueChange = { ddViewModel.updateUserData(userData.copy(contrasena = it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -95,27 +95,26 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesMan
             onExpandedChange = { extende = !extende },
             modifier = Modifier
                 .fillMaxWidth()
-
-
         ) {
             OutlinedTextField(
                 value = userData.empresa,
-                onValueChange = { ddViewModel.state.value = userData.copy(empresa = it) },
+                onValueChange = { ddViewModel.updateUserData(userData.copy(empresa = it)) },
                 readOnly = false,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = extende) },
                 colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-                modifier = Modifier .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
-            ExposedDropdownMenu(expanded = extende, onDismissRequest = { extende = false },
-                modifier = Modifier.fillMaxWidth()) {
+            ExposedDropdownMenu(
+                expanded = extende,
+                onDismissRequest = { extende = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 menu.forEach { opcion ->
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         text = { Text(text = opcion) },
                         onClick = {
-                            ddViewModel.state.value = userData.copy(empresa = opcion)
+                            ddViewModel.updateUserData(userData.copy(empresa = opcion))
                             extende = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -127,17 +126,13 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(),sharedPreferencesMan
 
         Button(
             onClick = {
-                // Actualizar datos en Firebase
+                ddViewModel.updateUserDataInFirebase()
                 sharedPreferencesManager.updateUserData(userData)
-                // Actualizar datos en el ViewModel
-                ddViewModel.state.value = userData
             },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF800000))
         ) {
             Text(text = "Actualizar")
         }
-
     }
 }
-

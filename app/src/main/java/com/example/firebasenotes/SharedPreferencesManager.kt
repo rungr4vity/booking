@@ -11,12 +11,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 class SharedPreferencesManager(private val context: Context) {
-    // Configurar SharedPreferences
     private val sharedPref = context.getSharedPreferences("app_pref", Context.MODE_PRIVATE)
 
-    // Función para guardar los datos del usuario en SharedPreferences
     fun saveUserData(userData: Data) {
-        with (sharedPref.edit()) {
+        with(sharedPref.edit()) {
             putString("apellidos", userData.apellidos)
             putString("contrasena", userData.contrasena)
             putString("email", userData.email)
@@ -34,7 +32,6 @@ class SharedPreferencesManager(private val context: Context) {
         }
     }
 
-    // Función para obtener los datos del usuario de SharedPreferences
     fun getUserData(): Data {
         return Data(
             sharedPref.getString("apellidos", "") ?: "",
@@ -51,25 +48,6 @@ class SharedPreferencesManager(private val context: Context) {
             sharedPref.getString("userID", "") ?: "",
             sharedPref.getString("token", "") ?: ""
         )
-    }
-
-    // Obtener los datos del usuario desde Firebase
-    fun getUserDataFromFirebase() {
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("Usuarios").document("usuario_id")
-
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    val userData = document.toObject(Data::class.java)
-                    if (userData != null) {
-                        saveUserData(userData) // Guardar los datos en SharedPreferences
-                    }
-                }
-            }
-            .addOnFailureListener { exception ->
-                // Manejar errores
-            }
     }
 
     fun updateUserData(userData: Data) {
@@ -89,8 +67,6 @@ class SharedPreferencesManager(private val context: Context) {
                 Log.w(TAG, "Error al actualizar los datos en Firebase", e)
             }
     }
-
-
 }
 
 class UnifiedFirebaseManager(private val context: Context) {
