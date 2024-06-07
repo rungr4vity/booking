@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -70,10 +71,11 @@ fun RegisterScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = com.google.android.gms.base.R.drawable.common_full_open_on_phone),
+            painter = painterResource(id = R.drawable.isita3),
             contentDescription = "Logo",
-            modifier = Modifier.size(240.dp)
+            modifier = Modifier.size(200.dp)
         )
+
         OutlinedTextField(
             value = firstName,
             onValueChange = { firstName = it },
@@ -161,7 +163,7 @@ fun RegisterScreen(navController: NavController) {
 
             },
             enabled = isValid(firstName, lastName, email, password),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Registrarse")
         }

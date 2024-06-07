@@ -4,12 +4,14 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,9 +57,12 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
     var context = LocalContext.current
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
 
         TextField(
@@ -67,7 +73,7 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
                 .fillMaxWidth()
                 .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
-
+Spacer(modifier = Modifier.padding(5.dp))
         TextField(
             value =  num_cajon,
             onValueChange = {  num_cajon = it },
@@ -76,6 +82,7 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
                 .fillMaxWidth()
                 .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
+        Spacer(modifier = Modifier.padding(5.dp))
         TextField(
             value =  piso_edificio,
             onValueChange = {  piso_edificio = it },
@@ -84,7 +91,7 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
                 .fillMaxWidth()
                 .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
-
+        Spacer(modifier = Modifier.padding(5.dp))
         androidx.compose.material3.ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }) {
@@ -111,7 +118,7 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
                 }
             }
         }
-
+        Spacer(modifier = Modifier.padding(140.dp))
 
         Button(
             onClick = { drawerViewModel.insertarDatos(context,num_cajon.toInt(),nombre_cajon ,piso_edificio,selectedOptionText
@@ -121,10 +128,13 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
                       piso_edificio = ""
                       selectedOptionText = "Empresa"
                       },
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp),
+            colors = ButtonDefaults.buttonColors( Color(0xFF800000))
 
         ) {
-            Text("Insertar Datos")
+            Text("Insertar Datos", color =Color.White)
         }
     }
 }

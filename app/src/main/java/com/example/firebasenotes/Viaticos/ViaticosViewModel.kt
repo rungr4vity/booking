@@ -7,16 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebasenotes.models.GastoDTO
-import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.models.viajeDTO
-import com.example.firebasenotes.utils.viajesInterface
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class ViaticosViewModel: ViewModel(){
@@ -96,7 +93,6 @@ class ViaticosViewModel: ViewModel(){
                     .get()
                     .await()
 
-                println()
                 querySnapshot.documents.forEach {
                     gastos.add(
                         GastoDTO(
@@ -109,7 +105,17 @@ class ViaticosViewModel: ViewModel(){
 
                 }
 
+
+                //            return querySnapshot.documents.map {
+//
+//                GastoDTO(Timestamp.now().toDate(),0,0.0,"","","","","",
+//                    "","","",0,"","","",
+//                    it.get("importe").toString(),false,"","","")
+//            }
+
+
                 return gastos.toList()
+
 
             } catch (e: Exception) {
                 emptyList<GastoDTO>()
@@ -154,6 +160,11 @@ class ViaticosViewModel: ViewModel(){
                 //Log.e("Error_obtenerUltimoViaje",e.message.toString())
             }
 
+
+            //result ?: viajeDTO()
+//        } else {
+//            viajeDTO()
+            //}
         }
 
 

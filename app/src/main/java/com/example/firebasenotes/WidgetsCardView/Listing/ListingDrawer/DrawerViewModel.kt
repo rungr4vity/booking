@@ -11,32 +11,35 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+
 suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     val db = FirebaseFirestore.getInstance()
-    val cajon = mutableListOf<DataDrawer>()
-
-    val querySnapshot = db.collection("Estacionamientos").get().await()
-    querySnapshot.query
+    val cajonList = mutableListOf<DataDrawer>()
 
     try {
+        val querySnapshot = db.collection("Estacionamientos").get().await()
         for (document in querySnapshot.documents) {
+            val numero = document.getLong("numero") ?: 0L
+            val nombre = document.getString("nombre") ?: ""
+            val piso = document.getString("piso") ?: ""
+            val empresa = document.getString("empresa") ?: ""
+            val esEspecial = document.getBoolean("esEspecial") ?: false
 
-            var numero = document.data?.get("numero") as Long
-
-            cajon.add(
+            cajonList.add(
                 DataDrawer(
-                    numero.toInt(),
-                document.data?.get("nombre") as String,
-                document.data?.get("piso") as String,
-                document.id,
-                document.data?.get("empresa") as String,
-                document.data?.get("esEspecial") as Boolean))
-
+                    numero = numero.toInt(),
+                    nombre = nombre,
+                    piso = piso,
+                    id = document.id,
+                    empresa = empresa,
+                    esEspecial = esEspecial
+                )
+            )
         }
-    }catch (e:Exception){
-        Log.e("Error",e.message.toString())
+    } catch (e: Exception) {
+        Log.e("FirestoreError", "Error fetching data: ${e.message}")
     }
-    return cajon
+    return cajonList
 }
 
 class DrawerViewModel() : ViewModel() {
@@ -79,29 +82,28 @@ class DrawerViewModel() : ViewModel() {
             }
         }
     }}
-class DeleteDrawerViewModel(context: Context) : ViewModel() {
+class DeleteDrawerViewModel : ViewModel() {
     val delete = mutableStateOf<List<DataDrawer>>(emptyList())
 
     init {
-        deleteData(context)
+        loadData()
     }
 
-    private fun deleteData(context: Context) {
+    private fun loadData() {
         viewModelScope.launch {
-
-                val newData = FireStoreCajonData()
-                delete.value = newData
-
+            delete.value = FireStoreCajonData()
         }
     }
 
-    fun deleteData(context: Context, id: String) {
+    fun deleteData(id: String) {
         viewModelScope.launch {
-
+            try {
                 val db = FirebaseFirestore.getInstance()
                 db.collection("Estacionamientos").document(id).delete().await()
-                deleteData(context) // función para actualizar la lista después de eliminar
-
+                loadData() // Refrescar los datos después de eliminar
+            } catch (e: Exception) {
+                Log.e("FirestoreError", "Error deleting data: ${e.message}")
+            }
         }
     }
 }

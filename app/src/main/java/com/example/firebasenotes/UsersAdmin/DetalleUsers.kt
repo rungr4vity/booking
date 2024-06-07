@@ -15,15 +15,21 @@ import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,7 +39,7 @@ import androidx.navigation.NavController
 import com.example.firebasenotes.Viaticos.DataViaticos
 
 @SuppressLint("StateFlowValueCalledInComposition")
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun detalleUser(
     navController: NavController,
@@ -96,75 +102,75 @@ fun detalleUser(
 
                 //DropdownMenu Para seleccionar tipo de factura
 
-                val expandedFacturas = remember { mutableStateOf(false) }
-                val opcionesFac = listOf("Puede facturar", "No puede facturar")
-                val seleccionFac = remember { mutableStateOf("Seleccionar opción") }
+                var expandedFacturas by remember { mutableStateOf(false) }
+                var opcionesFac = listOf("true", "false")
+                var selectedOptionText by remember { mutableStateOf("Seleccionar opción") }
 
-                ExposedDropdownMenuBox(
-                    expanded = expandedFacturas.value,
-                    onExpandedChange = { expandedFacturas.value = it },
-                    modifier = Modifier.padding(horizontal = 40.dp)
-                ) {
+                androidx.compose.material3.ExposedDropdownMenuBox(
+                    expanded = expandedFacturas,
+                    onExpandedChange = { expandedFacturas = !expandedFacturas },
+                    modifier = Modifier.padding(horizontal = 40.dp)) {
                     OutlinedTextField(
-                        value = seleccionFac.value,
-                        onValueChange = {},
-                        readOnly = true,
+                        value = selectedOptionText,
+                        onValueChange = { },
                         label = { Text("Facturas") },
-                        modifier = Modifier.fillMaxWidth()
+                        readOnly = false,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedFacturas) }
                     )
                     ExposedDropdownMenu(
-                        expanded = expandedFacturas.value,
-                        onDismissRequest = { expandedFacturas.value = false }) {
-                        opcionesFac.forEach { opcion ->
-                            DropdownMenuItem(
+                        expanded = expandedFacturas,
+                        onDismissRequest = { expandedFacturas = false }) {
+                        opcionesFac.forEach { option ->
+                            androidx.compose.material3.DropdownMenuItem(
+                                text = { Text(option) },
                                 onClick = {
-                                    seleccionFac.value = opcion
-                                    expandedFacturas.value = false
-                                }
-                            ) {
-                                Text(opcion)
-                            }
+                                    selectedOptionText = option
+                                    expandedFacturas = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
                         }
                     }
                 }
-
 // Agregar la lógica if-else para establecer el valor booleano interno
-                if (seleccionFac.value == "Puede facturar") {
-                    seleccionFac.value = true.toString()
-                } else if (seleccionFac.value == "No puede facturar") {
-                    seleccionFac.value = false.toString()
-                }
 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 //DropdownMenu Para seleccionar tipo de usuario
+                var expandedUsuario by remember { mutableStateOf(false) }
+                var opcionesUsa = listOf("true", "false")
+                var selectedOption by remember { mutableStateOf("Seleccionar opción") }
 
-                ExposedDropdownMenuBox(
-                    expanded = expandedUsuario.value,
-                    onExpandedChange = { expandedUsuario.value = it },
-                    modifier = Modifier.padding(horizontal = 40.dp)
-                ) {
+                androidx.compose.material3.ExposedDropdownMenuBox(
+                    expanded = expandedUsuario,
+                    onExpandedChange = { expandedUsuario = !expandedUsuario },
+                    modifier = Modifier.padding(horizontal = 40.dp)) {
                     OutlinedTextField(
-                        value = seleccionUsuario.value,
-                        onValueChange = { seleccionFac.value },
+                        value = selectedOption,
+                        onValueChange = { },
+                        label = { Text("Usuarios") },
                         readOnly = false,
-                        label = { androidx.compose.material.Text("Esta habilitado") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedUsuario) }
                     )
-
-                    DropdownMenu(
-                        expanded = expandedUsuario.value,
-                        onDismissRequest = { expandedUsuario.value = false }) {
-                        opcionesUsuario.forEach { opcion ->
-                            DropdownMenuItem(
+                    ExposedDropdownMenu(
+                        expanded = expandedUsuario,
+                        onDismissRequest = { expandedUsuario = false }) {
+                        opcionesUsa.forEach { option ->
+                            androidx.compose.material3.DropdownMenuItem(
+                                text = { Text(option) },
                                 onClick = {
-                                    seleccionUsuario.value = opcion
-                                    expandedUsuario.value = false
-                                }
-                            ) {
-                                Text(opcion)
-                            }
+                                    selectedOption = option
+                                    expandedUsuario = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
                         }
                     }
                 }
@@ -208,18 +214,26 @@ fun detalleUser(
 //                else -> emptyList() // Maneja el estado de carga o error como prefieras
 //            })
                 Spacer(modifier = Modifier.height(60.dp))
-                Button(onClick = {
-                    val userData = DataViaticos(
-                        nombres = nombres,
-                        apellidos = apellidos,
-                        empresa = empresa,
-                        email = email,
-                        puedeFacturar = seleccionFac.value.toBoolean(),
-                        usuarioHabilitado = seleccionUsuario.value.toBoolean(),
-                        typeId = selectedType.value
+                Button(
+                    onClick = {
+                        val userData = DataViaticos(
+                            nombres = nombres,
+                            apellidos = apellidos,
+                            empresa = empresa,
+                            email = email,
+                            puedeFacturar = selectedOptionText.toBoolean(),
+                            usuarioHabilitado = selectedOption.toBoolean(),
+                            typeId = selectedType.value
+                        )
+                        usersViewModel.updateUserData(userData) // Llamar a la función para actualizar los datos
+                    }, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        Color(0xFF800000)
                     )
-                    usersViewModel.updateUserData(userData) // Llamar a la función para actualizar los datos
-                }) {
+                ) {
+
                     Text("Actualizar")
                 }
 
@@ -228,85 +242,3 @@ fun detalleUser(
     }
 }
 
-//
-//
-//@OptIn(ExperimentalMaterialApi::class)
-//@Composable
-//fun TypedDropdownMenu(dataList: List<DataTypeId>) {
-//    val expanded = remember { mutableStateOf(false) }
-//    val selectedDescripcion = remember { mutableStateOf("Seleccione una opción") }
-//
-//    ExposedDropdownMenuBox(
-//        expanded = expanded.value,
-//        onExpandedChange = { expanded.value = it },
-//        modifier = Modifier.padding(horizontal = 40.dp)
-//    ) {
-//        OutlinedTextField(
-//            value = selectedDescripcion.value,
-//            onValueChange = { selectedDescripcion.value = it },
-//            readOnly = false,
-//            label = { androidx.compose.material.Text("Tipo de Usuario") },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//        androidx.compose.material.DropdownMenu(
-//            expanded = expanded.value,
-//            onDismissRequest = { expanded.value = false }
-//        ) {
-//            dataList.forEach { data ->
-//                DropdownMenuItem(
-//                    onClick = {
-//                        selectedDescripcion.value = data.descripcion
-//                        expanded.value = false
-//                    }
-//                ) {
-//                    androidx.compose.material.Text(data.descripcion)
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//sealed class TypedDataState {
-//    object Loading : TypedDataState()
-//    data class Success(val dataList: List<DataTypeId>) : TypedDataState()
-//    data class Error(val message: String) : TypedDataState()
-//}
-//
-//class TypedViewModel : ViewModel() {
-//    private val firestore = FirebaseFirestore.getInstance()
-//
-//    private val _typedData = MutableStateFlow<TypedDataState>(TypedDataState.Loading)
-//    val typedData: StateFlow<TypedDataState> = _typedData
-//
-//    init {
-//        fetchTypedData()
-//    }
-//
-//    private fun fetchTypedData() {
-//        firestore.collection("TypeId")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                val dataList = mutableListOf<DataTypeId>()
-//                for (document in result) {
-//                    val descripcion = document.getString("descripcion") ?: ""
-//                    val typeId = document.getLong("typeId")?.toInt() ?: 0
-//                    dataList.add(DataTypeId(descripcion, typeId))
-//                }
-//                _typedData.value = TypedDataState.Success(dataList)
-//            }
-//            .addOnFailureListener { exception ->
-//                _typedData.value = TypedDataState.Error(exception.message ?: "Error desconocido")
-//            }
-//    }
-//
-//    fun updateTypeId(documentId: String, newTypeId: Int) {
-//        firestore.collection("TypeId").document(documentId)
-//            .update("typeId", newTypeId)
-//            .addOnSuccessListener {
-//                // Handle success if needed
-//            }
-//            .addOnFailureListener { exception ->
-//                // Handle failure if needed
-//            }
-//    }
-//}

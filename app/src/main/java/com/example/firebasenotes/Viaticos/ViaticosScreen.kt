@@ -1,65 +1,52 @@
 package com.example.firebasenotes.Viaticos
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.firebasenotes.UsersAdmin.UsersViewModel
 import java.util.Date
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navController: NavController) {
-
+fun ViaticosScreen(
+    viaticosViewModel: ViaticosViewModel = viewModel(),
+    navController: NavController,
+    usersViewModel: UsersViewModel = viewModel() // Agrega esta línea
+) {
     val gastosTotales: Double by viaticosViewModel.gastosTotales.observeAsState(0.0)
 
     LaunchedEffect(Unit) {
         viaticosViewModel.backButton()
     }
 
-//    BackHandler {
-//       gastos = viaticosViewModel.gastosTotales.value
-//    }
-
-    //var gastosTotales = viaticosViewModel.gastosTotales.value
     val viaticos = viaticosViewModel.viaticos.value
     val viajes = viaticosViewModel.viajes.value
-    var MensajeVisible by remember { mutableStateOf(false)}
 
-         //false // original
-        if (viaticos.puedeFacturar == true) {
-        Scaffold() {
+    var mensajeVisible by remember { mutableStateOf(false) }
+    var confirmarCierre by remember { mutableStateOf(false) }
+
+    if (viaticos.puedeFacturar == true) {
+        Scaffold {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "¡Buen Día!, Bienvenido", fontSize = 13.sp)
                 Text(text = "Hoy es: ${Date().toString()}", fontSize = 11.sp, color = Color.Gray)
@@ -71,7 +58,6 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     if (viaticos.tieneViajeActivo == true) {
-
                         Card(modifier = Modifier.size(120.dp)) {
                             Column(
                                 modifier = Modifier.padding(13.dp),
@@ -94,10 +80,11 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(40.dp))
                 Text(text = "Destino: ${viajes.destino}", fontSize = 13.sp, color = Color.Gray)
                 Text(text = "Cliente: ${viajes.cliente}", fontSize = 13.sp)
 
-                Spacer(modifier = Modifier.height(205.dp))
+                Spacer(modifier = Modifier.height(255.dp))
 
                 Row(
                     modifier = Modifier
@@ -107,7 +94,9 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                 ) {
                     if (viaticos.tieneViajeActivo == true) {
                         Button(
-                            onClick = { MensajeVisible = true  },
+                            onClick = {
+                                mensajeVisible = true
+                            },
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .weight(1f)
@@ -117,8 +106,8 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                         }
                         Button(
                             onClick = {
-                                navController.navigate("viaticosAdd/${viajes.id}")
-                                      },
+                                navController.navigate("viaticosAdd/{viajeId}")
+                            },
                             modifier = Modifier
                                 .padding(start = 8.dp)
                                 .weight(1f)
@@ -126,51 +115,94 @@ fun ViaticosScreen(viaticosViewModel: ViaticosViewModel = viewModel(),navControl
                         ) {
                             Text("Agregar Gasto")
                         }
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp, vertical = 16.dp),
+//                            horizontalArrangement = Arrangement.SpaceBetween,
+//                            verticalAlignment = Alignment.Bottom
+//                        ) {
+//                            Box(
+//                                modifier = Modifier.weight(1.8f),
+//                                contentAlignment = Alignment.BottomStart
+//                            ) {
+//                                Text(
+//                                    "Cerrar Viaje",
+//                                    modifier = Modifier.clickable { mensajeVisible = false },
+//                                    color = Color.Blue,
+//                                    textDecoration = TextDecoration.Underline
+//                                )
+//                            }
+//
+//                            Box(
+//                                modifier = Modifier.weight(8f),
+//                                contentAlignment = Alignment.BottomEnd
+//                            ) {
+//                                Icon(
+//                                    imageVector = Icons.Default.AddCircle,
+//                                    contentDescription = "",
+//                                    modifier = Modifier
+//                                        .size(70.dp)
+//                                        .clickable { navController.navigate("viaticosAdd/{viajeId}") }
+//                                )
+//                            }
+//                        }
 
-                        if (MensajeVisible) {
+
+                        if (mensajeVisible) {
                             Snackbar(
                                 action = {
-                                    Button(onClick = { MensajeVisible = false }) {
+                                    Button(onClick = {
+                                        confirmarCierre = true
+                                        mensajeVisible = false
+                                    }) {
                                         Text("Aceptar")
                                     }
                                 },
-                                modifier = Modifier
+                                modifier = Modifier.padding(8.dp)
                             ) {
                                 Text("¿Desea cerrar el viaje?")
                             }
+                        }
 
+                        if (confirmarCierre) {
+                            LaunchedEffect(Unit) {
+                                usersViewModel.updateTieneViajeActivo(false)
+                                confirmarCierre = false // Reset state after confirmation
+                            }
                         }
                     } else {
+                        Spacer(modifier = Modifier.height(100.dp))
                         Button(
-                            onClick = {  },
+                            onClick = { navController.navigate("Crear viaje") },
                             modifier = Modifier
-                                .padding(end = 8.dp)
-                                .weight(1f)
-                                .height(48.dp)
+                                .fillMaxWidth()
+                                .padding(horizontal = 30.dp),
+                            colors = ButtonDefaults.buttonColors( Color(0xFF800000))
                         ) {
-                            Text("Abrir Viaje")
+                            Text("Crear Viaje")
                         }
-
-                    } // fin del else
+                    }
                 }
             }
         }
     } else {
-        // Si el usuario no puede facturar, no mostramos ninguna funcionalidad
         Descr()
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Descr(viaticosViewModel: ViaticosViewModel= viewModel()){
+fun Descr(viaticosViewModel: ViaticosViewModel = viewModel()) {
     val viaticos = viaticosViewModel.viaticos.value
-    Scaffold() {
+    Scaffold {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "¡Buen Día!, Bienvenido ${viaticos.nombres} ${viaticos.apellidos}", fontSize = 13.sp)
-            Text(text = "Hoy es: ${Date().toString()}", fontSize = 11.sp, color = Color.Gray)
+            Text(text = "¡Buen Día!, Bienvenido", fontSize = 13.sp)
+            Text(text = "Hoy es: ", fontSize = 11.sp, color = Color.Gray)
+            Text(text = "${viaticos.nombres} ${viaticos.apellidos}", fontSize = 13.sp)
             Spacer(modifier = Modifier.height(240.dp))
-            Text(text = "No se encontro ningun viaje activo")
+            Text(text = "Usted no tiene viajes activos")
         }
     }
 }
+

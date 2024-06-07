@@ -4,12 +4,16 @@ import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
@@ -17,9 +21,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,7 +75,7 @@ fun DetalleOficinas(
         data?.let {
             val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
             suma = (localDate.dayOfMonth + localDate.month.value + localDate.year)
-            viewModel.ReservacionOficinasDia(localDate.year, localDate.dayOfYear,idArea)
+//            viewModel.ReservacionOficinasDia(localDate.year, localDate.dayOfYear,idArea)
 
         }
 
@@ -82,9 +88,14 @@ fun DetalleOficinas(
         Column(modifier = Modifier
             .padding(10.dp)
         ) {
-            Card(
-                onClick = { /*TODO*/ }
-            ) {
+            Image(
+                painter = painterResource(id = com.example.firebasenotes.R.drawable.ofi2), // Reemplaza 'your_image' con el nombre de tu imagen
+                contentDescription = "",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+
+
+            )
+            Spacer(modifier = Modifier.size(30.dp))
                 Text(
                     text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp)
@@ -111,6 +122,7 @@ fun DetalleOficinas(
                         modifier = Modifier.padding(10.dp))
 
                 }
+            Spacer(modifier = Modifier.size(140.dp))
 
                 Button(
                     onClick = {
@@ -123,14 +135,15 @@ fun DetalleOficinas(
                             })
                     },
                     modifier = Modifier
-                        .padding(10.dp)
                         .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xFF800000))
                 ) {
-                    Text(text = "Reservar ${nombre}")
+                    Text(text = "Reservar ${nombre}", color = Color.White)
                 } // end button
 
 
-            }
+
         }
 
     }

@@ -3,12 +3,16 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 import android.R
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
@@ -19,8 +23,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,10 +76,15 @@ fun Detalle(
 
         Column(modifier = Modifier
             .padding(10.dp)
-            ) {
-            Card(
-                onClick = { /*TODO*/ }
-            ) {
+        ) {
+            Image(
+                painter = painterResource(id = com.example.firebasenotes.R.drawable.ofi2), // Reemplaza 'your_image' con el nombre de tu imagen
+                contentDescription = "",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+
+
+            )
+            Spacer(modifier = Modifier.size(30.dp))
                 Text(
                     text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp)
@@ -96,6 +107,7 @@ fun Detalle(
                         modifier = Modifier.padding(10.dp),
                         )
                 }
+            Spacer(modifier = Modifier.size(130.dp))
                 Button(
                     onClick = {
                         navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}/${idEstacionamiento}",
@@ -107,10 +119,11 @@ fun Detalle(
                         })
                         },
                     modifier = Modifier
-                        .padding(10.dp)
                         .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xFF800000))
                 ) {
-                    Text(text = "Reservar ${cajon}")
+                    Text(text = "Reservar ${cajon}", color = Color.White)
                 } // end button
 
                 if (esEspecial) {
@@ -122,4 +135,3 @@ fun Detalle(
         }
 
     }
-}

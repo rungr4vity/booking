@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,10 +52,12 @@ import com.example.firebasenotes.Oficinas.ReservaOficinas
 import com.example.firebasenotes.Oficinas.ReservaOficinas_extension
 import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
+import com.example.firebasenotes.SharedPreferencesManager
 import com.example.firebasenotes.UsersAdmin.detalleUser
 
 import com.example.firebasenotes.UsersAdmin.listUsers
 import com.example.firebasenotes.Viaticos.DataViaticos
+import com.example.firebasenotes.Viaticos.Viaje.crearViaje
 import com.example.firebasenotes.Viaticos.ViaticosScreen
 import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
@@ -65,7 +68,6 @@ import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.ViewMenu.Mipefil.PerfilScreen
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AltaArea
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaScreen
-import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DetalleAlta
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaEliminar
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
@@ -73,6 +75,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScr
 import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,16 +88,16 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
     val drawerItems = listOf(
         Triple("Mi Perfil", Icons.Default.Person, 2 ),
-        Triple("Alta de Cajon", Icons.Default.Add, 2),
-        Triple("Cat Areas", Icons.Default.Menu, 2),
-        Triple("Alta de area", Icons.Default.Add, 2),
+        Triple("Alta de area", Icons.Default.AddCircle, 1),
+        Triple("Cat Areas", Icons.Default.Menu, 1),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
         Triple("Reservar Area", Icons.Default.AddCircle, 2),
-        Triple("Cat Cajones", Icons.Default.Menu, 2),
+        Triple("Alta de Cajon", Icons.Default.AddCircle, 1),
+        Triple("Cat Cajones", Icons.Default.Menu, 1),
         Triple("Viaticos", Icons.Default.DateRange, 2),
-        Triple("Lista de Usuarios", Icons.Default.DateRange, 2),
-        Triple("Mis reservas", Icons.Default.DateRange, 2),
-        Triple("Mis oficinas", Icons.Default.DateRange, 2),
+        Triple("Lista de Usuarios", Icons.Default.Person, 2),
+//        Triple("Mis reservas", Icons.Default.DateRange, 1),
+//        Triple("XML", Icons.Default.DateRange, 4),
 
 
     ).filter { it.third == userData.typeId }
@@ -120,6 +123,10 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 navController = navController as NavHostController,
                 startDestination = "Home"
             ) {
+                composable("XML") {
+                    FilePickerForm()
+                }
+
                 composable("Home") {
                     MiPerfil()
                 }
@@ -127,7 +134,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     DrawerScreen(navController = navController)
                 }
                 composable("Mis reservas") {
-                    MiReservas()
+                    Reservacion()
                 }
 
                 composable("Alta de Cajon") {
@@ -198,14 +205,16 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Alta de area") {
                     AltaArea(navController = navController)
                 }
-                composable("DetalleAlta") {
-                    DetalleAlta()
-                }
+//                composable("DetalleAlta") {
+//                    DetalleAlta()
+//                }
                 composable("Actualizar") {
-                    ActualizarPerfil()
+                    val sharedPreferencesManager = SharedPreferencesManager(LocalContext.current)
+
+                    ActualizarPerfil(ddViewModel=ddViewModel,sharedPreferencesManager = sharedPreferencesManager)
                 }
                 composable("Mi Perfil") {
-                    PerfilScreen(navController =navController)
+                    PerfilScreen(navController = navController, userData = userData)
                 }
                 composable("Cat Cajones") {
                     DeleteDrawer(navController = navController)
@@ -218,6 +227,9 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
                 composable("imgViaticos") {
                     UploadImageScreen()                }
+                composable("Crear viaje"){
+                    crearViaje()
+                }
 
 
                 composable("viaticosAdd/{viajeId}", arguments = listOf(
@@ -351,11 +363,16 @@ fun DrawerContent(
             modifier = Modifier
                 .padding(6.dp)
                 .align(Alignment.CenterHorizontally)
-                .size(100.dp)
+                .size(140.dp)
                 .clip(CircleShape)
         )
-        Text(text = "${userData.nombres} ${userData.apellidos}", fontSize = 12.sp)
-        Text(text = userData.email, fontSize = 12.sp)
+        Spacer(modifier = Modifier.height(22.dp))
+
+        Text(text = "${userData.nombres} ${userData.apellidos}", fontSize = 18.sp, fontWeight = FontWeight.Bold
+                )
+        Text(text = userData.email, fontSize = 15.sp, fontWeight = FontWeight.Medium
+        )
+
         Spacer(modifier = Modifier.height(22.dp))
         drawerItems.forEach { (title, icon) ->
             DrawerItem(title = title, icon = icon) {
