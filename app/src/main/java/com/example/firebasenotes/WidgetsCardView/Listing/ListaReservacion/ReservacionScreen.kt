@@ -36,7 +36,7 @@ fun Reservacion(
             contentPadding = paddingValues,
             modifier = Modifier.fillMaxSize()
         ) {
-            items(estacionamientos.size) { index ->
+            items(reservas.size) { index ->
                 val estacionamiento = estacionamientos[index]
                 val reserva = reservas.getOrNull(index)
                 val turno = turnos.getOrNull(index)
@@ -60,6 +60,7 @@ fun CombinedItem(
     onDeleteClicked: () -> Unit
 ) {
     val estacionamientoViewModel: EstacionamientoViewModel = viewModel()
+    val reservaViewModel: ReservaViewModel = viewModel()
 
     Card(
         modifier = Modifier
@@ -89,7 +90,7 @@ fun CombinedItem(
 
             IconButton(
                 onClick ={
-                    estacionamientoViewModel.eliminarEstacionamiento(estacionamiento)
+reservaViewModel.deleteReservacionEstacionamientoCollection()
                 }
             ) {
                 Icon(

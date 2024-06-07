@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class  EstacionamientoViewModel : ViewModel() {
     private val _reservaciones = MutableStateFlow<List<Estacionamiento>>(emptyList())
@@ -33,9 +34,7 @@ class  EstacionamientoViewModel : ViewModel() {
                 }
         }
     }
-    fun eliminarEstacionamiento(estacionamiento: Estacionamiento) {
-        _reservaciones.value = _reservaciones.value.filter { it.id != estacionamiento.id }
-    }
+
 
 }
 
@@ -91,6 +90,17 @@ class  ReservaViewModel : ViewModel() {
                 }
         }
     }
-
+    fun deleteReservacionEstacionamientoCollection() {
+        db.collection("ReservacionEstacionamiento")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot) {
+                    document.reference.delete()
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Manejar errores aquí
+            }
+    }
 
 }

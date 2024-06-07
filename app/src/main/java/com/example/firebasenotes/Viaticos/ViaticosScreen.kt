@@ -8,6 +8,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
@@ -171,12 +172,13 @@ fun ViaticosScreen(
                             }
                         }
                     } else {
+                        Spacer(modifier = Modifier.height(100.dp))
                         Button(
                             onClick = { navController.navigate("Crear viaje") },
                             modifier = Modifier
-                                .padding(end = 8.dp)
-                                .weight(1f)
-                                .height(48.dp)
+                                .fillMaxWidth()
+                                .padding(horizontal = 30.dp),
+                            colors = ButtonDefaults.buttonColors( Color(0xFF800000))
                         ) {
                             Text("Crear Viaje")
                         }

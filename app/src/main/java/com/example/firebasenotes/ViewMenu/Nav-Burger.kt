@@ -88,15 +88,15 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
     val drawerItems = listOf(
         Triple("Mi Perfil", Icons.Default.Person, 2 ),
-        Triple("Alta de Cajon", Icons.Default.Add, 1),
+        Triple("Alta de area", Icons.Default.AddCircle, 1),
         Triple("Cat Areas", Icons.Default.Menu, 1),
-        Triple("Alta de area", Icons.Default.Add, 1),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
         Triple("Reservar Area", Icons.Default.AddCircle, 2),
+        Triple("Alta de Cajon", Icons.Default.AddCircle, 1),
         Triple("Cat Cajones", Icons.Default.Menu, 1),
         Triple("Viaticos", Icons.Default.DateRange, 2),
         Triple("Lista de Usuarios", Icons.Default.Person, 2),
-        Triple("Mis reservas", Icons.Default.DateRange, 1),
+//        Triple("Mis reservas", Icons.Default.DateRange, 1),
 //        Triple("XML", Icons.Default.DateRange, 4),
 
 

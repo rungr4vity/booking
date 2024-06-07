@@ -1,6 +1,7 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,42 +24,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.firebasenotes.R
 
 @Composable
-fun DeleteDrawer(deleteDrawerViewModel: DeleteDrawerViewModel= viewModel(),navController: NavController){
+fun DeleteDrawer(navController: NavController) {
+    val deleteDrawerViewModel: DeleteDrawerViewModel = viewModel()
     val drawer = deleteDrawerViewModel.delete.value
     val context = LocalContext.current
-    LazyColumn {
-        items(drawer) {cajones->
-            ComponentDrawer(context,cajones = cajones, navController = navController, deleteDrawerViewModel = deleteDrawerViewModel)
 
+    LazyColumn {
+        items(drawer) { cajones ->
+            DrawerCard(context, cajones, deleteDrawerViewModel, navController)
         }
     }
 }
 
 @Composable
-fun ComponentDrawer(context: Context, cajones: DataDrawer,
-                    deleteDrawerViewModel: DeleteDrawerViewModel= viewModel(),
-                    navController: NavController){
+fun DrawerCard(
+    context: Context,
+    cajones: DataDrawer,
+    deleteDrawerViewModel: DeleteDrawerViewModel,
+    navController: NavController
+) {
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "",
-                modifier = Modifier
-                    .size(80.dp)
-                    .padding(11.dp)
-            )
-
+          Image(painter = painterResource(id = R.drawable.est), contentDescription ="" ,
+              modifier = Modifier.size(100.dp))
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(2f)) {
@@ -74,18 +75,17 @@ fun ComponentDrawer(context: Context, cajones: DataDrawer,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "NumeroSSSS: ${cajones.numero}",
+                    text = "Numero: ${cajones.numero}",
                     style = TextStyle(fontSize = 12.sp)
                 )
             }
 
             Spacer(modifier = Modifier.width(16.dp))
             IconButton(
-                onClick = { deleteDrawerViewModel.deleteData(context,cajones.id) },
+                onClick = { deleteDrawerViewModel.deleteData(cajones.id) },
                 modifier = Modifier.align(Alignment.CenterVertically)
-
-            ){
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = Color.Red)
+            ) {
+                Icon(imageVector = Icons.Default.Delete, contentDescription = null, tint = Color.Red)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,10 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.firebasenotes.R
 
 
 @SuppressLint("SuspiciousIndentation")
@@ -50,12 +53,14 @@ fun ComponenteModArea(areas: DataAreas,navController: NavController,
             .fillMaxWidth()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "",
+            Image(
+                painter = painterResource(id = R.drawable.ofi), // Reemplaza 'your_image' con el nombre de tu imagen
+                contentDescription = "Logo",
                 modifier = Modifier
-                    .size(80.dp)
-                    .padding(11.dp)
+                    .size(100.dp)
+                    .padding( horizontal = 2.dp)
+
+
             )
 
             Spacer(modifier = Modifier.width(16.dp))
