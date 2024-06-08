@@ -72,6 +72,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaElimin
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.WidgetsCardView.Listing.ReservacionOficinas.RevoficinasScreen
 import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
@@ -88,7 +89,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
     val drawerItems = listOf(
         Triple("Mi Perfil", Icons.Default.Person, 2 ),
-        Triple("Alta de area", Icons.Default.AddCircle, 1),
+        Triple("Alta de area", Icons.Default.AddCircle, 2),
         Triple("Cat Areas", Icons.Default.Menu, 1),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
         Triple("Reservar Area", Icons.Default.AddCircle, 2),
@@ -132,10 +133,16 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
                 composable("Reservar cajon") {
                     DrawerScreen(navController = navController)
+//                    RevoficinasScreen()
+
                 }
                 composable("Mis reservas") {
-                    Reservacion()
+                    ReservacionEstacionamientoScreen()
                 }
+                composable("Mis reservasOficina") {
+                    RevoficinasScreen()
+                }
+
 
                 composable("Alta de Cajon") {
                     AltCajon()

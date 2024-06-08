@@ -1,6 +1,6 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListaReservacion
 
-data class Estacionamiento(
+data class  DataDrawerDTO(
     val numero: Int = 0,
     val nombre: String = "",
     val piso: String = "",

@@ -70,8 +70,8 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                         .padding(bottom = 20.dp)
                 )
 
-                var email by remember { mutableStateOf("c@op.com") }
-                var password by remember { mutableStateOf("12345678") }
+                var email by remember { mutableStateOf("luis.montemayor@isita.com.mx") }
+                var password by remember { mutableStateOf("1412918Luis") }
 
                 Text(text = "Inicio de sesión", Modifier.padding(bottom = 20.dp))
 

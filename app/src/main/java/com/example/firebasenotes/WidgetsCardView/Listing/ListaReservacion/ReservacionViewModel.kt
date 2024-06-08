@@ -1,106 +1,70 @@
+
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.firebasenotes.WidgetsCardView.Listing.ListaReservacion.DataReservations
-import com.example.firebasenotes.WidgetsCardView.Listing.ListaReservacion.DataTurnos
-import com.example.firebasenotes.WidgetsCardView.Listing.ListaReservacion.Estacionamiento
+import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataDrawerDTO
+import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataReservations
+import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataTurnos
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
-class  EstacionamientoViewModel : ViewModel() {
-    private val _reservaciones = MutableStateFlow<List<Estacionamiento>>(emptyList())
-    val reservaciones: StateFlow<List<Estacionamiento>> = _reservaciones
+class ReservacionEstacionamientoViewModel : ViewModel() {
 
-    private val db = FirebaseFirestore.getInstance()
+    fun getReservacionesEstacionamiento(idUsuario: String, onSuccess: (List<DataReservations>) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val reservacionesRef = db.collection("ReservacionEstacionamiento")
+            .whereEqualTo("idUsuario", idUsuario)
 
-    init {
-        fetchReservaciones()
-    }
-
-    private fun fetchReservaciones() {
-        viewModelScope.launch {
-            db.collection("Estacionamientos")
-                .get()
-                .addOnSuccessListener { result ->
-                    val lista = result.map { document ->
-                        document.toObject(Estacionamiento::class.java)
-                    }
-                    _reservaciones.value = lista
+        reservacionesRef.get().addOnSuccessListener { result ->
+            val reservacionesList = mutableListOf<DataReservations>()
+            for (document in result.documents) {
+                val reserva = document.toObject(DataReservations::class.java)
+                reserva?.let {
+                    it.id = document.id
+                    reservacionesList.add(it)
                 }
-                .addOnFailureListener { exception ->
-                    // Manejar error
-                }
+            }
+            onSuccess(reservacionesList)
+        }.addOnFailureListener { exception ->
+            // Manejar errores aquí
         }
     }
 
+    fun getEstacionamiento(idEstacionamiento: String, onSuccess: (DataDrawerDTO) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val estacionamientoRef = db.collection("Estacionamientos").document(idEstacionamiento)
 
-}
-
-class TurnoViewModel : ViewModel() {
-    private val _turnos = MutableStateFlow<List<DataTurnos>>(emptyList())
-    val turnos: StateFlow<List<DataTurnos>> = _turnos
-
-    private val db = FirebaseFirestore.getInstance()
-
-    init {
-        fetchTurnos()
-    }
-
-    private fun fetchTurnos() {
-        viewModelScope.launch {
-            db.collection("TurnosEstacionamiento")
-                .get()
-                .addOnSuccessListener { result ->
-                    val lista = result.map { document ->
-                        document.toObject(DataTurnos::class.java)
-                    }
-                    _turnos.value = lista
-                }
-                .addOnFailureListener { exception ->
-                    // Manejar error
-                }
+        estacionamientoRef.get().addOnSuccessListener { document ->
+            val estacionamiento = document.toObject(DataDrawerDTO::class.java)
+            estacionamiento?.let { onSuccess(it) }
+        }.addOnFailureListener { exception ->
+            // Manejar errores aquí
         }
     }
-}
 
-class  ReservaViewModel : ViewModel() {
-    private val _estacionamientos = MutableStateFlow<List<DataReservations>>(emptyList())
-    val estacionamientos: StateFlow<List<DataReservations>> = _estacionamientos
+    fun getTurnosDisponibles(onSuccess: (List<DataTurnos>) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val turnosRef = db.collection("TurnosEstacionamiento")
 
-    private val db = FirebaseFirestore.getInstance()
-
-    init {
-        fetchReservaciones()
-    }
-
-    private fun fetchReservaciones() {
-        viewModelScope.launch {
-            db.collection("ReservacionEstacionamiento")
-                .get()
-                .addOnSuccessListener { result ->
-                    val lista = result.map { document ->
-                        document.toObject(DataReservations::class.java)
-                    }
-                    _estacionamientos.value = lista
-                }
-                .addOnFailureListener { exception ->
-                    // Manejar error
-                }
+        turnosRef.get().addOnSuccessListener { result ->
+            val turnosList = mutableListOf<DataTurnos>()
+            for (document in result.documents) {
+                val turno = document.toObject(DataTurnos::class.java)
+                turno?.let { turnosList.add(it) }
+            }
+            onSuccess(turnosList)
+        }.addOnFailureListener { exception ->
+            // Manejar errores aquí
         }
     }
-    fun deleteReservacionEstacionamientoCollection() {
-        db.collection("ReservacionEstacionamiento")
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot) {
-                    document.reference.delete()
-                }
+
+    fun deleteReservacion(idReservacion: String, onSuccess: () -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val reservacionRef = db.collection("ReservacionEstacionamiento").document(idReservacion)
+
+        reservacionRef.delete()
+            .addOnSuccessListener {
+                onSuccess()
             }
             .addOnFailureListener { exception ->
                 // Manejar errores aquí
             }
     }
-
 }

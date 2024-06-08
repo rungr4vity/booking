@@ -19,12 +19,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataReservations
 import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataTurnos
+//import com.example.firebasenotes.WidgetsCardView.Listing.ListaReservacion.Estacionamiento
 
-@Preview
 @Preview
 @Composable
 fun ReservationScreen(reservationViewModel: ReservationViewModel = viewModel()) {
     val reservationState by reservationViewModel.reservationState.collectAsState()
+
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -37,7 +38,7 @@ fun ReservationScreen(reservationViewModel: ReservationViewModel = viewModel()) 
             val turno = reservationState.turnosData.find { it.id == reserv.turno }
             ComponentReservation(
                 reserv = reserv,
-                estacionamiento = estacionamiento,
+//                estacionamiento =estacionamiento ,
                 turno = turno
             ) {
                 reservationViewModel.deleteReservacionEstacionamiento(reserv.id, context)
@@ -48,7 +49,7 @@ fun ReservationScreen(reservationViewModel: ReservationViewModel = viewModel()) 
 @Composable
 fun ComponentReservation(
     reserv: DataReservations,
-    estacionamiento: com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataDrawer?,
+//    estacionamiento: Estacionamiento?,
     turno: DataTurnos?,
     onDeleteClicked: () -> Unit,
 ) {
@@ -69,12 +70,13 @@ fun ComponentReservation(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(2f)) {
-                estacionamiento?.let {
-                    Text(text = "Estacionamiento: ${it.nombre}", style = TextStyle(fontSize = 15.sp))
-                }
+//                estacionamiento?.let {
+//                    Text(text = "Estacionamiento: ${it.numero}", style = TextStyle(fontSize = 15.sp))
+//                }
                 turno?.let {
                     Text(text = "Turno: ${it.turno}", style = TextStyle(fontSize = 15.sp))
                 }
+                Text(text = "Fecha: ${reserv.ano}", style = TextStyle(fontSize = 15.sp))
 
             }
             Spacer(modifier = Modifier.width(6.dp))
