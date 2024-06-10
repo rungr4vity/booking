@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -32,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -309,10 +311,13 @@ fun ReservacionCajones_extension(
 //        }
 
         Button(shape = RoundedCornerShape(5.dp),onClick = {
-            showDialog = true },modifier = Modifier
+            showDialog = true },
+            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
+            modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
-            Text(text = "Calendario")
+            Text(text = "Calendario",
+                color = Color.White)
         }
 
         if(showDialog) {
@@ -400,10 +405,12 @@ fun ReservacionCajones_extension(
            loginVM.saveSpace(context,localFecha.year,dayOfYear_hoy,"",idEstacionamientoMutable,idUsuario,turno) {
             }
 
-        }, modifier = Modifier
+        },
+            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
+            modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
-            Text(text = "Aceptar reservacion")
+            Text(text = "Aceptar reservacion",color = Color.White)
 
         }
 

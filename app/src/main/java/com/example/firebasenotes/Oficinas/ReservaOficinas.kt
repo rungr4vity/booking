@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -41,6 +42,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -188,14 +190,17 @@ fun ReservaOficinas_extension(
             .fillMaxWidth())
 
 
-        Button(shape = RoundedCornerShape(5.dp),onClick = {
+        Button(shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
+            onClick = {
+
             textoInicio = ""
             textoFin = ""
             showDialog = true
                                                           },modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
-            Text(text = "Calendario")
+            Text(text = "Calendario",color = Color.White)
         }
 
         val timePicker = TimePickerDialog(
@@ -216,6 +221,7 @@ fun ReservaOficinas_extension(
         )
 
         Button(shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
             onClick = {
                 viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
                 timePicker.show()
@@ -223,12 +229,13 @@ fun ReservaOficinas_extension(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)) {
-            Text(text = "Inicio: $textoInicio", modifier = Modifier
+            Text(text = "Inicio: $textoInicio",color = Color.White, modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth())
         }
 
         Button(shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
             onClick = {
                 timePickerFin.show()
             },
@@ -236,7 +243,7 @@ fun ReservaOficinas_extension(
                 .fillMaxWidth()
                 .padding(5.dp)) {
 
-            Text(text = "Fin: $textoFin", modifier = Modifier
+            Text(text = "Fin: $textoFin",color = Color.White, modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth())
         }
@@ -330,10 +337,11 @@ fun ReservaOficinas_extension(
             }
         }, modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp)
+            .padding(5.dp),
+            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
 
         ) {
-            Text(text = "Confirmar reservacion")
+            Text(text = "Confirmar reservacion",color = Color.White)
         }
 
 

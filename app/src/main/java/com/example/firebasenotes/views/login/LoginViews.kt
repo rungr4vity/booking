@@ -108,7 +108,8 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                         .padding(horizontal = 30.dp),
                     colors = ButtonDefaults.buttonColors( Color(0xFF800000))
                 ) {
-                    Text(text = "Entrar")
+                    Text(text = "Entrar",
+                        color = Color.White)
                 }
             }
         }

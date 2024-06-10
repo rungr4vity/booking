@@ -244,14 +244,15 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     listUsers(navController = navController)
                 }
                 composable(
-                    "detalleUser/{nombres}/{apellidos}/{empresa}/{email}/{puedeFacturar}/{usuarioHabilitado}",
+                    "detalleUser/{nombres}/{apellidos}/{empresa}/{email}/{puedeFacturar}/{usuarioHabilitado}/{typeId}",
                     arguments = listOf(
                         navArgument("nombres") { type = NavType.StringType },
                         navArgument("apellidos") { type = NavType.StringType },
                         navArgument("empresa") { type = NavType.StringType },
                         navArgument("email") { type = NavType.StringType },
                         navArgument("puedeFacturar") { type = NavType.BoolType },
-                        navArgument("usuarioHabilitado") { type = NavType.BoolType }
+                        navArgument("usuarioHabilitado") { type = NavType.BoolType },
+                        navArgument("typeId") { type = NavType.StringType }
                     )
                 ) { backStackEntry ->
                     val nombres = backStackEntry.arguments?.getString("nombres") ?: ""
@@ -260,6 +261,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val email = backStackEntry.arguments?.getString("email") ?: ""
                     val puedeFacturar = backStackEntry.arguments?.getBoolean("puedeFacturar") ?: false
                     val usuarioHabilitado = backStackEntry.arguments?.getBoolean("usuarioHabilitado") ?: false
+                    val typeId = backStackEntry.arguments?.getString("typeId") ?: "2"
 
                     // Llama a la función detalleUser y pasa los datos del usuario
                     detalleUser(
@@ -269,7 +271,8 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         empresa = empresa,
                         email = email,
                         puedeFacturar = puedeFacturar,
-                        usuarioHabilitado = usuarioHabilitado
+                        usuarioHabilitado = usuarioHabilitado,
+                        typeId = typeId.toInt()
                     )
                 }
 

@@ -49,6 +49,7 @@ fun detalleUser(
     email: String,
     puedeFacturar: Boolean,
     usuarioHabilitado: Boolean,
+    typeId: Int,
     usersViewModel: UsersViewModel = viewModel(),
 //    typedViewModel: TypedViewModel = viewModel()
 ) {
@@ -61,8 +62,18 @@ fun detalleUser(
         "SubAdministrador",
         "Administrador"
     ) // Agrega los tipos de usuario que necesites
-    val selectedTipoUsuario = remember { mutableStateOf("Seleccione un tipo") }
-    val selectedType = remember { mutableStateOf(2) }
+
+    var title = ""
+
+    title = when (typeId) {
+        0 -> "Administrador"
+        1 -> "SubAdministrador"
+        else -> "Normal"
+    }
+
+
+    val selectedTipoUsuario = remember { mutableStateOf(title) }
+    val selectedType = remember { mutableStateOf(typeId.toInt()) }
     val expandedType = remember { mutableStateOf(false) }
 
 
@@ -104,7 +115,9 @@ fun detalleUser(
 
                 var expandedFacturas by remember { mutableStateOf(false) }
                 var opcionesFac = listOf("true", "false")
-                var selectedOptionText by remember { mutableStateOf("Seleccionar opción") }
+                var selectedOptionText by remember { mutableStateOf(puedeFacturar.toString()) }
+
+
 
                 androidx.compose.material3.ExposedDropdownMenuBox(
                     expanded = expandedFacturas,
@@ -143,7 +156,7 @@ fun detalleUser(
                 //DropdownMenu Para seleccionar tipo de usuario
                 var expandedUsuario by remember { mutableStateOf(false) }
                 var opcionesUsa = listOf("true", "false")
-                var selectedOption by remember { mutableStateOf("Seleccionar opción") }
+                var selectedOption by remember { mutableStateOf(usuarioHabilitado.toString()) }
 
                 androidx.compose.material3.ExposedDropdownMenuBox(
                     expanded = expandedUsuario,
@@ -152,7 +165,7 @@ fun detalleUser(
                     OutlinedTextField(
                         value = selectedOption,
                         onValueChange = { },
-                        label = { Text("Usuarios") },
+                        label = { Text("Habilitado") },
                         readOnly = false,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -234,7 +247,7 @@ fun detalleUser(
                     )
                 ) {
 
-                    Text("Actualizar")
+                    Text("Actualizar 3")
                 }
 
             }

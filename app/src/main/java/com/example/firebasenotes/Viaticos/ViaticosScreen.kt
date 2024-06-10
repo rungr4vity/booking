@@ -106,7 +106,7 @@ fun ViaticosScreen(
                         }
                         Button(
                             onClick = {
-                                navController.navigate("viaticosAdd/{viajeId}")
+                                navController.navigate("viaticosAdd/${viajes.id}")
                             },
                             modifier = Modifier
                                 .padding(start = 8.dp)
