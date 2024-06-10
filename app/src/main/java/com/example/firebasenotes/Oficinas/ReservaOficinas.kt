@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,6 +70,22 @@ import kotlinx.coroutines.time.delay
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+
+
+
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import android.app.DatePickerDialog
+
+import androidx.compose.foundation.layout.*
+
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.runtime.*
+import java.util.*
+import java.text.SimpleDateFormat
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Timer
 
 class ReservaOficinas : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,8 +172,71 @@ fun ReservaOficinas_extension(
 
         data?.let {
             localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("GMT")).toLocalDate()
-            Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
+            //Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
         }
+
+
+
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val initialDate = dateFormat.format(calendar.time)
+        var text3 by remember { mutableStateOf(initialDate) }
+        var showDatePicker by remember { mutableStateOf(false) }
+        var date by remember { mutableStateOf(initialDate) }
+        var dayOfYear_ by remember { mutableStateOf(calendar.get(Calendar.DAY_OF_YEAR)) }
+        var year by remember { mutableStateOf(calendar.get(Calendar.YEAR)) }
+        // Add a Row containing the IconButton and Text Field 3
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            IconButton(onClick = { showDatePicker = true }) {
+                Icon(Icons.Filled.CalendarToday, contentDescription = "Pick a Date")
+            }
+            OutlinedTextField(
+                readOnly = true,
+                value = text3,
+                onValueChange = { text3 = it },
+                label = { Text("Fecha") },
+                modifier = Modifier.weight(1f).padding(10.dp)
+
+            )
+        }
+
+
+        if (showDatePicker) {
+            Log.d("showDatePicker",showDatePicker.toString())
+
+            LaunchedEffect(Unit) {
+                DatePickerDialog(
+                    context,
+                    { _, selectedYear, selectedMonth, selectedDay ->
+                        calendar.set(selectedYear, selectedMonth, selectedDay)
+                        date = dateFormat.format(calendar.time)
+                        text3 = date  // Update text3 with the selected date
+                        dayOfYear_ = calendar.get(Calendar.DAY_OF_YEAR)
+                        year = selectedYear
+                        showDatePicker = false
+
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+
+                ).show()
+            }
+
+            showDatePicker = false
+        }
+
+
+
+
+
+
+        viewModel.ReservacionOficinasDia(year,dayOfYear_,idArea)
+
+
 
         //viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
         //Log.d("data_listadoOficinas",oficinasHorarios.toString())
@@ -168,10 +248,10 @@ fun ReservaOficinas_extension(
 
         var showDialog by remember { mutableStateOf(false) }
 
-        Text(
-            text = "Confirmar reservación: ", fontWeight = FontWeight.Bold, fontSize = 20.sp,
-            modifier = Modifier.padding(10.dp)
-        )
+//        Text(
+//            text = "Confirmar reservación: ", fontWeight = FontWeight.Bold, fontSize = 20.sp,
+//            modifier = Modifier.padding(10.dp)
+//        )
 
         Text(text = "Usuario:  $emailfrom", modifier = Modifier
             .padding(10.dp)
@@ -185,23 +265,23 @@ fun ReservaOficinas_extension(
         Text(text = "$descripcion", modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth())
-        Text(text = "idArea $idArea", modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth())
+//        Text(text = "idArea $idArea", modifier = Modifier
+//            .padding(10.dp)
+//            .fillMaxWidth())
 
 
-        Button(shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
-            onClick = {
-
-            textoInicio = ""
-            textoFin = ""
-            showDialog = true
-                                                          },modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)) {
-            Text(text = "Calendario",color = Color.White)
-        }
+//        Button(shape = RoundedCornerShape(5.dp),
+//            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
+//            onClick = {
+//
+//            textoInicio = ""
+//            textoFin = ""
+//            showDialog = true
+//                                                          },modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(5.dp)) {
+//            Text(text = "Calendario",color = Color.White)
+//        }
 
         val timePicker = TimePickerDialog(
             context,
@@ -220,33 +300,98 @@ fun ReservaOficinas_extension(
             }, 0, 0, true
         )
 
-        Button(shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
-            onClick = {
-                viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
-                timePicker.show()
-                      },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)) {
-            Text(text = "Inicio: $textoInicio",color = Color.White, modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth())
-        }
+//        Button(shape = RoundedCornerShape(5.dp),
+//            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
+//            onClick = {
+//                viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
+//                timePicker.show()
+//                      },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(5.dp)) {
+//            Text(text = "Inicio: $textoInicio",color = Color.White, modifier = Modifier
+//                .padding(10.dp)
+//                .fillMaxWidth())
+//        }
 
-        Button(shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
-            onClick = {
-                timePickerFin.show()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)) {
+//        Button(shape = RoundedCornerShape(5.dp),
+//            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
+//            onClick = {
+//                timePickerFin.show()
+//            },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(5.dp)) {
+//
+//            Text(text = "Fin: $textoFin",color = Color.White, modifier = Modifier
+//                .padding(10.dp)
+//                .fillMaxWidth())
+//        }
 
-            Text(text = "Fin: $textoFin",color = Color.White, modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth())
-        }
+
+
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+
+            value = textoInicio,
+            onValueChange = {  },
+            label = { Text("Inicio") },
+            modifier = Modifier.fillMaxWidth().padding(start = 10.dp,end = 10.dp),
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = {
+
+                    //viewModel.ReservacionOficinasDia(localDate.year,localDate.dayOfYear,idArea)
+                    viewModel.ReservacionOficinasDia(year,dayOfYear_,idArea)
+                    timePicker.show()
+
+                }) {
+                    Icon(Icons.Default.Timer, contentDescription = "Select End Time")
+                }
+            }
+        )
+
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        OutlinedTextField(
+
+            value = textoFin,
+            onValueChange = {  },
+            label = { Text("Fin") },
+            modifier = Modifier.fillMaxWidth().padding(start = 10.dp,end = 10.dp),
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = {
+                    timePickerFin.show()
+                }) {
+                    Icon(Icons.Default.Timer, contentDescription = "Select End Time")
+                }
+            }
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         Button(shape = RoundedCornerShape(5.dp)
 
@@ -309,14 +454,21 @@ fun ReservaOficinas_extension(
                 if (isValid && counter) {
             viewModel.reservacionOficina(
                 context,
-                localDate.year,
-                localDate.dayOfYear,
+                year,
+                dayOfYear_,
                 textoInicio,
                 textoFin,
                 "",
                 idArea,
                 idUsuario
             )
+
+
+                    textoInicio = ""
+                    textoFin = ""
+
+
+
                     //Toast.makeText(context, "Adelante", Toast.LENGTH_LONG).show()
                 } else {
                     if(!isValid){
