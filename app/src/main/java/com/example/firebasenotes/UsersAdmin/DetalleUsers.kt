@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
@@ -83,10 +84,10 @@ fun detalleUser(
     ) {
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(bottom = 40.dp)
+            modifier = Modifier.padding(bottom = 90.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Icon(
                     imageVector = Icons.Default.Person,
@@ -109,7 +110,7 @@ fun detalleUser(
                     style = TextStyle(fontSize = 14.sp)
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 //DropdownMenu Para seleccionar tipo de factura
 
@@ -151,7 +152,7 @@ fun detalleUser(
 // Agregar la lógica if-else para establecer el valor booleano interno
 
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 //DropdownMenu Para seleccionar tipo de usuario
                 var expandedUsuario by remember { mutableStateOf(false) }
@@ -188,7 +189,7 @@ fun detalleUser(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 ExposedDropdownMenuBox(
                     expanded = expandedType.value,
                     onExpandedChange = { expandedType.value = it },
@@ -226,7 +227,7 @@ fun detalleUser(
 //                is TypedDataState.Success -> typedDataState.dataList
 //                else -> emptyList() // Maneja el estado de carga o error como prefieras
 //            })
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Button(
                     onClick = {
                         val userData = DataViaticos(
@@ -239,15 +240,17 @@ fun detalleUser(
                             typeId = selectedType.value
                         )
                         usersViewModel.updateUserData(userData) // Llamar a la función para actualizar los datos
-                    }, modifier = Modifier
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp),
+                        .padding(horizontal = 20.dp),
                     colors = ButtonDefaults.buttonColors(
                         Color(0xFF800000)
                     )
                 ) {
 
-                    Text("Actualizar 3")
+                    Text("Actualizar")
                 }
 
             }
