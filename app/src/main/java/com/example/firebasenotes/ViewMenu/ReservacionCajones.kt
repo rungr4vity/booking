@@ -6,12 +6,18 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -26,6 +32,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -47,9 +54,12 @@ import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.viewModels.NotesViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.Calendar
+import java.util.Locale
 
 class ReservacionCajones : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,21 +179,112 @@ fun ReservacionCajones_extension(
 
 
         data?.let {
-
-
             val defaultZoneId = ZoneId.systemDefault()
-
-
             Log.d("zoneID",defaultZoneId.toString())
-
             //UTC
             val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("GMT")).toLocalDate()
-            Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
+            //Text(text = "Fecha: ${localDate.dayOfMonth}/${localDate.month}/${localDate.year}")
+
+
             //suma_listado = (localDate.dayOfMonth + localDate.month.value + localDate.year)
 
-            loginVM.getData(localDate.dayOfYear,localDate.year,idEstacionamiento)
+            //loginVM.getData(localDate.dayOfYear,localDate.year,idEstacionamiento)
             Log.d("data_listado",data_listado.toString())
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val initialDate = dateFormat.format(calendar.time)
+        var text3 by remember { mutableStateOf(initialDate) }
+        var showDatePicker by remember { mutableStateOf(false) }
+        var date by remember { mutableStateOf(initialDate) }
+        var dayOfYear_ by remember { mutableStateOf(calendar.get(Calendar.DAY_OF_YEAR)) }
+        var year by remember { mutableStateOf(calendar.get(Calendar.YEAR)) }
+
+        loginVM.getData(dayOfYear_,year,idEstacionamiento)
+
+        Text(
+            text = "Confirmar reservación: $nombre", fontWeight = FontWeight.Bold, fontSize = 20.sp,
+            modifier = Modifier.padding(10.dp)
+        )
+
+        // Add a Row containing the IconButton and Text Field 3
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            IconButton(onClick = { showDatePicker = true }) {
+                Icon(Icons.Filled.CalendarToday, contentDescription = "Pick a Date")
+            }
+            androidx.compose.material.OutlinedTextField(
+                readOnly = true,
+                value = text3,
+                onValueChange = { text3 = it },
+                label = { Text("Fecha") },
+                modifier = Modifier.weight(1f).padding(10.dp)
+
+            )
+        }
+
+
+        if (showDatePicker) {
+            Log.d("showDatePicker",showDatePicker.toString())
+
+            LaunchedEffect(Unit) {
+                android.app.DatePickerDialog(
+                    context,
+                    { _, selectedYear, selectedMonth, selectedDay ->
+                        calendar.set(selectedYear, selectedMonth, selectedDay)
+                        date = dateFormat.format(calendar.time)
+                        text3 = date  // Update text3 with the selected date
+                        dayOfYear_ = calendar.get(Calendar.DAY_OF_YEAR)
+                        year = selectedYear
+                        showDatePicker = false
+
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+
+                ).show()
+            }
+
+            showDatePicker = false
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         //val opsHorarios_listado: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
@@ -232,24 +333,17 @@ fun ReservacionCajones_extension(
             mutableStateOf(false)
         }
 
-        Text(
-            text = "Confirmar reservación: ", fontWeight = FontWeight.Bold, fontSize = 20.sp,
-            modifier = Modifier.padding(10.dp)
-        )
 
 
-        Text(text = "Usuario:  $emailfrom", modifier = Modifier
+
+//        Text(text = "Usuario:  $emailfrom", modifier = Modifier
+//            .padding(10.dp)
+//            .fillMaxWidth())
+        Text(text = "Espacio $cajon - Piso $piso", modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth())
-        Text(text = "Espacio: $cajon", modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth())
-        Text(text = "Piso: $piso", modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth())
-        Text(text = "Especial:  ${if(esEspecial) "Si" else "No"}", modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth())
+
+
 
 //        OutlinedTextField(value = emailPrueba, onValueChange = {},
 //            modifier = Modifier
@@ -310,15 +404,25 @@ fun ReservacionCajones_extension(
 //            }
 //        }
 
-        Button(shape = RoundedCornerShape(5.dp),onClick = {
-            showDialog = true },
-            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
-            modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)) {
-            Text(text = "Calendario",
-                color = Color.White)
-        }
+
+
+
+
+
+
+
+
+
+
+//        Button(shape = RoundedCornerShape(5.dp),onClick = {
+//            showDialog = true },
+//            colors = ButtonDefaults.buttonColors( Color(0xFF800000)),
+//            modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(5.dp)) {
+//            Text(text = "Calendario",
+//                color = Color.White)
+//        }
 
         if(showDialog) {
             DatePickerDialog(
@@ -345,6 +449,10 @@ fun ReservacionCajones_extension(
         }
 
 
+
+
+
+
         ExposedDropdownMenuBox(expanded = expansion_Horarios , onExpandedChange = {expansion_Horarios  = !expansion_Horarios } ) {
             OutlinedTextField(
 
@@ -355,7 +463,7 @@ fun ReservacionCajones_extension(
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor()
-                    .padding(top = 20.dp),
+                    .padding(top = 20.dp,start = 10.dp,end = 10.dp),
 
                 trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expansion_Horarios )}
             )
@@ -385,6 +493,9 @@ fun ReservacionCajones_extension(
             }
         }
 
+        Text(text = "Especial:  ${if(esEspecial) "Si" else "No"}", modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth())
 
 
 //        opsHorarios.forEach {
@@ -402,7 +513,7 @@ fun ReservacionCajones_extension(
             var hoy = LocalDate.now()
             var dayOfYear_hoy = hoy.dayOfYear
 
-           loginVM.saveSpace(context,localFecha.year,dayOfYear_hoy,"",idEstacionamientoMutable,idUsuario,turno) {
+           loginVM.saveSpace(context,year,dayOfYear_,"",idEstacionamientoMutable,idUsuario,turno) {
             }
 
         },
