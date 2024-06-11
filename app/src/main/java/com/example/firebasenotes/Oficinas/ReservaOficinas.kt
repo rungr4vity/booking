@@ -82,13 +82,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.*
 import java.util.*
 import java.text.SimpleDateFormat
 
 import androidx.compose.material.icons.filled.Menu
-
+import androidx.compose.material.icons.filled.Timer
 
 
 class ReservaOficinas : ComponentActivity() {
@@ -195,7 +196,7 @@ fun ReservaOficinas_extension(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             IconButton(onClick = { showDatePicker = true }) {
-                Icon(Icons.Filled.DateRange, contentDescription = "Pick a Date")
+                Icon(Icons.Filled.CalendarToday, contentDescription = "Pick a Date")
             }
             OutlinedTextField(
                 readOnly = true,
@@ -352,7 +353,7 @@ fun ReservaOficinas_extension(
                     timePicker.show()
 
                 }) {
-                    Icon(Icons.Default.DateRange, contentDescription = "Select End Time")
+                    Icon(Icons.Default.Timer, contentDescription = "Select End Time")
                 }
             }
         )
@@ -371,7 +372,7 @@ fun ReservaOficinas_extension(
                 IconButton(onClick = {
                     timePickerFin.show()
                 }) {
-                    Icon(Icons.Default.DateRange, contentDescription = "Select End Time")
+                    Icon(Icons.Default.Timer, contentDescription = "Select End Time")
                 }
             }
         )
