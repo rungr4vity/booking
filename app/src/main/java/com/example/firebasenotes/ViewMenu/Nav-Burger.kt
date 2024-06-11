@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,7 +83,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScr
 import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
-
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +100,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Cat Areas", Icons.Default.Menu, 1),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
         Triple("Reservar Area", Icons.Default.AddCircle, 2),
-        Triple("Alta de Cajon", Icons.Default.AddCircle, 1),
+        Triple("Alta de Cajon", Icons.Default.AddCircle, 2),
         Triple("Cat Cajones", Icons.Default.Menu, 1),
         Triple("Viaticos", Icons.Default.DateRange, 2),
         Triple("Lista de Usuarios", Icons.Default.Person, 2),
@@ -108,79 +110,76 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
     ).filter { it.third == userData.typeId }
 
-    Scaffold(
-        topBar = {
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
 
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
             TopAppBar(
                 actions = {
 
 
-                    IconButton(onClick = { expanded = true }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Mi Perfil") },
-                            onClick = {
-                                expanded = false
-                                // Handle action for first item
-                            })
-                        DropdownMenuItem(
-                            trailingIcon = {
-                                Icon(Icons.Default.Image, contentDescription = null)
-                            },
-                            text = { Text("Mi tytytyttyjjjjjjjjjjjj") },
-                            onClick = {
-                                expanded = false
-                                // Handle action for first item
-                            })
-                        DropdownMenuItem(
-                            text = { Text("Mi tytyyt") },
-                            onClick = {
-                                expanded = false
-                                // Handle action for first item
-                            })
-                        DropdownMenuItem(
-                            text = { Text("Mi ok") },
-                            onClick = {
-                                expanded = false
-                                // Handle action for first item
-                            })
-                        DropdownMenuItem(
-                            text = { Text("Mi fdg") },
-                            onClick = {
-                                expanded = false
-                                // Handle action for first item
-                            })
-                        DropdownMenuItem(
-                            text = { Text("Mi gh") },
-                            onClick = {
-                                expanded = false
-                                // Handle action for first item
-                            })
-                    }
-
-
-
-
-
-
-
-
+//                    IconButton(onClick = { expanded = true }) {
+//                        Icon(Icons.Default.Menu, contentDescription = "Menu")
+//                    }
+//
+//                    DropdownMenu(
+//                        expanded = expanded,
+//                        onDismissRequest = { expanded = false }
+//                    ) {
+//                        DropdownMenuItem(
+//                            text = { Text("Mi Perfil") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            trailingIcon = {
+//                                Icon(Icons.Default.Image, contentDescription = null)
+//                            },
+//                            text = { Text("Mi tytytyttyjjjjjjjjjjjj") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi tytyyt") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi ok") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi fdg") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi gh") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                    }
                 },
-                title = { Text(text = "¡Bienvenido!, ${userData.nombres}") },
+                //¡Bienvenido!, ${userData.nombres}
+                title = { Text(text = "") },
                 navigationIcon = {
+
                     IconButton(onClick = {
-                        Log.d("Menu_texto_burguer", "Clicked")
-
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
                     }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
+                        Icon(Icons.Filled.Menu, contentDescription = "Menu")
                     }
-
                 }
             )
         },
