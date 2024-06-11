@@ -24,64 +24,112 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
-
 @Composable
-fun AltaArea(areaViewModel: AreaViewModel = viewModel(),navController: NavController) {
-
+fun AltaArea(areaViewModel: AreaViewModel = viewModel(), navController: NavController) {
     var desc by remember { mutableStateOf("") }
     var nombre by remember { mutableStateOf("") }
     var capacidad by remember { mutableStateOf("") }
     var mobiliaria by remember { mutableStateOf("") }
 
-
-
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 20.dp),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally ) {
-Spacer(modifier = Modifier.height(16.dp))
-        TextField(value = nombre,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+        LimitedTextField(
+            value = nombre,
             onValueChange = { nombre = it },
-            label = { Text("Nombre sala") }
-            ,modifier = Modifier
+            label = "Nombre sala",
+            maxLength = MAX_LENGTH_NOMBRE,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp))
+                .padding(vertical = 5.dp, horizontal = 5.dp)
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = desc, onValueChange = { desc = it },
-            label = { Text("Descripcion") }
-            ,modifier = Modifier
+        LimitedTextField(
+            value = desc,
+            onValueChange = { desc = it },
+            label = "Descripción",
+            maxLength = MAX_LENGTH_DESC,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp))
+                .padding(vertical = 5.dp, horizontal = 5.dp),
+            maxLines = 1
+        )
         Spacer(modifier = Modifier.height(8.dp))
-
-        TextField(value = capacidad, onValueChange = { capacidad = it },
-            label = { Text("Cantidad de personas ") }
-            ,modifier = Modifier
+        LimitedTextField(
+            value = capacidad,
+            onValueChange = { capacidad = it },
+            label = "Cantidad de personas",
+            maxLength = MAX_LENGTH_CAPACIDAD,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp))
+                .padding(vertical = 5.dp, horizontal = 5.dp),
+            maxLines = 1
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = mobiliaria, onValueChange = { mobiliaria = it },
-            label = { Text("Mobiliario") }
-            ,modifier = Modifier
+        LimitedTextField(
+            value = mobiliaria,
+            onValueChange = { mobiliaria = it },
+            label = "Mobiliario",
+            maxLength = MAX_LENGTH_MOBILIARIA,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp))
+                .padding(vertical = 5.dp, horizontal = 5.dp),
+            maxLines = 1
+        )
         Spacer(modifier = Modifier.height(250.dp))
         Button(
             onClick = {
-                areaViewModel.InsertDatosArea(capacidad, nombre,mobiliaria,desc)
-                capacidad=""
-                nombre=""
-                mobiliaria=""
-                desc=""
-                      },
-
-            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth().size(45.dp),
+                if (nombre.isNotEmpty() && desc.isNotEmpty() && capacidad.isNotEmpty() && mobiliaria.isNotEmpty()) {
+                    areaViewModel.InsertDatosArea(capacidad, nombre, mobiliaria, desc)
+                    capacidad = ""
+                    nombre = ""
+                    mobiliaria = ""
+                    desc = ""
+                }
+            },
+            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth().height(45.dp),
+            enabled = nombre.isNotEmpty() && desc.isNotEmpty() && capacidad.isNotEmpty() && mobiliaria.isNotEmpty(),
             colors = ButtonDefaults.buttonColors(Color(0xFF800000))
-
-            ) {
-            androidx.compose.material.Text("Crear area", color = Color.White)
+        ) {
+            Text("Crear área", color = Color.White)
         }
     }
+}
 
+private const val MAX_LENGTH_NOMBRE = 25
+private const val MAX_LENGTH_DESC = 30
+private const val MAX_LENGTH_CAPACIDAD = 3
+private const val MAX_LENGTH_MOBILIARIA = 20
+
+@Composable
+fun LimitedTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    maxLength: Int,
+    modifier: Modifier = Modifier,
+    maxLines: Int = 1
+) {
+    val trimmedValue = if (value.length > maxLength) {
+        value.substring(0, maxLength)
+    } else {
+        value
+    }
+
+    TextField(
+        value = trimmedValue,
+        onValueChange = {
+            if (it.length <= maxLength) {
+                onValueChange(it)
+            }
+        },
+        label = { Text(label) },
+        modifier = modifier,
+        maxLines = maxLines
+    )
 }

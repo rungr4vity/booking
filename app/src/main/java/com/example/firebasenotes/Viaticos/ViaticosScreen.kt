@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.firebasenotes.UsersAdmin.UsersViewModel
+import com.example.firebasenotes.Viaticos.Viaje.ViajeViewModel
 import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -31,7 +32,8 @@ import java.util.Date
 fun ViaticosScreen(
     viaticosViewModel: ViaticosViewModel = viewModel(),
     navController: NavController,
-    usersViewModel: UsersViewModel = viewModel() // Agrega esta línea
+    usersViewModel: UsersViewModel = viewModel() ,
+     viajeViewModel: ViajeViewModel = viewModel() // Agrega esta línea
 ) {
     val gastosTotales: Double by viaticosViewModel.gastosTotales.observeAsState(0.0)
 
@@ -96,6 +98,7 @@ fun ViaticosScreen(
                         Button(
                             onClick = {
                                 mensajeVisible = true
+                                viajeViewModel.cerrarViaje(viajes.id)
                             },
                             modifier = Modifier
                                 .padding(end = 8.dp)

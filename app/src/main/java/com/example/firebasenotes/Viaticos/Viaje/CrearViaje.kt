@@ -46,7 +46,8 @@ fun MotivosYClientesScreen(viewModel: ViajeViewModel = viewModel(), usersViewMod
                             motivo = selectedMotivo,
                             cliente = selectedCliente,
                             presupuesto = presupuesto,
-                            destino = destino
+                            destino = destino,
+                            activo = true
                         )
                     )
                     usersViewModel.updateTieneViajeActivo(true)
