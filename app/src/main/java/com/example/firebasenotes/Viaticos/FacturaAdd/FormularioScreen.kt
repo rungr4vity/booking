@@ -345,6 +345,14 @@ fun btn_EnviarGasto(context:Context,monto:String,viajeId:String, imageUri: Uri?,
 fun btn_EnviarGastoDeducible(context:Context,monto:String,viajeId:String,pdfUri: Uri?, xmlUri: Uri?,mystring:String, onUploadSuccess: () -> Unit) {
     Button(
         onClick = {
+            if (xmlUri == null) {
+                Toast.makeText(context, "No se ha seleccionado un XML", Toast.LENGTH_SHORT).show()
+                return@Button
+            }
+            if (pdfUri == null) {
+                Toast.makeText(context, "No se ha seleccionado un PDF", Toast.LENGTH_SHORT).show()
+                return@Button
+            }
 
             var idPdf = ""
             pdfUri?.let {

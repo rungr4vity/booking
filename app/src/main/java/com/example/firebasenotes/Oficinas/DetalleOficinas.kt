@@ -52,6 +52,7 @@ fun DetalleOficinas(
     mobilaria: String,
     nombre: String,
     idArea: String,
+    viewModel: OficinasViewModel = OficinasViewModel()
 ){
 
     // first comment
@@ -65,20 +66,20 @@ fun DetalleOficinas(
         ) {
 
 
-        val viewModel: OficinasViewModel = OficinasViewModel()
+//
         val today = LocalDate.now()
         val dayOfYear = today.dayOfYear
 
         val data = System.currentTimeMillis()
         var suma = 0
 
-        data?.let {
-            val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
-            suma = (localDate.dayOfMonth + localDate.month.value + localDate.year)
-//            viewModel.ReservacionOficinasDia(localDate.year, localDate.dayOfYear,idArea)
-
-        }
-
+//        data?.let {
+//            val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
+//            suma = (localDate.dayOfMonth + localDate.month.value + localDate.year)
+////            viewModel.ReservacionOficinasDia(localDate.year, localDate.dayOfYear,idArea)
+//
+//        }
+        viewModel.ReservacionOficinasDia(today.year, today.dayOfYear,idArea)
         val oficinasHorarios: List<oficinasDTO> by viewModel.horariosOficinas.observeAsState(listOf())
 
         //val opsHorarios: List<horariosModel> by viewModel.horarios.observeAsState(listOf())
@@ -122,7 +123,7 @@ fun DetalleOficinas(
                         modifier = Modifier.padding(10.dp))
 
                 }
-            Spacer(modifier = Modifier.size(140.dp))
+            Spacer(modifier = Modifier.size(60.dp))
 
                 Button(
                     onClick = {
