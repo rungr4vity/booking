@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.icons.Icons
@@ -58,36 +59,50 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(), sharedPreferencesMa
                 .padding(bottom = 20.dp)
         )
         TextField(
+            singleLine = true,
             value = userData.nombres,
-            onValueChange = { ddViewModel.updateUserData(userData.copy(nombres = it)) },
+            onValueChange = {
+                if(it.length <= 15) {
+
+                    ddViewModel.updateUserData(userData.copy(nombres = it))
+                }
+
+                            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.size(18.dp))
         TextField(
+            singleLine = true,
             value = userData.apellidos,
-            onValueChange = { ddViewModel.updateUserData(userData.copy(apellidos = it)) },
+            onValueChange = {
+                if(it.length <= 15) {
+                    ddViewModel.updateUserData(userData.copy(apellidos = it))
+                }
+                            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.size(18.dp))
         TextField(
+            singleLine = true,
+            readOnly = true,
             value = userData.email,
             onValueChange = { ddViewModel.updateUserData(userData.copy(email = it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         )
-        Spacer(modifier = Modifier.size(18.dp))
-        TextField(
-            value = userData.contrasena,
-            onValueChange = { ddViewModel.updateUserData(userData.copy(contrasena = it)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        )
+//        Spacer(modifier = Modifier.size(18.dp))
+//        TextField(
+//            value = userData.contrasena,
+//            onValueChange = { ddViewModel.updateUserData(userData.copy(contrasena = it)) },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 16.dp)
+//        )
         Spacer(modifier = Modifier.size(18.dp))
 
         ExposedDropdownMenuBox(
@@ -129,6 +144,7 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(), sharedPreferencesMa
                 ddViewModel.updateUserDataInFirebase()
                 sharedPreferencesManager.updateUserData(userData)
             },
+            shape = RoundedCornerShape(5.dp),
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF800000))
         ) {

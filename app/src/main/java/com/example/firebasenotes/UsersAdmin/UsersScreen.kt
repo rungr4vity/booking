@@ -37,7 +37,7 @@ fun listUsers(usersViewModel: UsersViewModel = viewModel(), navController: NavCo
     LazyColumn {
         items(listUser) { user ->
             val navigateToUserDetail: () -> Unit = {
-                navController.navigate("detalleUser/${user.nombres}/${user.apellidos}/${user.empresa}/${user.email}/${user.puedeFacturar}/${user.usuarioHabilitado}")
+                navController.navigate("detalleUser/${user.nombres}/${user.apellidos}/${user.empresa}/${user.email}/${user.puedeFacturar}/${user.usuarioHabilitado}/${user.typeId}")
             }
             ComponentList(use = user, navigateToUserDetail)
         }

@@ -108,6 +108,7 @@ class OficinasViewModel(
         viewModelScope.launch {
            // stateOficina.value =
             _horariosOficinas.value = _ReservacionOficinasDia(ano,dia,idArea)
+            println("stateOficina ${stateOficina.value}")
             delay(2000)
         }
 

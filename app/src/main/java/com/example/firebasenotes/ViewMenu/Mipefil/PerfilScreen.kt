@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -50,7 +51,7 @@ fun PerfilScreen(userData: Data, navController: NavController) {
             Text(text = "Nombre: ${userData.nombres} ${userData.apellidos}", fontSize = 18.sp, textAlign = TextAlign.End)
             Text(text = "Email: ${userData.email}", fontSize = 18.sp, textAlign = TextAlign.End)
             Text(text = "Empresa: ${userData.empresa}", fontSize = 18.sp, textAlign = TextAlign.End)
-            Text(text = "Contraseña: ${userData.contrasena}", fontSize = 18.sp, textAlign = TextAlign.End)
+            //Text(text = "Contraseña: ${userData.contrasena}", fontSize = 18.sp, textAlign = TextAlign.End)
             Spacer(modifier = Modifier.size(32.dp))
 Row() {
     Text(
@@ -82,11 +83,12 @@ Spacer(modifier = Modifier.size(10.dp))
 @Composable
 fun BTN(navController: NavController){
     Button(onClick = { navController.navigate("Actualizar")},
+        shape = RoundedCornerShape(5.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 30.dp),
+            .padding(horizontal = 20.dp),
         colors = ButtonDefaults.buttonColors( Color(0xFF800000))
     ) {
-        Text(text = "Modificar")
+        Text(text = "Actualizar mi perfil")
     }
 }
