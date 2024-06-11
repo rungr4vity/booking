@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -29,8 +30,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.Checkbox
+import androidx.compose.runtime.MutableState
 
-@Preview
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Registre(){
@@ -55,6 +57,16 @@ fun ComponentRegistrar(drawerViewModel: DrawerViewModel = viewModel()) {
     val options = listOf("Isita", "Verifigas")
 
     var context = LocalContext.current
+
+
+
+
+
+    var expanded_user  by remember { mutableStateOf(false) }
+    val checkedState: MutableState<Boolean> = remember { mutableStateOf(true) }
+    val perteneceA = drawerViewModel.usuarios_short.value
+    var selected_perteneceText  by remember { mutableStateOf("Asignado a") }
+    var selected_pertenece_id  by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -91,6 +103,10 @@ Spacer(modifier = Modifier.padding(5.dp))
                 .fillMaxWidth()
                 .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
+
+
+
+
         Spacer(modifier = Modifier.padding(5.dp))
         androidx.compose.material3.ExposedDropdownMenuBox(
             expanded = expanded,
@@ -99,7 +115,7 @@ Spacer(modifier = Modifier.padding(5.dp))
                 value = selectedOptionText,
                 onValueChange = { },
                 label = { androidx.compose.material3.Text("Compañia") },
-                readOnly = false,
+                readOnly = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(),
@@ -118,19 +134,74 @@ Spacer(modifier = Modifier.padding(5.dp))
                 }
             }
         }
-        Spacer(modifier = Modifier.padding(140.dp))
+
+
+
+
+        Spacer(modifier = Modifier.padding(5.dp))
+        androidx.compose.material3.ExposedDropdownMenuBox(
+            expanded = expanded_user,
+            onExpandedChange = { expanded_user = !expanded_user }) {
+            OutlinedTextField(
+                value = selected_perteneceText,
+                onValueChange = { },
+                label = { androidx.compose.material3.Text("Asignado a") },
+                readOnly = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded_user) }
+            )
+            ExposedDropdownMenu(expanded = expanded_user, onDismissRequest = { expanded_user = false }) {
+                perteneceA.forEach { option ->
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text(option.nombres) },
+                        onClick = {
+                            selected_pertenece_id = option.documentId
+                            selected_perteneceText = option.nombres
+                            expanded_user = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
+        }
+
+
+
+
+        Spacer(modifier = Modifier.padding(5.dp))
+        Checkbox(
+            checked = checkedState.value,
+            onCheckedChange = { checkedState.value = it }
+        )
+        Text(text = if (checkedState.value) "Especial" else "No Especial")
+        Spacer(modifier = Modifier.padding(5.dp))
 
         Button(
-            onClick = { drawerViewModel.insertarDatos(context,num_cajon.toInt(),nombre_cajon ,piso_edificio,selectedOptionText
-            ,esEspecial = false)
+            shape = RoundedCornerShape(5.dp),
+            onClick = {
+
+                drawerViewModel.insertarDatos(
+                context,
+                num_cajon.toInt(),
+                nombre_cajon ,
+                piso_edificio,
+                selectedOptionText,
+                    checkedState.value,
+                    selected_pertenece_id)
+
+
                       num_cajon = ""
                       nombre_cajon = ""
                       piso_edificio = ""
                       selectedOptionText = "Empresa"
+                      selected_perteneceText = "Asignado a"
                       },
+
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 30.dp),
+                .padding(horizontal = 20.dp),
             colors = ButtonDefaults.buttonColors( Color(0xFF800000))
 
         ) {

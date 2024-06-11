@@ -70,7 +70,7 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                         .padding(bottom = 20.dp)
                 )
 
-                var email by remember { mutableStateOf("c@op.com") }
+                var email by remember { mutableStateOf("homer@op.com") }
                 var password by remember { mutableStateOf("12345678") }
 
                 Text(text = "Inicio de sesión", Modifier.padding(bottom = 20.dp))
@@ -105,10 +105,11 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp),
+                        .padding(horizontal = 20.dp),
                     colors = ButtonDefaults.buttonColors( Color(0xFF800000))
                 ) {
-                    Text(text = "Entrar")
+                    Text(text = "Entrar",
+                        color = Color.White)
                 }
             }
         }

@@ -428,7 +428,6 @@ class LoginViewModel:ViewModel(){
 
 
                 auth.signInWithEmailAndPassword(email,password)
-
                     .addOnCompleteListener{ task ->
                         if(task.isSuccessful){
 
@@ -442,19 +441,18 @@ class LoginViewModel:ViewModel(){
                             else{
                                 onSuccess()
                             }
-
-
                         }else{
-
-
                             // leer el modelo de datos y validar eAdmin = true caso contrario desplegar un mensaje de error
                             // (favor de contactar al administrador)
                             //Log.d("Error en firebase","Favor de contactar al administrador")
-
+                            Toast.makeText(context, "Usuario o contraseña incorrectas", Toast.LENGTH_SHORT).show()
                             Log.d("Error en firebase","usuario y contraseña incorrectas")
                         }
+
+
                     }
             }catch (e:Exception){
+                Toast.makeText(context, "Usuario o contraseña incorrectas", Toast.LENGTH_SHORT).show()
                 Log.d("ERROR", "ERROR:${e.localizedMessage}")
             }
 

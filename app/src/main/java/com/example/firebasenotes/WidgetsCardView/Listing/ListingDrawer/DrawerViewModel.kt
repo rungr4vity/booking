@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.firebasenotes.models.users
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -42,11 +43,54 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     return cajonList
 }
 
+
+data class users_short(
+    val nombres: String,
+    val apellidos: String,
+    val documentId: String
+)
+
+suspend fun getUsuarios_(): MutableList<users_short> {
+    val db = FirebaseFirestore.getInstance()
+    val usersList = mutableListOf<users_short>()
+
+    try {
+        val querySnapshot = db.collection("Usuarios").get().await()
+        for (document in querySnapshot.documents) {
+
+            val nombres = document.getString("nombres") ?: ""
+            val apellidos = document.getString("apellidos") ?: ""
+            val documentId = document.id
+
+            usersList.add(
+                users_short(
+                    nombres = nombres,
+                    apellidos = apellidos,
+                    documentId = documentId
+                )
+            )
+        }
+    } catch (e: Exception) {
+        Log.e("FirestoreError", "Error fetching data users short: ${e.message}")
+    }
+    return usersList
+}
+
+
 class DrawerViewModel() : ViewModel() {
     val stateDrawer = mutableStateOf<List<DataDrawer>>(emptyList())
+    val usuarios_short = mutableStateOf<List<users_short>>(emptyList())
 
     init {
         getData()
+        getUsuarios()
+    }
+
+    private fun getUsuarios() {
+        viewModelScope.launch {
+            usuarios_short.value =
+                com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.getUsuarios_()
+        }
     }
 
     private fun getData() {
@@ -57,9 +101,12 @@ class DrawerViewModel() : ViewModel() {
     }
 
     fun insertarDatos(context: Context,
-        numo_cajon: Int, nombre_cajon: String, piso_edificio: String,
-        selectedOptionText: String
-        ,esEspecial : Boolean?=false
+                      numo_cajon: Int,
+                      nombre_cajon: String,
+                      piso_edificio: String,
+                      selectedOptionText: String,
+                      esEspecial : Boolean,
+                      perteneceA: String
     ){
 
         viewModelScope.launch {
@@ -71,7 +118,8 @@ class DrawerViewModel() : ViewModel() {
                 "piso" to piso_edificio.trim(),
                 "empresa" to selectedOptionText.trim(),
                 "esEspecial" to esEspecial,
-                "id" to ""
+                "id" to "",
+                "perteneceA" to perteneceA
             )
             try {
                 val documentRef = db.collection("Estacionamientos").add(data).await()

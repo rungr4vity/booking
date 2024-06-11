@@ -1,11 +1,10 @@
 import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
-
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -15,11 +14,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +30,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,11 +52,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navArgument
+
 import com.example.firebasenotes.Oficinas.DetalleOficinas
 import com.example.firebasenotes.Oficinas.ListadoOficinas
 import com.example.firebasenotes.Oficinas.OficinasViewModel
-import com.example.firebasenotes.Oficinas.ReservaOficinas
+
 import com.example.firebasenotes.Oficinas.ReservaOficinas_extension
 import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
@@ -56,12 +64,12 @@ import com.example.firebasenotes.SharedPreferencesManager
 import com.example.firebasenotes.UsersAdmin.detalleUser
 
 import com.example.firebasenotes.UsersAdmin.listUsers
-import com.example.firebasenotes.Viaticos.DataViaticos
+
 import com.example.firebasenotes.Viaticos.Viaje.crearViaje
 import com.example.firebasenotes.Viaticos.ViaticosScreen
 import com.example.firebasenotes.ViewMenu.AltCajon
 import com.example.firebasenotes.ViewMenu.MiPerfil
-import com.example.firebasenotes.ViewMenu.MiReservas
+
 import com.example.firebasenotes.ViewMenu.ReservacionCajones_extension
 import com.example.firebasenotes.ViewMenu.Mipefil.ActualizarPerfil
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
@@ -75,16 +83,16 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScr
 import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
-
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Preview
 @Composable
 fun App(ddViewModel: DDViewModel = viewModel()) {
     val userData = ddViewModel.state.value
     val navController = rememberNavController()
+    var expanded by remember { mutableStateOf(false) }
 
     val drawerItems = listOf(
         Triple("Mi Perfil", Icons.Default.Person, 2 ),
@@ -92,7 +100,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Cat Areas", Icons.Default.Menu, 1),
         Triple("Reservar cajon", Icons.Default.AddCircle, 2),
         Triple("Reservar Area", Icons.Default.AddCircle, 2),
-        Triple("Alta de Cajon", Icons.Default.AddCircle, 1),
+        Triple("Alta de Cajon", Icons.Default.AddCircle, 2),
         Triple("Cat Cajones", Icons.Default.Menu, 1),
         Triple("Viaticos", Icons.Default.DateRange, 2),
         Triple("Lista de Usuarios", Icons.Default.Person, 2),
@@ -102,15 +110,76 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
     ).filter { it.third == userData.typeId }
 
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(text = "¡Bienvenido!, ${userData.nombres}") },
-                navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
+                actions = {
 
+
+//                    IconButton(onClick = { expanded = true }) {
+//                        Icon(Icons.Default.Menu, contentDescription = "Menu")
+//                    }
+//
+//                    DropdownMenu(
+//                        expanded = expanded,
+//                        onDismissRequest = { expanded = false }
+//                    ) {
+//                        DropdownMenuItem(
+//                            text = { Text("Mi Perfil") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            trailingIcon = {
+//                                Icon(Icons.Default.Image, contentDescription = null)
+//                            },
+//                            text = { Text("Mi tytytyttyjjjjjjjjjjjj") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi tytyyt") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi ok") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi fdg") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                        DropdownMenuItem(
+//                            text = { Text("Mi gh") },
+//                            onClick = {
+//                                expanded = false
+//                                // Handle action for first item
+//                            })
+//                    }
+                },
+                //¡Bienvenido!, ${userData.nombres}
+                title = { Text(text = "") },
+                navigationIcon = {
+
+                    IconButton(onClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                    }) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Menu")
+                    }
                 }
             )
         },
@@ -126,7 +195,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("XML") {
                     FilePickerForm()
                 }
-
                 composable("Home") {
                     MiPerfil()
                 }
@@ -136,16 +204,12 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Mis reservas") {
                     Reservacion()
                 }
-
                 composable("Alta de Cajon") {
                     AltCajon()
                 }
-
                 composable("Mis Oficinas") {
                     ListadoOficinas()
                 }
-
-
                 composable("DetalleOficinas/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",arguments = listOf(
                     navArgument("capacidad",)  { type = NavType.StringType },
                     navArgument("descripcion",)  { type = NavType.StringType },
@@ -154,8 +218,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     navArgument("nombre",)  { type = NavType.StringType },
                     navArgument("idArea",)  { type = NavType.StringType },
                 )){
-
-
                     var viewModel = OficinasViewModel()
                     val capacidad = it.arguments?.getString("capacidad") ?: ""
                     val descripcion = it.arguments?.getString("descripcion") ?: ""
@@ -175,8 +237,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         idArea,
                     )
                 }
-
-
                 composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",arguments = listOf(
                     navArgument("nombre",)  { type = NavType.StringType },
                     navArgument("company",) { type = NavType.StringType },
@@ -205,9 +265,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Alta de area") {
                     AltaArea(navController = navController)
                 }
-//                composable("DetalleAlta") {
-//                    DetalleAlta()
-//                }
                 composable("Actualizar") {
                     val sharedPreferencesManager = SharedPreferencesManager(LocalContext.current)
 
@@ -230,8 +287,6 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Crear viaje"){
                     crearViaje()
                 }
-
-
                 composable("viaticosAdd/{viajeId}", arguments = listOf(
                     navArgument("viajeId") { type = NavType.StringType },
                 )) {
@@ -244,14 +299,15 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     listUsers(navController = navController)
                 }
                 composable(
-                    "detalleUser/{nombres}/{apellidos}/{empresa}/{email}/{puedeFacturar}/{usuarioHabilitado}",
+                    "detalleUser/{nombres}/{apellidos}/{empresa}/{email}/{puedeFacturar}/{usuarioHabilitado}/{typeId}",
                     arguments = listOf(
                         navArgument("nombres") { type = NavType.StringType },
                         navArgument("apellidos") { type = NavType.StringType },
                         navArgument("empresa") { type = NavType.StringType },
                         navArgument("email") { type = NavType.StringType },
                         navArgument("puedeFacturar") { type = NavType.BoolType },
-                        navArgument("usuarioHabilitado") { type = NavType.BoolType }
+                        navArgument("usuarioHabilitado") { type = NavType.BoolType },
+                        navArgument("typeId") { type = NavType.StringType }
                     )
                 ) { backStackEntry ->
                     val nombres = backStackEntry.arguments?.getString("nombres") ?: ""
@@ -260,6 +316,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val email = backStackEntry.arguments?.getString("email") ?: ""
                     val puedeFacturar = backStackEntry.arguments?.getBoolean("puedeFacturar") ?: false
                     val usuarioHabilitado = backStackEntry.arguments?.getBoolean("usuarioHabilitado") ?: false
+                    val typeId = backStackEntry.arguments?.getString("typeId") ?: "2"
 
                     // Llama a la función detalleUser y pasa los datos del usuario
                     detalleUser(
@@ -269,7 +326,8 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         empresa = empresa,
                         email = email,
                         puedeFacturar = puedeFacturar,
-                        usuarioHabilitado = usuarioHabilitado
+                        usuarioHabilitado = usuarioHabilitado,
+                        typeId = typeId.toInt()
                     )
                 }
 
