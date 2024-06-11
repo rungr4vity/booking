@@ -1,8 +1,28 @@
 package com.example.firebasenotes.utils
 
 import com.example.firebasenotes.models.TimeRange
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object ValidacionesHora {
+
+
+    fun dayOfYearToDayAndMonth(dayOfYear: Int, year: Int): String {
+        // Create a LocalDate from the day of the year and year
+        val date = LocalDate.ofYearDay(year, dayOfYear)
+
+        // Format the date to a string with the desired pattern (e.g., "dd MMMM")
+        val formatter = DateTimeFormatter.ofPattern("dd MMMM")
+        return date.format(formatter)
+    }
+
+    fun main() {
+        val dayOfYear = 100
+        val year = 2024
+        val result = dayOfYearToDayAndMonth(dayOfYear, year)
+        println(result)  // Output: "09 April"
+    }
+
 
     // example
     //    val result = minutesToHour(430)

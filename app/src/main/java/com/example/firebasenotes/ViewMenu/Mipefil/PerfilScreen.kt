@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,12 +53,27 @@ fun PerfilScreen(userData: Data, navController: NavController) {
             Text(text = "Empresa: ${userData.empresa}", fontSize = 18.sp, textAlign = TextAlign.End)
             //Text(text = "Contraseña: ${userData.contrasena}", fontSize = 18.sp, textAlign = TextAlign.End)
             Spacer(modifier = Modifier.size(32.dp))
-            Text(
-                text = "Mis reservas",
-                modifier = Modifier.clickable { navController.navigate("Mis reservas") },
-                color = Color.Blue,
-                textDecoration = TextDecoration.Underline
-            )
+Row() {
+    Text(
+        text = "Mis reservaciones:",
+        modifier = Modifier.clickable { navController.navigate("Mis reservas") },
+        color = Color.Black
+    )
+Spacer(modifier = Modifier.size(10.dp))
+    Text(
+        text = "Estacionamiento",
+        modifier = Modifier.clickable { navController.navigate("Mis reservas") },
+        color = Color.Blue,
+        textDecoration = TextDecoration.Underline
+    )
+    Spacer(modifier = Modifier.size(10.dp))
+    Text(
+        text = "Oficina",
+        modifier = Modifier.clickable { navController.navigate("Mis reservasOficina") },
+        color = Color.Blue,
+        textDecoration = TextDecoration.Underline
+    )
+}
             Spacer(modifier = Modifier.size(5.dp))
             BTN(navController = navController)
         }

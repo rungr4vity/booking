@@ -9,7 +9,7 @@ data class DataReservations( //Datos Reservas
     var idUsuario : String="",
     var turno : Int=0,
 )
-data class DataDrawer( //Datos Estacionamiento
+data class DataDrawerDTO( //Datos Estacionamiento
     val numero: Int = 0,
     val nombre: String = "",
     val piso: String = "",

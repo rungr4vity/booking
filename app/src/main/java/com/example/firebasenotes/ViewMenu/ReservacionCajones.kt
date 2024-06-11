@@ -17,7 +17,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -227,7 +227,7 @@ fun ReservacionCajones_extension(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             IconButton(onClick = { showDatePicker = true }) {
-                Icon(Icons.Filled.CalendarToday, contentDescription = "Pick a Date")
+                Icon(Icons.Filled.DateRange, contentDescription = "Pick a Date")
             }
             androidx.compose.material.OutlinedTextField(
                 readOnly = true,

@@ -82,7 +82,7 @@ fun DrawerCard(
 
             Spacer(modifier = Modifier.width(16.dp))
             IconButton(
-                onClick = { deleteDrawerViewModel.deleteData(cajones.id) },
+                onClick = {  },
                 modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = null, tint = Color.Red)
