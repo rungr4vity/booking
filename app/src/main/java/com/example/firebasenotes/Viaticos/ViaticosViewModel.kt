@@ -128,7 +128,7 @@ class ViaticosViewModel: ViewModel(){
             var dto: viajeDTO? = null
 
             val querySnapshot = db.collection("Viajes")
-                .whereEqualTo("idUsuario", idUsuario)
+                .whereEqualTo("idUsuario", idUsuario?.trim())
                 .whereEqualTo("activo", true)
                 .get()
                 .await()
@@ -136,7 +136,7 @@ class ViaticosViewModel: ViewModel(){
             return try {
 
                 val result = querySnapshot.documents.forEach {
-
+println()
                     dto = viajeDTO(
                         true,
                         it.get("cliente").toString(),
@@ -148,9 +148,11 @@ class ViaticosViewModel: ViewModel(){
                         it.get("motivo").toString(),
                         it.get("presupuesto").toString().toDouble()
                     )
+                    print (dto)
                 }
 
                 Log.d("viaje_result", result.toString())
+                println()
                 //val result = querySnapshot.documents[0].toObject(viajeDTO::class.java)
 
                 return dto ?: viajeDTO()

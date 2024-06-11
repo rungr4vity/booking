@@ -1,5 +1,7 @@
 package com.example.firebasenotes.Viaticos.Viaje
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebasenotes.ViewMenu.Mipefil.Data
@@ -59,5 +61,15 @@ class ViajeViewModel : ViewModel() {
                 }
             }
         }
+    }
+    fun cerrarViaje(viajeId: String) {
+        val viajeRef = FirebaseFirestore.getInstance().collection("Viajes").document(viajeId)
+        viajeRef.update("activo", false)
+            .addOnSuccessListener {
+
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error updating document", e)
+            }
     }
 }
