@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -83,6 +84,7 @@ fun AltaArea(areaViewModel: AreaViewModel = viewModel(), navController: NavContr
         )
         Spacer(modifier = Modifier.height(250.dp))
         Button(
+            shape = RoundedCornerShape(5.dp),
             onClick = {
                 if (nombre.isNotEmpty() && desc.isNotEmpty() && capacidad.isNotEmpty() && mobiliaria.isNotEmpty()) {
                     areaViewModel.InsertDatosArea(capacidad, nombre, mobiliaria, desc)
@@ -92,7 +94,7 @@ fun AltaArea(areaViewModel: AreaViewModel = viewModel(), navController: NavContr
                     desc = ""
                 }
             },
-            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth().height(45.dp),
+            modifier = Modifier.padding(horizontal = 5.dp).fillMaxWidth().height(45.dp),
             enabled = nombre.isNotEmpty() && desc.isNotEmpty() && capacidad.isNotEmpty() && mobiliaria.isNotEmpty(),
             colors = ButtonDefaults.buttonColors(Color(0xFF800000))
         ) {

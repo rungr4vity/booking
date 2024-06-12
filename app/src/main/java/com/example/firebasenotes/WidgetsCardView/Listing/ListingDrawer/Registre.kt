@@ -217,7 +217,7 @@ Spacer(modifier = Modifier.padding(5.dp))
             colors = ButtonDefaults.buttonColors( Color(0xFF800000))
 
         ) {
-            Text("Insertar Datos", color =Color.White)
+            Text("Agregar estacionamiento", color = Color.White)
         }
     }
 }

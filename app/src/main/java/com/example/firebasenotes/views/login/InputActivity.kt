@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -79,7 +80,7 @@ fun RegisterScreen(navController: NavController) {
         OutlinedTextField(
             value = firstName,
             onValueChange = { firstName = it },
-            label = { Text("Nombres") },
+            label = { Text("Nombre(s)") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -151,6 +152,7 @@ fun RegisterScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
+            shape = RoundedCornerShape(5.dp),
             onClick = {
                       var vm = LoginViewModel()
 
@@ -159,6 +161,12 @@ fun RegisterScreen(navController: NavController) {
 
                           Toast.makeText(context, "Bienvenido $firstName, favor de iniciar sesión", Toast.LENGTH_SHORT).show()
                           //navController.navigate("Home")
+
+                          password = ""
+                          firstName = ""
+                          lastName = ""
+                          email = ""
+
                       }
 
             },

@@ -217,7 +217,7 @@ fun ReservacionCajones_extension(
         loginVM.getData(dayOfYear_,year,idEstacionamiento)
 
         Text(
-            text = "Confirmar reservación: $nombre", fontWeight = FontWeight.Bold, fontSize = 20.sp,
+            text = "$nombre", fontWeight = FontWeight.Bold, fontSize = 20.sp,
             modifier = Modifier.padding(10.dp)
         )
 
@@ -521,7 +521,7 @@ fun ReservacionCajones_extension(
             modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
-            Text(text = "Aceptar reservacion",color = Color.White)
+            Text(text = "Reservar",color = Color.White)
 
         }
 
