@@ -184,12 +184,11 @@ class LoginViewModel:ViewModel(){
                                 usuarioHabilitado = usuarioHabilitado,
                             ).toMap()
 
-                            FirebaseFirestore.getInstance().collection("Usuarios")
-                                .add(user)
+                            FirebaseFirestore.getInstance().collection("Usuarios").document(userid_).set(user)
                                 .addOnCompleteListener{
-                                    Toast.makeText(context, "Usuario agregado", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Usuario agregado - Bienvenido", Toast.LENGTH_SHORT).show()
 
-                                    Toast.makeText(context, "Sign in successful!", Toast.LENGTH_LONG).show()
+                                    //Toast.makeText(context, "Sign in successful!", Toast.LENGTH_LONG).show()
                                 }
                                 .addOnFailureListener{
                                     Toast.makeText(context, "Failed user add", Toast.LENGTH_SHORT).show()
