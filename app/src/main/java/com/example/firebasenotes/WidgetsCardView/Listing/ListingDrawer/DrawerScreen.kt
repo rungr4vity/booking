@@ -11,10 +11,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,24 +32,39 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.example.firebasenotes.R
+import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController) {
+fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController,
+                 ddViewModel: DDViewModel = viewModel()) {
     val cajones = drawerViewModel.stateDrawer.value
-
-    
-        LazyColumn {
+    val userData = ddViewModel.state.value
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
             try {
-            items(cajones) { cajon ->
-                ComponentDrawer(cajon = cajon, navController = navController)
-            }
-            }catch (e:Exception){
-                    Log.e("ErrorLazy",e.toString())
+                items(cajones) { cajon ->
+                    ComponentDrawer(cajon = cajon, navController = navController)
+                }
+            } catch (e: Exception) {
+                Log.e("ErrorLazy", e.toString())
             }
         }
-}
+        if (userData.typeId == 0) {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("Alta de Cajon")
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        }
 
+    }
+}
 @Composable
 fun ComponentDrawer(
     cajon: DataDrawer,
@@ -57,13 +74,13 @@ fun ComponentDrawer(
         modifier = Modifier
             .clickable {
 
-                navController.navigate( "DetalleCajon/${cajon.nombre}/${cajon.empresa}/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}",
+                navController.navigate("DetalleCajon/${cajon.nombre}/${cajon.empresa}/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}",
                     navOptions { // Use the Kotlin DSL for building NavOptions
                         anim {
                             enter = android.R.animator.fade_in
                             exit = android.R.animator.fade_out
                         }
-                }
+                    }
                 )
             }
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -75,7 +92,7 @@ fun ComponentDrawer(
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(100.dp)
-                    .padding( horizontal = 2.dp)
+                    .padding(horizontal = 2.dp)
 
             )
 
@@ -115,4 +132,5 @@ fun ComponentDrawer(
             )
         }
     }
+
 }
