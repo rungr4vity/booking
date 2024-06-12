@@ -4,6 +4,7 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -135,48 +136,59 @@ Spacer(modifier = Modifier.padding(5.dp))
             }
         }
 
-
-
-
         Spacer(modifier = Modifier.padding(5.dp))
-        androidx.compose.material3.ExposedDropdownMenuBox(
-            expanded = expanded_user,
-            onExpandedChange = { expanded_user = !expanded_user }) {
-            OutlinedTextField(
-                value = selected_perteneceText,
-                onValueChange = { },
-                label = { androidx.compose.material3.Text("Asignado a") },
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded_user) }
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp),verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "Estacionamiento especial",modifier = Modifier.padding(start = 5.dp,end=5.dp))
+            Checkbox(
+                checked = checkedState.value,
+                onCheckedChange = { checkedState.value = it }
             )
-            ExposedDropdownMenu(expanded = expanded_user, onDismissRequest = { expanded_user = false }) {
-                perteneceA.forEach { option ->
-                    DropdownMenuItem(
-                        text = { androidx.compose.material3.Text(option.nombres) },
-                        onClick = {
-                            selected_pertenece_id = option.documentId
-                            selected_perteneceText = option.nombres
-                            expanded_user = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
+            //Text(text = if (checkedState.value) "Especial" else "No Especial")
+        }
+        Spacer(modifier = Modifier.padding(5.dp))
+        if(checkedState.value) {
+            androidx.compose.material3.ExposedDropdownMenuBox(
+                expanded = expanded_user,
+                onExpandedChange = { expanded_user = !expanded_user }) {
+                OutlinedTextField(
+                    value = selected_perteneceText,
+                    onValueChange = { },
+                    label = { androidx.compose.material3.Text("Asignado a") },
+                    readOnly = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded_user) }
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded_user,
+                    onDismissRequest = { expanded_user = false }) {
+                    perteneceA.forEach { option ->
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text(option.nombres) },
+                            onClick = {
+                                selected_pertenece_id = option.documentId
+                                selected_perteneceText = option.nombres
+                                expanded_user = false
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        )
+                    }
                 }
+            } // end drop down
+        }// end if(checkedState.value)
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        val pertenece:() -> String  = {
+            if(checkedState.value){
+                selected_pertenece_id
+            } else {
+                ""
             }
         }
 
-
-
-
-        Spacer(modifier = Modifier.padding(5.dp))
-        Checkbox(
-            checked = checkedState.value,
-            onCheckedChange = { checkedState.value = it }
-        )
-        Text(text = if (checkedState.value) "Especial" else "No Especial")
-        Spacer(modifier = Modifier.padding(5.dp))
 
         Button(
             shape = RoundedCornerShape(5.dp),

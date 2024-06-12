@@ -157,8 +157,8 @@ fun RegisterScreen(navController: NavController) {
 
                       vm.signInWithEmailAndPassword(context,email, password,firstName, lastName,selectedOptionText,2,false,false,false,false,password) {
 
-                          Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
-                          navController.navigate("Home")
+                          Toast.makeText(context, "Bienvenido $firstName, favor de iniciar sesión", Toast.LENGTH_SHORT).show()
+                          //navController.navigate("Home")
                       }
 
             },
