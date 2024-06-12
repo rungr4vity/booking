@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.firebasenotes.bill.toXml
@@ -32,7 +34,7 @@ import java.util.UUID
 @Composable
 fun DDViaticos(navController: NavController,viajeId: String) {
 
-
+    var fileContent_validate by remember { mutableStateOf("") }
     println()
     var fecha by remember { mutableStateOf("") }
     var monto by remember { mutableStateOf("") }
@@ -138,7 +140,6 @@ fun DDViaticos(navController: NavController,viajeId: String) {
                     Text(text = "Adjunta Imagen")
 
                     if (imageUri != null) {
-
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Icon(
@@ -160,21 +161,36 @@ fun DDViaticos(navController: NavController,viajeId: String) {
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = monto,
-                    onValueChange = { monto = it },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal
+                    ),
+                    onValueChange = {
+                        if (it.length <= 20){
+                            monto = it
+                        }
+
+                                    },
                     label = { Text("Monto") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = descripcion,
-                    onValueChange = { descripcion = it },
+                    onValueChange = {
+                        if (it.length <= 100){
+                            descripcion = it }
+                        },
                     label = { Text("Descripción") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = emisor,
-                    onValueChange = { emisor = it },
+                    onValueChange = {
+                        if (it.length <= 50){
+                            emisor = it }
+                        }
+                        ,
                     label = { Text("Emisor") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -331,6 +347,12 @@ fun DDViaticos(navController: NavController,viajeId: String) {
 fun btn_EnviarGasto(context:Context,monto:String,viajeId:String, imageUri: Uri?, onUploadSuccess: () -> Unit) {
     Button(
         onClick = {
+            if (imageUri == null) {
+                Toast.makeText(context, "No se ha seleccionado una imagen", Toast.LENGTH_SHORT).show()
+                return@Button
+            }
+
+
             imageUri?.let {
                 uploadImageToFirebase(context,monto,viajeId, imageUri = it, onUploadSuccess)
             }
@@ -353,6 +375,22 @@ fun btn_EnviarGastoDeducible(context:Context,monto:String,viajeId:String,pdfUri:
                 Toast.makeText(context, "No se ha seleccionado un PDF", Toast.LENGTH_SHORT).show()
                 return@Button
             }
+
+
+
+            var xml_validate = ""
+            xmlUri?.let {
+                context.contentResolver.openInputStream(xmlUri)?.use { inputStream ->
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    xml_validate = reader.readText()
+                }
+            }
+
+                if(!xml_validate.contains("<cfdi:Comprobante")){
+                    Toast.makeText(context, "Se requiere un XML con formato CFDI", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+
 
             var idPdf = ""
             pdfUri?.let {

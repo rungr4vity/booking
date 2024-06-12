@@ -125,10 +125,12 @@ class ViaticosViewModel: ViewModel(){
         suspend fun obtenerUltimoViaje(): viajeDTO {
             val db = FirebaseFirestore.getInstance()
             val idUsuario = FirebaseAuth.getInstance().currentUser?.uid
+            val email = FirebaseAuth.getInstance().currentUser?.email
             var dto: viajeDTO? = null
 
             val querySnapshot = db.collection("Viajes")
                 .whereEqualTo("idUsuario", idUsuario?.trim())
+
                 .whereEqualTo("activo", true)
                 .get()
                 .await()
@@ -136,7 +138,7 @@ class ViaticosViewModel: ViewModel(){
             return try {
 
                 val result = querySnapshot.documents.forEach {
-println()
+
                     dto = viajeDTO(
                         true,
                         it.get("cliente").toString(),
@@ -148,13 +150,13 @@ println()
                         it.get("motivo").toString(),
                         it.get("presupuesto").toString().toDouble()
                     )
-                    print (dto)
+
                 }
 
                 Log.d("viaje_result", result.toString())
-                println()
-                //val result = querySnapshot.documents[0].toObject(viajeDTO::class.java)
 
+                //val result = querySnapshot.documents[0].toObject(viajeDTO::class.java)
+                println()
                 return dto ?: viajeDTO()
 
             } catch (e: Exception) {
