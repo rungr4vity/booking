@@ -3,6 +3,7 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 import android.R
 import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Column
@@ -96,6 +97,9 @@ fun Detalle(
                 Text(text = " $nombre  - $company", modifier = Modifier.padding(10.dp))
                 Text(text = "Cajon: ${cajon}", modifier = Modifier.padding(10.dp))
                 Text(text = "Piso: $piso", modifier = Modifier.padding(10.dp))
+
+                var esEspecial_string = if (esEspecial) "Si" else "No"
+                //Text(text = "Pertenece a: $esEspecial_string", modifier = Modifier.padding(10.dp))
                 Text(
                     text = "Disponible",
                     fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
@@ -107,16 +111,28 @@ fun Detalle(
                         modifier = Modifier.padding(10.dp),
                         )
                 }
-            Spacer(modifier = Modifier.size(130.dp))
+            Spacer(modifier = Modifier.size(50.dp))
                 Button(
                     onClick = {
-                        navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}/${idEstacionamiento}",
-                            navOptions { // Use the Kotlin DSL for building NavOptions
-                            anim {
-                                enter = R.animator.fade_in
-                                exit = R.animator.fade_out
-                            }
-                        })
+                        if(!esEspecial){
+                            navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}/${idEstacionamiento}",
+                                navOptions { // Use the Kotlin DSL for building NavOptions
+                                    anim {
+                                        enter = R.animator.fade_in
+                                        exit = R.animator.fade_out
+                                    }
+                                })
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Cajón especial no disponible",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+
+
+
                         },
                     modifier = Modifier
                         .fillMaxWidth()
