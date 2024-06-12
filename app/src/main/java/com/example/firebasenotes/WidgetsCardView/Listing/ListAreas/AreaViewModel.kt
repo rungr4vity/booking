@@ -76,10 +76,10 @@ class AreaViewModelDOS : ViewModel() {
         }
     }
 
-    fun deleteArea(areaId: String) {
+    fun deleteArea(idArea: String) {
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
-            db.collection("Oficinas").document(areaId).delete().await()
+            db.collection("Oficinas").document(idArea).delete().await()
             stateareaa.value = DataFromArea()
         }
     }

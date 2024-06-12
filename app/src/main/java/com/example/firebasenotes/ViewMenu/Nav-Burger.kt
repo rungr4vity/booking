@@ -100,15 +100,26 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
     var expanded by remember { mutableStateOf(false) }
 
     val drawerItems = listOf(
-        Triple("Mi Perfil", Icons.Default.Person, 2 ),
-        Triple("Alta de area", Icons.Default.AddCircle, 1),
-        Triple("Cat Areas", Icons.Default.Menu, 1),
-        Triple("Reservar cajon", Icons.Default.AddCircle, 2),
-        Triple("Reservar Area", Icons.Default.AddCircle, 2),
-        Triple("Alta de Cajon", Icons.Default.AddCircle, 2),
-        Triple("Cat Cajones", Icons.Default.Menu, 1),
+        //Admin
+        Triple("Mi Perfil", Icons.Default.Person, 0),
+//        Triple("Alta de area", Icons.Default.AddCircle, 0),
+//        Triple("Cat Areas", Icons.Default.Menu, 0),
+        Triple("Estacionamientos", Icons.Default.AddCircle, 0),
+        Triple("Oficinas", Icons.Default.AddCircle, 0),
+//        Triple("Alta de Cajon", Icons.Default.AddCircle, 0),
+//        Triple("Cat Cajones", Icons.Default.Menu, 0),
+        Triple("Viaticos", Icons.Default.DateRange, 0),
+        Triple("Lista de Usuarios", Icons.Default.Person, 0),
+
+
+        //Usuario
+        Triple("Mi Perfil", Icons.Default.Person, 2),
+        Triple("Estacionamientos", Icons.Default.AddCircle, 2),
+        Triple("Oficinas", Icons.Default.AddCircle, 2),
         Triple("Viaticos", Icons.Default.DateRange, 2),
-        Triple("Lista de Usuarios", Icons.Default.Person, 2),
+
+
+
 //        Triple("Mis reservas", Icons.Default.DateRange, 1),
 //        Triple("XML", Icons.Default.DateRange, 4),
 
@@ -122,7 +133,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(text = "¡Bienvenido!, ${userData.nombres}") },
+                title = { Text(text = "¡Bienvenido!") },
                 navigationIcon = {
 
                     IconButton(onClick = {
@@ -152,7 +163,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Home") {
                     MiPerfil()
                 }
-                composable("Reservar cajon") {
+                composable("Estacionamientos") {
                     DrawerScreen(navController = navController)
                 }
                 composable("Mis reservas") {
@@ -172,14 +183,17 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
 
 
-                composable("DetalleOficinas/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",arguments = listOf(
-                    navArgument("capacidad",)  { type = NavType.StringType },
-                    navArgument("descripcion",)  { type = NavType.StringType },
-                    navArgument("id",)  { type = NavType.StringType },
-                    navArgument("mobilaria",)  { type = NavType.StringType },
-                    navArgument("nombre",)  { type = NavType.StringType },
-                    navArgument("idArea",)  { type = NavType.StringType },
-                )){
+                composable(
+                    "DetalleOficinas/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",
+                    arguments = listOf(
+                        navArgument("capacidad") { type = NavType.StringType },
+                        navArgument("descripcion") { type = NavType.StringType },
+                        navArgument("id") { type = NavType.StringType },
+                        navArgument("mobilaria") { type = NavType.StringType },
+                        navArgument("nombre") { type = NavType.StringType },
+                        navArgument("idArea") { type = NavType.StringType },
+                    )
+                ) {
 
 
                     var viewModel = OficinasViewModel()
@@ -203,14 +217,15 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
 
 
-                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",arguments = listOf(
-                    navArgument("nombre",)  { type = NavType.StringType },
-                    navArgument("company",) { type = NavType.StringType },
-                    navArgument("cajon",) { type = NavType.StringType },
-                    navArgument("piso",) { type = NavType.StringType },
-                    navArgument("esEspecial",) { type = NavType.BoolType },
-                    navArgument("idEstacionamiento",) { type = NavType.StringType }
-                )) {
+                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",
+                    arguments = listOf(
+                        navArgument("nombre") { type = NavType.StringType },
+                        navArgument("company") { type = NavType.StringType },
+                        navArgument("cajon") { type = NavType.StringType },
+                        navArgument("piso") { type = NavType.StringType },
+                        navArgument("esEspecial") { type = NavType.BoolType },
+                        navArgument("idEstacionamiento") { type = NavType.StringType }
+                    )) {
 
                     val nombre = it.arguments?.getString("nombre") ?: ""
                     val company = it.arguments?.getString("company") ?: ""
@@ -223,7 +238,16 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
 
                     val context = LocalContext.current
-                    Detalle(navController = navController,context, nombre,company,cajon,piso,esEspecial,idEstacionamiento)
+                    Detalle(
+                        navController = navController,
+                        context,
+                        nombre,
+                        company,
+                        cajon,
+                        piso,
+                        esEspecial,
+                        idEstacionamiento
+                    )
                 }
                 composable("Cat Areas") {
                     ModAreaEliminar(areaViewModelDOS = viewModel(), navController = navController)
@@ -237,7 +261,10 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Actualizar") {
                     val sharedPreferencesManager = SharedPreferencesManager(LocalContext.current)
 
-                    ActualizarPerfil(ddViewModel=ddViewModel,sharedPreferencesManager = sharedPreferencesManager)
+                    ActualizarPerfil(
+                        ddViewModel = ddViewModel,
+                        sharedPreferencesManager = sharedPreferencesManager
+                    )
                 }
                 composable("Mi Perfil") {
                     PerfilScreen(navController = navController, userData = userData)
@@ -245,25 +272,27 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Cat Cajones") {
                     DeleteDrawer(navController = navController)
                 }
-                composable("Reservar Area") {
+                composable("Oficinas") {
                     AreaScreen(areaViewModel = viewModel(), navController = navController)
                 }
                 composable("Viaticos") {
                     ViaticosScreen(navController = navController)
                 }
                 composable("imgViaticos") {
-                    UploadImageScreen()                }
-                composable("Crear viaje"){
+                    UploadImageScreen()
+                }
+                composable("Crear viaje") {
                     crearViaje()
                 }
 
 
-                composable("viaticosAdd/{viajeId}", arguments = listOf(
-                    navArgument("viajeId") { type = NavType.StringType },
-                )) {
-                    backStackEntry ->
+                composable(
+                    "viaticosAdd/{viajeId}", arguments = listOf(
+                        navArgument("viajeId") { type = NavType.StringType },
+                    )
+                ) { backStackEntry ->
                     val viajeId = backStackEntry.arguments?.getString("viajeId") ?: ""
-                    DDViaticos(navController = navController,viajeId)
+                    DDViaticos(navController = navController, viajeId)
                 }
 
                 composable("Lista de Usuarios") {
@@ -285,8 +314,10 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val apellidos = backStackEntry.arguments?.getString("apellidos") ?: ""
                     val empresa = backStackEntry.arguments?.getString("empresa") ?: ""
                     val email = backStackEntry.arguments?.getString("email") ?: ""
-                    val puedeFacturar = backStackEntry.arguments?.getBoolean("puedeFacturar") ?: false
-                    val usuarioHabilitado = backStackEntry.arguments?.getBoolean("usuarioHabilitado") ?: false
+                    val puedeFacturar =
+                        backStackEntry.arguments?.getBoolean("puedeFacturar") ?: false
+                    val usuarioHabilitado =
+                        backStackEntry.arguments?.getBoolean("usuarioHabilitado") ?: false
                     val typeId = backStackEntry.arguments?.getString("typeId") ?: "2"
 
                     // Llama a la función detalleUser y pasa los datos del usuario
@@ -303,14 +334,17 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
 
 
-                composable("ReservaOficinas_extension/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",arguments = listOf(
-                    navArgument("capacidad",)  { type = NavType.StringType },
-                    navArgument("descripcion",)  { type = NavType.StringType },
-                    navArgument("id",)  { type = NavType.StringType },
-                    navArgument("mobilaria",)  { type = NavType.StringType },
-                    navArgument("nombre",)  { type = NavType.StringType },
-                    navArgument("idArea",)  { type = NavType.StringType },
-                )){
+                composable(
+                    "ReservaOficinas_extension/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",
+                    arguments = listOf(
+                        navArgument("capacidad") { type = NavType.StringType },
+                        navArgument("descripcion") { type = NavType.StringType },
+                        navArgument("id") { type = NavType.StringType },
+                        navArgument("mobilaria") { type = NavType.StringType },
+                        navArgument("nombre") { type = NavType.StringType },
+                        navArgument("idArea") { type = NavType.StringType },
+                    )
+                ) {
 
                     val capacidad = it.arguments?.getString("capacidad") ?: ""
                     val descripcion = it.arguments?.getString("descripcion") ?: ""
@@ -319,26 +353,27 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val nombre = it.arguments?.getString("nombre") ?: ""
                     val idArea = it.arguments?.getString("idArea") ?: ""
 
-                ReservaOficinas_extension(
-                    navController = navController,
-                    LocalContext.current,
-                    capacidad,
-                    descripcion,
-                    id,
-                    mobilaria,
-                    nombre,
-                    idArea)
+                    ReservaOficinas_extension(
+                        navController = navController,
+                        LocalContext.current,
+                        capacidad,
+                        descripcion,
+                        id,
+                        mobilaria,
+                        nombre,
+                        idArea
+                    )
                 }
 
                 composable("ReservacionCajones_extension/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",
                     arguments = listOf(
-                        navArgument("nombre",)  { type = NavType.StringType },
-                        navArgument("company",) { type = NavType.StringType },
-                        navArgument("cajon",) { type = NavType.StringType },
-                        navArgument("piso",) { type = NavType.StringType },
-                        navArgument("esEspecial",) { type = NavType.BoolType },
-                        navArgument("idEstacionamiento",) { type = NavType.StringType }
-                    )){
+                        navArgument("nombre") { type = NavType.StringType },
+                        navArgument("company") { type = NavType.StringType },
+                        navArgument("cajon") { type = NavType.StringType },
+                        navArgument("piso") { type = NavType.StringType },
+                        navArgument("esEspecial") { type = NavType.BoolType },
+                        navArgument("idEstacionamiento") { type = NavType.StringType }
+                    )) {
 
                     val nombre = it.arguments?.getString("nombre") ?: ""
                     val company = it.arguments?.getString("company") ?: ""
@@ -351,13 +386,24 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
                     val context = LocalContext.current
                     var vm = LoginViewModel()
-                    ReservacionCajones_extension(vm,context,nombre,company,cajon,piso,esEspecial,idEstacionamiento)
+                    ReservacionCajones_extension(
+                        vm,
+                        context,
+                        nombre,
+                        company,
+                        cajon,
+                        piso,
+                        esEspecial,
+                        idEstacionamiento
+                    )
                 }
 
 
-                composable("Viaje2/{motivo}", arguments = listOf(
-                    navArgument("motivo",) { type = NavType.StringType },
-                )) {
+                composable(
+                    "Viaje2/{motivo}", arguments = listOf(
+                        navArgument("motivo") { type = NavType.StringType },
+                    )
+                ) {
 
                     val motivo = it.arguments?.getString("motivo") ?: "Viaje de negocios"
                     ViajeDetalle("")
@@ -397,9 +443,13 @@ fun DrawerContent(
         )
         Spacer(modifier = Modifier.height(22.dp))
 
-        Text(text = "${userData.nombres} ${userData.apellidos}", fontSize = 18.sp, fontWeight = FontWeight.Bold
-                )
-        Text(text = userData.email, fontSize = 15.sp, fontWeight = FontWeight.Medium
+        Text(
+            text = "${userData.nombres} ${userData.apellidos}",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = userData.email, fontSize = 15.sp, fontWeight = FontWeight.Medium
         )
 
         Spacer(modifier = Modifier.height(22.dp))

@@ -29,8 +29,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
+import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaViewModelDOS
 
 import com.example.firebasenotes.models.oficinasDTO
 
@@ -52,7 +55,9 @@ fun DetalleOficinas(
     mobilaria: String,
     nombre: String,
     idArea: String,
-    viewModel: OficinasViewModel = OficinasViewModel()
+    viewModel: OficinasViewModel = OficinasViewModel(),
+    deleteViewModel: AreaViewModelDOS = AreaViewModelDOS(),
+    ddViewModel: DDViewModel = viewModel()
 ){
 
     // first comment
@@ -69,7 +74,7 @@ fun DetalleOficinas(
 //
         val today = LocalDate.now()
         val dayOfYear = today.dayOfYear
-
+        val userData = ddViewModel.state.value
         val data = System.currentTimeMillis()
         var suma = 0
 
@@ -124,6 +129,18 @@ fun DetalleOficinas(
 
                 }
             Spacer(modifier = Modifier.size(60.dp))
+
+            if(userData.typeId == 0){
+           Button(onClick = {  deleteViewModel.deleteArea(idArea)}
+               ,
+               modifier = Modifier
+                   .padding(horizontal = 19.dp)
+                   .align(Alignment.End),
+               colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+            ) {
+                Text(text = "Eliminar",color = Color.White)
+            }
+            }
 
                 Button(
                     onClick = {
