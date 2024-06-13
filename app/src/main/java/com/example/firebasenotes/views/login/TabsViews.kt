@@ -19,7 +19,7 @@ import com.example.firebasenotes.viewModels.LoginViewModel
 
 fun TabsViews(navController: NavController,loginVM: LoginViewModel){
     var selectTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Inicio sesion","Registro")
+    val tabs = listOf("Inicio de sesión","Nuevo usuario")
 
     Column {
         TabRow(selectedTabIndex = selectTab,

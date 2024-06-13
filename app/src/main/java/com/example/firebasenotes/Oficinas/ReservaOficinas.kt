@@ -166,7 +166,6 @@ fun ReservaOficinas_extension(
             .fillMaxSize()
     ) {
 
-        Log.d("entramos","OK")
 
         var state = rememberDatePickerState()
         var data = state.selectedDateMillis ?: System.currentTimeMillis()

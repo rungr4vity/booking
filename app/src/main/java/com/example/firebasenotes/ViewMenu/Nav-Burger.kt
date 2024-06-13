@@ -92,7 +92,6 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Preview
 @Composable
 fun App(ddViewModel: DDViewModel = viewModel()) {
     val userData = ddViewModel.state.value
@@ -108,7 +107,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Oficinas", Icons.Default.AddCircle, 0),
 //        Triple("Alta de Cajon", Icons.Default.AddCircle, 0),
 //        Triple("Cat Cajones", Icons.Default.Menu, 0),
-        Triple("Viaticos", Icons.Default.DateRange, 0),
+        Triple("Viáticos", Icons.Default.DateRange, 0),
         Triple("Lista de Usuarios", Icons.Default.Person, 0),
 
 
@@ -116,7 +115,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         Triple("Mi Perfil", Icons.Default.Person, 2),
         Triple("Estacionamientos", Icons.Default.AddCircle, 2),
         Triple("Oficinas", Icons.Default.AddCircle, 2),
-        Triple("Viaticos", Icons.Default.DateRange, 2),
+        Triple("Viáticos", Icons.Default.DateRange, 2),
 
 
 
@@ -275,7 +274,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 composable("Oficinas") {
                     AreaScreen(areaViewModel = viewModel(), navController = navController)
                 }
-                composable("Viaticos") {
+                composable("Viáticos") {
                     ViaticosScreen(navController = navController)
                 }
                 composable("imgViaticos") {

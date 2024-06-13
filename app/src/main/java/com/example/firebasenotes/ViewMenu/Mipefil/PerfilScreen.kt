@@ -53,12 +53,14 @@ fun PerfilScreen(userData: Data, navController: NavController) {
             Text(text = "Empresa: ${userData.empresa}", fontSize = 18.sp, textAlign = TextAlign.End)
             //Text(text = "Contraseña: ${userData.contrasena}", fontSize = 18.sp, textAlign = TextAlign.End)
             Spacer(modifier = Modifier.size(32.dp))
+
+            Text(
+                text = "Mis reservaciones:",
+                modifier = Modifier.clickable { navController.navigate("Mis reservas") },
+                color = Color.Black
+            )
 Row() {
-    Text(
-        text = "Mis reservaciones:",
-        modifier = Modifier.clickable { navController.navigate("Mis reservas") },
-        color = Color.Black
-    )
+
 Spacer(modifier = Modifier.size(10.dp))
     Text(
         text = "Estacionamiento",
