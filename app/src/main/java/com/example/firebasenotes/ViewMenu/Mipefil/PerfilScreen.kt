@@ -18,8 +18,10 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,8 +36,11 @@ import androidx.navigation.NavController
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun PerfilScreen(userData: Data, navController: NavController) {
-    Scaffold {
-        Column(
+    CompositionLocalProvider(LocalContentColor provides Color.Black) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            content = {
+                Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
@@ -79,8 +84,8 @@ Spacer(modifier = Modifier.size(10.dp))
             Spacer(modifier = Modifier.size(5.dp))
             BTN(navController = navController)
         }
-    }
-}
+    })
+}}
 
 @Composable
 fun BTN(navController: NavController){
@@ -91,6 +96,6 @@ fun BTN(navController: NavController){
             .padding(horizontal = 20.dp),
         colors = ButtonDefaults.buttonColors( Color(0xFF800000))
     ) {
-        Text(text = "Actualizar mi perfil")
+        Text(text = "Actualizar mi perfil", color = Color.White)
     }
 }

@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.Firebasenotes" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Estilo para el tema oscuro -->
+    <style name="Theme.Firebasenotes.Dark" parent="android:Theme.Material">
+        <!-- Definiciones de estilo específicas del modo oscuro -->
+        <item name="android:textColor">@color/dark_text_color</item>
+        <item name="colorPrimary">@color/primaryColorDark</item>
+
+    </style>
 </resources>

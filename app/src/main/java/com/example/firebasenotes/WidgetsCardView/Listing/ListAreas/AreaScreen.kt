@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,8 +30,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,9 +70,10 @@ if(userData.typeId == 0){
         },
         modifier = Modifier
             .align(Alignment.BottomEnd)
-            .padding(16.dp)
+            .padding(16.dp),
+        containerColor =  Color(0xFF800000)
     ) {
-        androidx.compose.material.Icon(Icons.Default.Add, contentDescription = "Add")
+        androidx.compose.material.Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
     }
 }
 
@@ -80,12 +84,15 @@ fun ComponentAreas(
     ar: DataAreas,
     navController: NavController
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+    CompositionLocalProvider(LocalContentColor provides if (isDarkMode) Color.White else Color.Black) {
+
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically,modifier = Modifier.padding(start = 10.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.ofi), // Reemplaza 'your_image' con el nombre de tu imagen
                 contentDescription = "Logo",
@@ -149,8 +156,8 @@ fun ComponentAreas(
                     }
                     .align(Alignment.CenterVertically)
                     .padding(end = 16.dp),
-                color = Color.Blue
+                color = if (isDarkMode) Color.White else Color.Black
             )
         }
     }
-}
+}}

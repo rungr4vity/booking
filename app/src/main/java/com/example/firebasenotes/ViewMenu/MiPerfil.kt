@@ -2,6 +2,7 @@ package com.example.firebasenotes.ViewMenu
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.firebasenotes.R
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.text.font.FontWeight
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -33,12 +36,15 @@ import com.google.firebase.ktx.Firebase
 @Composable
 fun MiPerfil() {
     Scaffold {
+        val isDarkMode = isSystemInDarkTheme()
+        CompositionLocalProvider(LocalContentColor provides if (isDarkMode) Color.White else Color.Black) {
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Hola: ${Firebase.auth.currentUser?.email ?: ""}", fontWeight = FontWeight.Medium, color = Color.Black, modifier = Modifier.padding(top = 15.dp))
+            Text(text = "Hola: ${Firebase.auth.currentUser?.email ?: ""}", fontWeight = FontWeight.Medium, color =if (isDarkMode) Color.White else Color.Black, modifier = Modifier.padding(top = 15.dp))
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
                 Image(
@@ -60,4 +66,4 @@ fun MiPerfil() {
 //            )
         }
     }
-}
+}}

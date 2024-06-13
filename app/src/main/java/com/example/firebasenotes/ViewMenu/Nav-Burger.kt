@@ -29,10 +29,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -423,40 +426,42 @@ fun DrawerContent(
     navController: NavHostController,
     ddViewModel: DDViewModel = viewModel()
 ) {
-    val userData = ddViewModel.state.value
-    Column(
-        modifier = Modifier
-            .padding(6.dp)
-            .fillMaxSize()
-    ) {
-        Spacer(modifier = Modifier.height(2.dp))
-
-        Image(
-            painter = painterResource(R.drawable.isita2), // Reemplaza R.drawable.logo_image con el ID de tu imagen
-            contentDescription = "",
+    CompositionLocalProvider(LocalContentColor provides Color.Black) {
+        val userData = ddViewModel.state.value
+        Column(
             modifier = Modifier
                 .padding(6.dp)
-                .align(Alignment.CenterHorizontally)
-                .size(140.dp)
-                .clip(CircleShape)
-        )
-        Spacer(modifier = Modifier.height(22.dp))
+                .fillMaxSize()
+        ) {
+            Spacer(modifier = Modifier.height(2.dp))
 
-        Text(
-            text = "${userData.nombres} ${userData.apellidos}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = userData.email, fontSize = 15.sp, fontWeight = FontWeight.Medium
-        )
+            Image(
+                painter = painterResource(R.drawable.isita2), // Reemplaza R.drawable.logo_image con el ID de tu imagen
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(6.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .size(140.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.height(22.dp))
 
-        Spacer(modifier = Modifier.height(22.dp))
-        drawerItems.forEach { (title, icon) ->
-            DrawerItem(title = title, icon = icon) {
-                navController.navigate(title)
+            Text(
+                text = "${userData.nombres} ${userData.apellidos}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = userData.email, fontSize = 15.sp, fontWeight = FontWeight.Medium
+            )
+
+            Spacer(modifier = Modifier.height(22.dp))
+            drawerItems.forEach { (title, icon) ->
+                DrawerItem(title = title, icon = icon) {
+                    navController.navigate(title)
+                }
+                Spacer(modifier = Modifier.height(26.dp))
             }
-            Spacer(modifier = Modifier.height(26.dp))
         }
     }
 }
