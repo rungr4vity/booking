@@ -38,7 +38,7 @@ fun MotivosYClientesScreen(viewModel: ViajeViewModel = viewModel(), usersViewMod
             ExposedDropdownMenuBoxClientes(clientes, selectedCliente) { selectedCliente = it }
             Spacer(modifier = Modifier.height(10.dp))
             UserInputFields(presupuesto, destino, { presupuesto = it }, { destino = it })
-            Spacer(modifier = Modifier.height(330.dp))
+            Spacer(modifier = Modifier.height(310.dp))
             Button(
                 onClick = {
                     viewModel.GuardarViaje(

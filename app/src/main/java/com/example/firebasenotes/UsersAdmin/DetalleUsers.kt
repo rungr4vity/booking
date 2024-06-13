@@ -21,9 +21,11 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,7 +78,7 @@ fun detalleUser(
     val selectedTipoUsuario = remember { mutableStateOf(title) }
     val selectedType = remember { mutableStateOf(typeId.toInt()) }
     val expandedType = remember { mutableStateOf(false) }
-
+    CompositionLocalProvider(LocalContentColor provides Color.Black) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -127,8 +129,9 @@ fun detalleUser(
                     OutlinedTextField(
                         value = selectedOptionText,
                         onValueChange = { },
-                        label = { Text("Facturas") },
+                        label = { Text("Facturas",color = Color.Black) },
                         readOnly = false,
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .menuAnchor(),
@@ -166,8 +169,9 @@ fun detalleUser(
                     OutlinedTextField(
                         value = selectedOption,
                         onValueChange = { },
-                        label = { Text("Habilitado") },
+                        label = { Text("Habilitado",color = Color.Black) },
                         readOnly = false,
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .menuAnchor(),
@@ -199,7 +203,8 @@ fun detalleUser(
                         value = selectedTipoUsuario.value,
                         onValueChange = { selectedTipoUsuario.value = it },
                         readOnly = false,
-                        label = { androidx.compose.material.Text("Tipo de Usuario") },
+                        label = { androidx.compose.material.Text("Tipo de Usuario", color = Color.Black) },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
                         modifier = Modifier.fillMaxWidth()
                     )
                     ExposedDropdownMenu(
@@ -250,11 +255,11 @@ fun detalleUser(
                     )
                 ) {
 
-                    Text("Actualizar")
+                    Text("Actualizar", color = Color.White)
                 }
 
             }
         }
-    }
+    }}
 }
 

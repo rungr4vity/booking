@@ -335,7 +335,8 @@ fun DDViaticos(navController: NavController,viajeId: String) {
                         Text("Cerrar")
                     }
                 },
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+
             ) {
                 Text("Imagen subida exitosamente")
             }
@@ -358,7 +359,7 @@ fun btn_EnviarGasto(context:Context,monto:String,viajeId:String, imageUri: Uri?,
             }
         },
         modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+        colors = ButtonDefaults.buttonColors( Color(0xFF800000))
     ) {
         Text(text = "Enviar Gastos", color = Color.White)
     }
@@ -431,7 +432,7 @@ fun btn_EnviarGastoDeducible(context:Context,monto:String,viajeId:String,pdfUri:
 
         },
         modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+        colors = ButtonDefaults.buttonColors( Color(0xFF800000))
     ) {
         Text(text = "Enviar Gastos", color = Color.White)
     }

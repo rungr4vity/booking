@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -47,6 +48,7 @@ fun ViaticosScreen(
     var mensajeVisible by remember { mutableStateOf(false) }
     var confirmarCierre by remember { mutableStateOf(false) }
 
+    CompositionLocalProvider(LocalContentColor provides Color.Black) {
     if (viaticos.puedeFacturar == true) {
         Scaffold {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -103,9 +105,10 @@ fun ViaticosScreen(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .weight(1f)
-                                .height(48.dp)
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors( Color(0xFF800000))
                         ) {
-                            Text("Cerrar Viaje")
+                            Text("Cerrar Viaje", color = Color.White)
                         }
                         Button(
                             onClick = {
@@ -114,9 +117,10 @@ fun ViaticosScreen(
                             modifier = Modifier
                                 .padding(start = 8.dp)
                                 .weight(1f)
-                                .height(48.dp)
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors( Color(0xFF800000))
                         ) {
-                            Text("Agregar Gasto")
+                            Text("Agregar Gasto", color = Color.White)
                         }
 //                        Row(
 //                            modifier = Modifier
@@ -158,11 +162,13 @@ fun ViaticosScreen(
                                     Button(onClick = {
                                         confirmarCierre = true
                                         mensajeVisible = false
+
                                     }) {
                                         Text("Aceptar")
                                     }
                                 },
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier.padding(8.dp),
+
                             ) {
                                 Text("¿Desea cerrar el viaje?")
                             }
@@ -183,7 +189,7 @@ fun ViaticosScreen(
                                 .padding(horizontal = 30.dp),
                             colors = ButtonDefaults.buttonColors( Color(0xFF800000))
                         ) {
-                            Text("Crear Viaje")
+                            Text("Crear Viaje", color = Color.White)
                         }
                     }
                 }
@@ -192,7 +198,7 @@ fun ViaticosScreen(
     } else {
         Descr()
     }
-}
+}}
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
