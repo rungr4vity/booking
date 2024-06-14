@@ -10,6 +10,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -55,19 +56,25 @@ import java.util.Calendar
 import java.util.Locale
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.runtime.*
-
-
-
-
+import androidx.compose.runtime.livedata.observeAsState
+import com.example.firebasenotes.models.horariosModel
+import com.example.firebasenotes.viewModels.LoginViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController,
-                 ddViewModel: DDViewModel = viewModel()) {
+                 ddViewModel: DDViewModel = viewModel(),loginVM: LoginViewModel = LoginViewModel()
+) {
     val cajones = drawerViewModel.stateDrawer.value
     val userData = ddViewModel.state.value
 
@@ -83,6 +90,13 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
     val context = LocalContext.current
     var expansion_Horarios by remember { mutableStateOf(false) }
     var menHorarios by remember { mutableStateOf("7:30 am - 12 pm") }
+
+
+    val opsHorarios: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
+
+    Log.d("opsHorarios",opsHorarios.toString())
+
+
 
     if (showDatePicker) {
         Log.d("showDatePicker",showDatePicker.toString())
@@ -121,13 +135,19 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
             //verticalAlignment = Alignment.CenterVertically,
             //horizontalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            IconButton(onClick = { showDatePicker = true }) {
+            IconButton(onClick = {
+
+                showDatePicker = true
+
+
+            }) {
                 Icon(Icons.Filled.DateRange, contentDescription = "Pick a Date")
             }
             androidx.compose.material.OutlinedTextField(
                 readOnly = true,
                 value = text3,
-                onValueChange = { text3 = it },
+                onValueChange = {
+                    text3 = it },
                 label = { androidx.compose.material.Text("Fecha") },
                 modifier = Modifier
                     //.weight(1f)
@@ -153,7 +173,7 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor()
-                        .padding(top = 1.dp, start = 5.dp, end = 8.dp,bottom = 12.dp),
+                        .padding(top = 1.dp, start = 5.dp, end = 8.dp, bottom = 12.dp),
                     //trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expansion_Horarios) }
                 )
 
@@ -174,6 +194,17 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
             }
         }
 
+        androidx.compose.material3.Button(
+            shape = RoundedCornerShape(5.dp), onClick = {
+                loginVM.getAll(dayOfYear_,year)
+            },
+            colors = ButtonDefaults.buttonColors(Color(0xFF800000)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        ) {
+            androidx.compose.material.Text(text = "Buscar", color = Color.White)
+        }
 
 
         CompositionLocalProvider(LocalContentColor provides Color.Black) {

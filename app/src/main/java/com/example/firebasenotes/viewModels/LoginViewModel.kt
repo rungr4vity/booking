@@ -299,8 +299,50 @@ class LoginViewModel:ViewModel(){
 //    }
 
 
+    fun getAll(ano:Int,dia:Int) {
+        viewModelScope.launch {
+            _horarios.value = getHorarios_year_day(ano,dia)
+        }
+    }
 
 
+    suspend fun getHorarios_year_day(dia:Int,ano:Int)
+    :MutableList <horariosModel> {
+
+        var horarios = mutableListOf<horariosModel>()
+        val db = FirebaseFirestore.getInstance()
+
+        val usuarios = db.collection("ReservacionEstacionamiento")
+
+            .whereEqualTo("ano", ano)
+            .whereEqualTo("dia",dia)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+
+
+                    //Log.d("HORARIO_count", "ERROR:${document.data?.get("turno").toString().toInt()}")
+                    horarios.add(
+                        horariosModel(
+                            document.data?.get("turno").toString().toInt(),
+
+                            when(document.data?.get("turno").toString().trim().toInt()){
+                                0 -> "7:30 am - 12 pm".trim()
+                                1 -> "12   pm-  5  pm".trim()
+                                2 -> "5    pm - 9  pm".trim()
+                                else -> ""
+                            }
+
+                        )
+                    )
+                }
+
+            }.addOnFailureListener {
+                Log.d("ERROR en getHorariosHoy", "ERROR:${it.localizedMessage}")
+            }.await()
+
+        return horarios
+    }
 
     // funcion que me regresa los registros de la base de datos
     suspend fun getHorarios(ano:Int,dia:Int,idEstacionamiento: String):MutableList <horariosModel> {
@@ -346,8 +388,6 @@ class LoginViewModel:ViewModel(){
 
         return horarios
     }
-
-
 
     suspend fun EliminarDisponibilidad(reservaciones:MutableList<horariosModel>): Unit {
 
