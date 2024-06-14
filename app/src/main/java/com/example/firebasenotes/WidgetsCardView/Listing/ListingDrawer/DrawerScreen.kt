@@ -2,8 +2,10 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -60,6 +62,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import com.example.firebasenotes.UsersAdmin.UsersViewModel
+import com.example.firebasenotes.models.horariosDTO
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.google.firebase.Firebase
@@ -73,11 +77,18 @@ import java.time.ZoneId
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController,
-                 ddViewModel: DDViewModel = viewModel(),loginVM: LoginViewModel = LoginViewModel()
+                 ddViewModel: DDViewModel = viewModel()
+
 ) {
+    //val context = LocalContext.current
+    //var sharedPreferences = context.getSharedPreferences("shared_usuario", Context.MODE_PRIVATE)
+    //var myempresa = "Verifigas"
+    //sharedPreferences.getString("empresa", "Verifigas")
+
+
     val cajones = drawerViewModel.stateDrawer.value
     val userData = ddViewModel.state.value
-
+    //val user = usersViewModel.stateUsers.value
 
     val calendar = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -87,17 +98,17 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
     var date by remember { mutableStateOf(initialDate) }
     var dayOfYear_ by remember { mutableStateOf(calendar.get(Calendar.DAY_OF_YEAR)) }
     var year by remember { mutableStateOf(calendar.get(Calendar.YEAR)) }
-    val context = LocalContext.current
+
     var expansion_Horarios by remember { mutableStateOf(false) }
-    var menHorarios by remember { mutableStateOf("7:30 am - 12 pm") }
+    var menHorarios by remember { mutableStateOf("Selecciona horario") }
 
 
-    val opsHorarios: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
-
+    //val opsHorarios: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
+    val opsHorarios: List<horariosDTO> by drawerViewModel.horarios_dto.observeAsState(listOf())
     Log.d("opsHorarios",opsHorarios.toString())
 
 
-
+    val context = LocalContext.current
     if (showDatePicker) {
         Log.d("showDatePicker",showDatePicker.toString())
 
@@ -111,7 +122,6 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                     dayOfYear_ = calendar.get(Calendar.DAY_OF_YEAR)
                     year = selectedYear
                     showDatePicker = false
-
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -137,6 +147,13 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
         ) {
             IconButton(onClick = {
 
+
+                //var sharedPreferences = context.getSharedPreferences("shared_usuario", Context.MODE_PRIVATE)
+                //val myempresa = sharedPreferences.getString("empresa", null)
+
+                menHorarios = "Selecciona horario"
+                drawerViewModel.getAll(dayOfYear_,year)
+                drawerViewModel.reload()
                 showDatePicker = true
 
 
@@ -147,7 +164,21 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                 readOnly = true,
                 value = text3,
                 onValueChange = {
-                    text3 = it },
+                    text3 = it
+
+                    var dia = dayOfYear_
+                    var anio = year
+
+
+
+                    menHorarios = "Selecciona horario"
+                    drawerViewModel.getAll(dayOfYear_,year)
+                    drawerViewModel.reload()
+
+
+
+
+                                },
                 label = { androidx.compose.material.Text("Fecha") },
                 modifier = Modifier
                     //.weight(1f)
@@ -157,9 +188,10 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
         }
         Row() {
             val opsHorarios: MutableMap<Int,String> = mutableMapOf(
-                1 to "7:30 am - 12 pm",
-                2 to "12   pm-  5  pm",
-                3 to "5    pm - 9  pm")
+                0 to "7:00 am - 12 pm",
+                1 to "12:00 am - 5  pm",
+                2 to "5:00 pm - 9:00 pm",
+                3 to "Todo el día")
 
             IconButton(onClick = {  }) {
                 Icon(Icons.Filled.Timer, contentDescription = "Pick a Date")
@@ -167,7 +199,11 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
             ExposedDropdownMenuBox(expanded = expansion_Horarios , onExpandedChange = {expansion_Horarios  = !expansion_Horarios } ) {
                 OutlinedTextField(
                     value = menHorarios,
-                    onValueChange = { },
+                    onValueChange = {
+
+
+
+                    },
                     label = { androidx.compose.material.Text("Horarios") },
                     readOnly = true,
                     modifier = Modifier
@@ -186,6 +222,8 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
 
                             menHorarios = option.value
                             expansion_Horarios = false
+                            drawerViewModel.getAll(dayOfYear_,year)
+                            drawerViewModel.reload()
                         },
                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                         )
@@ -196,7 +234,47 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
 
         androidx.compose.material3.Button(
             shape = RoundedCornerShape(5.dp), onClick = {
-                loginVM.getAll(dayOfYear_,year)
+
+
+                var dia = dayOfYear_
+                var anio = year
+
+                drawerViewModel.getAll(dayOfYear_,year)
+                drawerViewModel.reload()
+
+
+                // cajones //all  (idEstacionaminto)
+                // opsHorarios //reservados (idEstacionamiento,valor,texto)
+                var todos = cajones
+                var reservados = opsHorarios
+
+
+                println()
+                //cajones.filter { it.id in opsHorarios.map { it.idEstacionamiento } }
+                //var final = cajones.filterNot { it.id in opsHorarios }
+
+
+                //Log.d("myempresa",myempresa.toString())
+
+
+                cajones.forEach { cajon ->
+                    if (menHorarios != "Selecciona horario") {
+
+                        if (opsHorarios.isNotEmpty()) {
+                            if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
+                                var valor = opsHorarios.find { it.nombre == menHorarios }
+                                if (valor != null) {
+                                    //Toast.makeText(context, "El cajon ${cajon.numero} esta reservado", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    //Toast.makeText(context, "El cajon ${cajon.numero} no esta reservado", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF800000)),
             modifier = Modifier
@@ -212,7 +290,48 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     try {
                         items(cajones) { cajon ->
-                            ComponentDrawer(cajon = cajon, navController = navController)
+
+                            if (menHorarios != "Selecciona horario") {
+
+
+                            // logica
+                            if (opsHorarios.isNotEmpty()) {
+
+
+
+
+                                if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
+                                    var valor = opsHorarios.find { it.nombre == menHorarios }
+                                    var todoDia = opsHorarios.find { it.nombre == "Todo el día" }
+
+
+
+                                    if (valor != null || todoDia != null) {
+                                        //Toast.makeText(context, "El cajon ${cajon.numero} esta reservado", Toast.LENGTH_SHORT).show()
+                                        //remove
+                                    } else {
+
+                                        if(menHorarios == "Todo el día" && opsHorarios.isNotEmpty()){
+
+                                        } else {
+                                            ComponentDrawer(
+                                                cajon = cajon,
+                                                navController = navController
+                                            )
+                                        }
+
+
+
+
+                                        //Toast.makeText(context, "El cajon ${cajon.numero} no esta reservado", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                }
+                            } else {
+                                ComponentDrawer(cajon = cajon, navController = navController)
+                            }
+                        }
+
                         }
                     } catch (e: Exception) {
                         Log.e("ErrorLazy", e.toString())

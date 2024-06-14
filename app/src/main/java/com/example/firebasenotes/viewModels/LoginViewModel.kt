@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DataAreas
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DataDrawer
+import com.example.firebasenotes.models.horariosDTO
 import com.example.firebasenotes.models.horariosModel
 
 import com.example.firebasenotes.models.mainState
@@ -41,6 +42,11 @@ import kotlin.Exception
 
 class LoginViewModel:ViewModel(){
 
+//    private val _horarios_dto = MutableLiveData<MutableList<horariosDTO>>(mutableListOf())
+//    val horarios_dto: LiveData<MutableList<horariosDTO>> get() = _horarios_dto
+
+
+
     private val _horarios = MutableLiveData<MutableList<horariosModel>>(mutableListOf())
     val horarios: LiveData<MutableList<horariosModel>> get() = _horarios
 
@@ -59,8 +65,6 @@ class LoginViewModel:ViewModel(){
 
 
     fun getData(dia:Int,ano:Int,idEstacionamiento:String) {
-
-
         viewModelScope.launch() {
             EliminarDisponibilidad(getHorarios(ano,dia,idEstacionamiento))
         }
@@ -213,9 +217,12 @@ class LoginViewModel:ViewModel(){
     }
 
 
-    suspend fun DataFromUsers(email: String) : MutableList <users>{
+    suspend fun DataFromUsers(email: String,context:Context ) : MutableList <users>{
         val db = FirebaseFirestore.getInstance()
         var usuarios = mutableListOf<users>()
+        val sharedPreferences = context.getSharedPreferences("shared_usuario", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
 
         try {
             //var firebaseAuthId = FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -227,7 +234,10 @@ class LoginViewModel:ViewModel(){
 
             for (document in querySnapshot.documents){
 
-                Log.d("users_data", document.data?.get("usuarioHabilitado").toString())
+//                Log.d("users_data", document.data?.get("usuarioHabilitado").toString())
+//                editor.putString("empresa", document.data?.get("empresa").toString())
+//                editor.apply()
+//                Log.d("empresa", "empresa:${document.data?.get("empresa").toString()}")
 
                 usuarios = mutableListOf(
                     users(document.data?.get("apellidos").toString(),
@@ -260,89 +270,55 @@ class LoginViewModel:ViewModel(){
         return usuarios
     }
 
-//    fun getAvailableSpaces(fechaHoy: Int,espacio: Int): List<general.Companion.horarios2> {
-//
-//        var filtered = emptyList<general.Companion.horarios2>()
-//
+
+//    fun getAll(ano:Int,dia:Int) {
 //        viewModelScope.launch {
-//
-//            //2047 //441
-//            var horariosActual = general.getHorariosHoy(fechaHoy,espacio)
-//
-//            println(horariosActual)
-//
-//            var originales = mutableListOf(
-//                general.Companion.horarios2(1, "9:00 a.m - 1:00 p.m"),
-//                general.Companion.horarios2(2, "1:00 p.m - 6:00 p.m"),
-//                general.Companion.horarios2(3, "6:00 p.m - 9:00 p.m")
-//            )
-//
-//            if(horariosActual.isEmpty()){
-//                filtered = mutableListOf(
-//                    general.Companion.horarios2(1, "9:00 a.m - 1:00 p.m"),
-//                    general.Companion.horarios2(2, "1:00 p.m - 6:00 p.m"),
-//                    general.Companion.horarios2(3, "6:00 p.m - 9:00 p.m")
-//                )
-//
-//            }else {
-//                filtered = originales.filterNot { it in horariosActual }
-//            }
-//
-//
-//            for(i in filtered){
-//                Log.d("HORARIO", "ERROR:${i}")
-//            }
-//
+//            _horarios_dto.value = getHorarios_year_day(ano,dia)
 //        }
 //
-//        return filtered
+//        println()
 //    }
 
 
-    fun getAll(ano:Int,dia:Int) {
-        viewModelScope.launch {
-            _horarios.value = getHorarios_year_day(ano,dia)
-        }
-    }
-
-
-    suspend fun getHorarios_year_day(dia:Int,ano:Int)
-    :MutableList <horariosModel> {
-
-        var horarios = mutableListOf<horariosModel>()
-        val db = FirebaseFirestore.getInstance()
-
-        val usuarios = db.collection("ReservacionEstacionamiento")
-
-            .whereEqualTo("ano", ano)
-            .whereEqualTo("dia",dia)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-
-
-                    //Log.d("HORARIO_count", "ERROR:${document.data?.get("turno").toString().toInt()}")
-                    horarios.add(
-                        horariosModel(
-                            document.data?.get("turno").toString().toInt(),
-
-                            when(document.data?.get("turno").toString().trim().toInt()){
-                                0 -> "7:30 am - 12 pm".trim()
-                                1 -> "12   pm-  5  pm".trim()
-                                2 -> "5    pm - 9  pm".trim()
-                                else -> ""
-                            }
-
-                        )
-                    )
-                }
-
-            }.addOnFailureListener {
-                Log.d("ERROR en getHorariosHoy", "ERROR:${it.localizedMessage}")
-            }.await()
-
-        return horarios
-    }
+//    suspend fun getHorarios_year_day(dia:Int,ano:Int)
+//    :MutableList <horariosDTO> {
+//
+//        var horarios = mutableListOf<horariosDTO>()
+//        val db = FirebaseFirestore.getInstance()
+//
+//        val usuarios = db.collection("ReservacionEstacionamiento")
+//
+//            .whereEqualTo("ano", ano)
+//            .whereEqualTo("dia",dia)
+//            .get()
+//            .addOnSuccessListener { documents ->
+//                for (document in documents) {
+//
+//
+//                    //Log.d("HORARIO_count", "ERROR:${document.data?.get("turno").toString().toInt()}")
+//                    horarios.add(
+//                        horariosDTO(
+//                            document.data?.get("turno").toString().toInt(),
+//
+//                            when(document.data?.get("turno").toString().trim().toInt()){
+//                                0 -> "7:00 am - 12 pm".trim()
+//                                1 -> "12:00 am - 5  pm".trim()
+//                                2 -> "5:00 pm - 9:00 pm".trim()
+//                                else -> "Todo el día"
+//                            },
+//
+//                            document.data?.get("idEstacionamiento").toString()
+//
+//                        )
+//                    )
+//                }
+//
+//            }.addOnFailureListener {
+//                Log.d("ERROR en getHorariosHoy", "ERROR:${it.localizedMessage}")
+//            }.await()
+//
+//        return horarios
+//    }
 
     // funcion que me regresa los registros de la base de datos
     suspend fun getHorarios(ano:Int,dia:Int,idEstacionamiento: String):MutableList <horariosModel> {
@@ -361,10 +337,7 @@ class LoginViewModel:ViewModel(){
             .get()
             .addOnSuccessListener { documents ->
 
-
-
                 for (document in documents) {
-
 
                     //Log.d("HORARIO_count", "ERROR:${document.data?.get("turno").toString().toInt()}")
                     horarios.add(
@@ -460,8 +433,7 @@ class LoginViewModel:ViewModel(){
 
                 //general.getHorarios()
 
-                var usuariosLit = DataFromUsers(email)
-                println(usuariosLit)
+                var usuariosLit = DataFromUsers(email,context)
                 var usuarioHabilitado = usuariosLit[0].usuarioHabilitado.toString().toBoolean()
 
 
