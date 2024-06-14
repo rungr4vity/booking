@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.firebasenotes.models.users
+import com.example.firebasenotes.models.horariosDTO
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -17,6 +18,8 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     val db = FirebaseFirestore.getInstance()
     val cajonList = mutableListOf<DataDrawer>()
 
+
+//.whereEqualTo("empresa", myEmpresa)
     try {
         val querySnapshot = db.collection("Estacionamientos").get().await()
         for (document in querySnapshot.documents) {
@@ -80,11 +83,74 @@ suspend fun getUsuarios_(): MutableList<users_short> {
 class DrawerViewModel() : ViewModel() {
     val stateDrawer = mutableStateOf<List<DataDrawer>>(emptyList())
     val usuarios_short = mutableStateOf<List<users_short>>(emptyList())
+    private val _horarios_dto = MutableLiveData<MutableList<horariosDTO>>(mutableListOf())
+    val horarios_dto: LiveData<MutableList<horariosDTO>> get() = _horarios_dto
+
 
     init {
-        getData()
-        getUsuarios()
+        try {
+            getData()
+            getUsuarios()
+        }catch (e:Exception){
+            Log.e("Error_drawer",e.message.toString())
+        }
+
     }
+
+    fun reload() {
+        viewModelScope.launch {
+            getData()
+        }
+    }
+
+    fun getAll(ano:Int,dia:Int) {
+        viewModelScope.launch {
+            _horarios_dto.value = getHorarios_year_day(ano,dia)
+        }
+
+    }
+
+    suspend fun getHorarios_year_day(dia:Int,ano:Int)
+            :MutableList <horariosDTO> {
+
+        var horarios = mutableListOf<horariosDTO>()
+        val db = FirebaseFirestore.getInstance()
+
+        val usuarios = db.collection("ReservacionEstacionamiento")
+
+            .whereEqualTo("ano", ano)
+            .whereEqualTo("dia",dia)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+
+
+                    //Log.d("HORARIO_count", "ERROR:${document.data?.get("turno").toString().toInt()}")
+                    horarios.add(
+                        horariosDTO(
+                            document.data?.get("turno").toString().toInt(),
+
+                            when(document.data?.get("turno").toString().trim().toInt()){
+                                0 -> "7:00 am - 12 pm".trim()
+                                1 -> "12:00 am - 5  pm".trim()
+                                2 -> "5:00 pm - 9:00 pm".trim()
+                                else -> "Todo el día"
+                            },
+
+                            document.data?.get("idEstacionamiento").toString()
+
+                        )
+                    )
+                }
+
+            }.addOnFailureListener {
+                Log.d("ERROR en getHorariosHoy", "ERROR:${it.localizedMessage}")
+            }.await()
+
+        return horarios
+    }
+
+
 
     private fun getUsuarios() {
         viewModelScope.launch {
@@ -94,6 +160,7 @@ class DrawerViewModel() : ViewModel() {
     }
 
     private fun getData() {
+
         viewModelScope.launch {
             stateDrawer.value =
                 com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.FireStoreCajonData()
@@ -135,6 +202,7 @@ class DeleteDrawerViewModel : ViewModel() {
 
     init {
         loadData()
+
     }
 
     private fun loadData() {

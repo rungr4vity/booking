@@ -18,7 +18,12 @@ class DDViewModel : ViewModel() {
     private var documentId: String? = null
 
     init {
-        getData()
+        try {
+            getData()
+        }catch (e: Exception){
+            Log.d("TAG", "error")
+        }
+
     }
 
     private fun getData() {
