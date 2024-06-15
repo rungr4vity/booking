@@ -1,6 +1,7 @@
 import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 
@@ -43,8 +44,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -90,6 +93,8 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ReservacionOficinas.Rev
 import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
+import com.example.firebasenotes.views.login.LoginView
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 
@@ -112,14 +117,14 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 //        Triple("Cat Cajones", Icons.Default.Menu, 0),
         Triple("Viáticos", Icons.Default.DateRange, 0),
         Triple("Lista de Usuarios", Icons.Default.Person, 0),
-
+        Triple("Cerrar sesión", Icons.Default.Person, 0),
 
         //Usuario
         Triple("Mi Perfil", Icons.Default.Person, 2),
         Triple("Estacionamientos", Icons.Default.AddCircle, 2),
         Triple("Oficinas", Icons.Default.AddCircle, 2),
         Triple("Viáticos", Icons.Default.DateRange, 2),
-
+        Triple("Cerrar sesión", Icons.Default.Person, 2),
 
 
 //        Triple("Mis reservas", Icons.Default.DateRange, 1),
@@ -414,6 +419,19 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
                 composable("Viaje") {
                     ViajeDetalle("Viaje de negocios")
+                }
+
+                composable("Cerrar sesión") {
+                    FirebaseAuth.getInstance().signOut()
+                    var loginvm = LoginViewModel()
+                    LoginView(navController = navController, loginvm)
+
+
+                    BackHandler(true) {
+                        // Or do nothing
+                        //Log.i("LOG_TAG", "Clicked back")
+                    }
+
                 }
 
             }

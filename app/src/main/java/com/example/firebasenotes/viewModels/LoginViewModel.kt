@@ -3,6 +3,7 @@ package com.example.firebasenotes.viewModels
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
 import kotlinx.coroutines.delay
 import android.util.Log
 import android.widget.Toast
@@ -271,6 +272,13 @@ class LoginViewModel:ViewModel(){
     }
 
 
+        fun getLoginEmail(context: Context): String? {
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+            return sharedPreferences.getString("login_email", null)
+        }
+
+
+
 //    fun getAll(ano:Int,dia:Int) {
 //        viewModelScope.launch {
 //            _horarios_dto.value = getHorarios_year_day(ano,dia)
@@ -438,7 +446,7 @@ class LoginViewModel:ViewModel(){
 
 
 
-                auth.signInWithEmailAndPassword(email,password)
+                auth.signInWithEmailAndPassword(email.trim().uppercase(),password.trim())
                     .addOnCompleteListener{ task ->
                         if(task.isSuccessful){
 
@@ -450,12 +458,21 @@ class LoginViewModel:ViewModel(){
                                 ).show()
                             }
                             else{
+                                val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                                editor.putString("login_email", email)
+                                editor.apply()
+
                                 onSuccess()
                             }
                         }else{
                             // leer el modelo de datos y validar eAdmin = true caso contrario desplegar un mensaje de error
                             // (favor de contactar al administrador)
                             //Log.d("Error en firebase","Favor de contactar al administrador")
+
+
+
+
                             Toast.makeText(context, "Usuario o contraseña incorrectas", Toast.LENGTH_SHORT).show()
                             Log.d("Error en firebase","usuario y contraseña incorrectas")
                         }

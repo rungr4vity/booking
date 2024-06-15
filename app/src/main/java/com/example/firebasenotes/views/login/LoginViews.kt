@@ -1,6 +1,10 @@
 package com.example.firebasenotes.views.login
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +36,10 @@ import com.example.firebasenotes.R
 import com.example.firebasenotes.viewModels.LoginViewModel
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -40,11 +47,14 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
     var state = loginVM.state
     var context = LocalContext.current
 
+
     Scaffold(
         Modifier
             .fillMaxSize()
             .padding(top = 100.dp)
     ) {
+
+
 
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -70,9 +80,12 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                         .padding(bottom = 20.dp)
                 )
 
+                var email_shared = loginVM.getLoginEmail(context) ?: ""
+                Log.d("email_shared", email_shared)
+
 //                var email by remember { mutableStateOf("") }
 //                var password by remember { mutableStateOf("") }
-                var email by remember { mutableStateOf("") }
+                var email by remember { mutableStateOf(email_shared) }
                 var password by remember { mutableStateOf("") }
 
                 Text(text = "Inicio de sesión", Modifier.padding(bottom = 20.dp))
