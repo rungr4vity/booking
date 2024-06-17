@@ -85,8 +85,8 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
 
 //                var email by remember { mutableStateOf("") }
 //                var password by remember { mutableStateOf("") }
-                var email by remember { mutableStateOf(email_shared) }
-                var password by remember { mutableStateOf("") }
+                var email by remember { mutableStateOf("francisco.perez@isita.com.mx") }
+                var password by remember { mutableStateOf("12345678") }
 
                 Text(text = "Inicio de sesión", Modifier.padding(bottom = 20.dp))
 

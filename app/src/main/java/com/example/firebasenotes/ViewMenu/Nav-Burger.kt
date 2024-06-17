@@ -156,7 +156,11 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
         },
         drawerContent = {
             // Contenido del Navigation Drawer
-            DrawerContent(drawerItems, navController)
+            DrawerContent(drawerItems, navController, closeDrawer = {
+                scope.launch {
+                    scaffoldState.drawerState.close()
+                }
+            })
         },
         content = {
             NavHost(
@@ -402,7 +406,8 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         cajon,
                         piso,
                         esEspecial,
-                        idEstacionamiento
+                        idEstacionamiento,
+                        navController = navController
                     )
                 }
 
@@ -443,7 +448,8 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 fun DrawerContent(
     drawerItems: List<Triple<String, ImageVector, Any>>,
     navController: NavHostController,
-    ddViewModel: DDViewModel = viewModel()
+    ddViewModel: DDViewModel = viewModel(),
+    closeDrawer: () -> Unit
 ) {
     CompositionLocalProvider(LocalContentColor provides Color.Black) {
         val userData = ddViewModel.state.value
@@ -475,10 +481,10 @@ fun DrawerContent(
             )
 
             Spacer(modifier = Modifier.height(22.dp))
-            drawerItems.forEach { (title, icon) ->
-                DrawerItem(title = title, icon = icon) {
+            drawerItems.forEach { (title, icon, _) ->
+                DrawerItem(title = title, icon = icon, onClick = {
                     navController.navigate(title)
-                }
+                }, closeDrawer = closeDrawer)
                 Spacer(modifier = Modifier.height(26.dp))
             }
         }
@@ -486,11 +492,14 @@ fun DrawerContent(
 }
 
 @Composable
-fun DrawerItem(title: String, icon: ImageVector, onClick: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable(onClick = onClick)
-    ) {
+fun DrawerItem(title: String, icon: ImageVector, onClick: () -> Unit, closeDrawer: () -> Unit) {
+     Row(
+            verticalAlignment = Alignment.CenterVertically,
+    modifier = Modifier.clickable {
+        onClick()
+        closeDrawer() // Aquí cerramos el menú después de navegar
+    }
+    ){
         Icon(imageVector = icon, contentDescription = null)
         Spacer(modifier = Modifier.width(12.dp))
         Text(

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -48,6 +49,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
 import com.example.firebasenotes.viewModels.LoginViewModel
@@ -84,7 +87,8 @@ class ReservacionCajones : ComponentActivity() {
                         "",
                         "",
                         "",
-                        false,""
+                        false,"",
+                        navController = rememberNavController()
                     )
                 }
             }
@@ -108,7 +112,9 @@ fun ReservacionCajones_extension(
     cajon: String,
     piso: String,
     esEspecial: Boolean,
-    idEstacionamiento: String
+    idEstacionamiento: String,
+    navController: NavController
+
 ) {
 
     @Composable
@@ -504,8 +510,28 @@ fun ReservacionCajones_extension(
 //                modifier = Modifier.padding(10.dp),
 //            )
 //        }
+        var showAlert by remember { mutableStateOf(false) }
+        if (showAlert) {
+            AlertDialog(
+                onDismissRequest = { showAlert = false },
+                buttons = {
+                    Button(
+                        onClick = { showAlert = false
+                            navController.navigate("Estacionamientos")}
+                        ,
+                        colors = ButtonDefaults.buttonColors(Color(0xFF800000)),
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+                        Text("Aceptar", color = Color.White)
+                    }
+                },
+                title = { Text("Confirmación") },
+                text = { Text("Reservación exitosa") }
+            )
+        }
 
         Button(shape = RoundedCornerShape(5.dp),onClick = {
+            showAlert = true
             //coding
             val localFecha = Instant.ofEpochMilli(data ?: 0).atZone(ZoneId.of("MST")).toLocalDate()
             val idUsuario = Firebase.auth.currentUser?.uid ?: ""
@@ -523,6 +549,7 @@ fun ReservacionCajones_extension(
             .padding(5.dp)) {
             Text(text = "Reservar",color = Color.White)
 
+
         }
 
 
@@ -534,3 +561,4 @@ fun ReservacionCajones_extension(
 
 
 }
+

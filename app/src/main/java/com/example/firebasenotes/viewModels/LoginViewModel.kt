@@ -177,7 +177,7 @@ class LoginViewModel:ViewModel(){
                             val user = users(
                                 apellidos = apellidos,
                                 contrasena = contrasena,
-                                email = email,
+                                email = email.lowercase(),
                                 empresa = empresa,
                                 esAdmin = esAdmin,
                                 id = userid_,
@@ -538,7 +538,7 @@ class LoginViewModel:ViewModel(){
                     .document()
                     .set(space)
                     .addOnSuccessListener {
-                        Toast.makeText(context, "Estacionamiento agregado", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "Estacionamiento agregado", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
                         Toast.makeText(context, "error al agregar estadcionamiento", Toast.LENGTH_SHORT).show()
