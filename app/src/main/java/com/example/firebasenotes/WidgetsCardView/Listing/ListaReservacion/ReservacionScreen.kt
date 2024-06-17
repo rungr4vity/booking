@@ -11,6 +11,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,10 +27,11 @@ import com.example.firebasenotes.utils.ValidacionesHora
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun ReservacionEstacionamientoScreen() {
+fun ReservacionEstacionamientoScreen(viewModel: ReservacionEstacionamientoViewModel = ReservacionEstacionamientoViewModel()) {
     var reservaciones by remember { mutableStateOf(emptyList<DataReservations>()) }
-    val viewModel = ReservacionEstacionamientoViewModel()
     val idUsuario = FirebaseAuth.getInstance().currentUser?.uid
+    var showDialog by remember { mutableStateOf(false) }
+    var reservaToDelete by remember { mutableStateOf<DataReservations?>(null) }
 
     LaunchedEffect(Unit) {
         idUsuario?.let { userId ->
@@ -43,12 +46,29 @@ fun ReservacionEstacionamientoScreen() {
             ReservacionEstacionamientoCard(
                 reserva = reserva,
                 onDelete = {
-                    viewModel.deleteReservacion(reserva.id) {
-                        reservaciones = reservaciones.filter { it.id != reserva.id }
-                    }
+                    // Mostrar la alerta de confirmación antes de eliminar
+                    reservaToDelete = reserva
+                    showDialog = true
                 }
             )
         }
+    }
+
+    reservaToDelete?.let { reserva ->
+        AlertDialogExample(
+            reserva = reserva,
+            onConfirm = {
+                viewModel.deleteReservacion(reserva.id) {
+                    reservaciones = reservaciones.filter { it.id != reserva.id }
+                }
+                showDialog = false
+                reservaToDelete = null
+            },
+            dismissDialog = {
+                showDialog = false
+                reservaToDelete = null
+            }
+        )
     }
 }
 
@@ -59,7 +79,7 @@ fun ReservacionEstacionamientoCard(
 ) {
     var estacionamiento by remember { mutableStateOf<DataDrawerDTO?>(null) }
     var turnosDisponibles by remember { mutableStateOf<List<DataTurnos>>(emptyList()) }
-    val viewModel = ReservacionEstacionamientoViewModel()
+    val viewModel = remember { ReservacionEstacionamientoViewModel() }
 
     LaunchedEffect(Unit) {
         viewModel.getEstacionamiento(reserva.idEstacionamiento) { est ->
@@ -81,11 +101,11 @@ fun ReservacionEstacionamientoCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.est), // Reemplaza 'your_image' con el nombre de tu imagen
+                painter = painterResource(id = R.drawable.est),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(140.dp)
-                    .padding( horizontal = 2.dp)
+                    .padding(horizontal = 2.dp)
             )
 
             Column(
@@ -119,4 +139,37 @@ fun ReservacionEstacionamientoCard(
             }
         }
     }
+}
+
+@Composable
+fun AlertDialogExample(
+    reserva: DataReservations,
+    onConfirm: () -> Unit,
+    dismissDialog: () -> Unit
+) {
+    androidx.compose.material.AlertDialog(
+        onDismissRequest = dismissDialog,
+        title = { Text("Confirmación") },
+        text = { Text("¿Estás seguro que deseas eliminar esta reserva?") },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm()
+                    dismissDialog()
+                },
+                colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+            ) {
+                Text("Confirmar", color = Color.White)
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = { dismissDialog() },
+                colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+
+            ) {
+                Text("Cancelar",color = Color.White)
+            }
+        }
+    )
 }

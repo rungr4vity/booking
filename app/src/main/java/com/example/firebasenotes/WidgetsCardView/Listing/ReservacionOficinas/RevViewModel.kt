@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-class RevoficinasViewModel : ViewModel() {
 
+class RevoficinasViewModel : ViewModel() {
 
     fun getRevoficinas(idUsuario: String, onSuccess: (List<RevoficinasDTO>) -> Unit) {
         val db = FirebaseFirestore.getInstance()

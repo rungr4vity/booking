@@ -19,12 +19,14 @@ import com.example.firebasenotes.R
 import com.example.firebasenotes.utils.ValidacionesHora
 import com.google.firebase.auth.FirebaseAuth
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+
 @Composable
 fun RevoficinasScreen() {
     var revoficinas by remember { mutableStateOf(emptyList<RevoficinasDTO>()) }
-    val viewModel = RevoficinasViewModel()
+    val viewModel = remember { RevoficinasViewModel() }
     val idUsuario = FirebaseAuth.getInstance().currentUser?.uid
+    var showDialog by remember { mutableStateOf(false) }
+    var revoficinaToDelete by remember { mutableStateOf<RevoficinasDTO?>(null) }
 
     LaunchedEffect(Unit) {
         idUsuario?.let { userId ->
@@ -37,13 +39,49 @@ fun RevoficinasScreen() {
     LazyColumn {
         items(revoficinas) { revoficina ->
             RevoficinaCard(revoficina = revoficina) {
-                // Aquí actualizamos la lista después de eliminar un registro
-                if (idUsuario != null) {
-                    viewModel.getRevoficinas(idUsuario) { updatedRevoficinas ->
-                        revoficinas = updatedRevoficinas
+                // Mostrar el diálogo de confirmación antes de eliminar
+                revoficinaToDelete = revoficina
+                showDialog = true
+            }
+        }
+    }
+
+    // Diálogo de confirmación para eliminar
+    if (showDialog) {
+        revoficinaToDelete?.let { revoficina ->
+            AlertDialog(
+                onDismissRequest = {
+                    showDialog = false
+                    revoficinaToDelete = null
+                },
+                title = { Text("Confirmación") },
+                text = { Text("¿Estás seguro que deseas eliminar esta reserva?") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.deleteData(revoficina.id)
+                            revoficinas = revoficinas.filter { it.id != revoficina.id }
+                            showDialog = false
+                            revoficinaToDelete = null
+                        },
+                        colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+                    ) {
+                        Text("Eliminar",color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showDialog = false
+                            revoficinaToDelete = null
+                        },
+                        colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+
+                    ) {
+                        Text("Cancelar",color = Color.White)
                     }
                 }
-            }
+            )
         }
     }
 }
@@ -51,7 +89,7 @@ fun RevoficinasScreen() {
 @Composable
 fun RevoficinaCard(revoficina: RevoficinasDTO, onDelete: () -> Unit) {
     var dataOfi by remember { mutableStateOf<DataOfi?>(null) }
-    val viewModel = RevoficinasViewModel()
+    val viewModel = remember { RevoficinasViewModel() }
 
     LaunchedEffect(Unit) {
         viewModel.getDataOficina(revoficina.idArea) { oficina ->
@@ -70,44 +108,41 @@ fun RevoficinaCard(revoficina: RevoficinasDTO, onDelete: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ofi), // Reemplaza 'your_image' con el nombre de tu imagen
+                painter = painterResource(id = R.drawable.ofi),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(140.dp)
-                    .padding( horizontal = 2.dp)
+                    .padding(horizontal = 2.dp)
             )
 
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
                     .padding(horizontal = 8.dp)
             ) {
-
-            dataOfi?.let { oficina ->
+                dataOfi?.let { oficina ->
+                    Text(
+                        text = "Nombre: ${oficina.nombre}",
+                        style = MaterialTheme.typography.body1
+                    )
+                }
                 Text(
-                    text = "Nombre: ${oficina.nombre}",
+                    text = "Día:  ${ValidacionesHora.dayOfYearToDayAndMonth(revoficina.dia, revoficina.ano)} ${revoficina.ano}",
                     style = MaterialTheme.typography.body1
                 )
-
-            Text(
-                text = "Día:  ${ValidacionesHora.dayOfYearToDayAndMonth(revoficina.dia,revoficina.ano)+" "+revoficina.ano}",
-                style = MaterialTheme.typography.body1
-            )
-            Text(
-                text = "Hora Inicial: ${ValidacionesHora.minutesToHour(revoficina.horaInicial)}",
-                style = MaterialTheme.typography.body1
-            )
-            Text(
-                text = "Hora Final: ${ValidacionesHora.minutesToHour(revoficina.horafinal)}",
-                style = MaterialTheme.typography.body1
-            )
-
+                Text(
+                    text = "Hora Inicial: ${ValidacionesHora.minutesToHour(revoficina.horaInicial)}",
+                    style = MaterialTheme.typography.body1
+                )
+                Text(
+                    text = "Hora Final: ${ValidacionesHora.minutesToHour(revoficina.horafinal)}",
+                    style = MaterialTheme.typography.body1
+                )
             }
 
-        }
             IconButton(
                 onClick = {
-                    viewModel.deleteData(revoficina.id)
-                    onDelete() // Aquí llamamos a la función de callback para actualizar la lista
+                    onDelete()
                 },
             ) {
                 Icon(
@@ -116,5 +151,6 @@ fun RevoficinaCard(revoficina: RevoficinasDTO, onDelete: () -> Unit) {
                     tint = Color.Red
                 )
             }
+        }
     }
-}}
+}

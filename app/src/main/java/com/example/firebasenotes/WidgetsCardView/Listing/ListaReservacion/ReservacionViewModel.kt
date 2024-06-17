@@ -23,7 +23,7 @@ class ReservacionEstacionamientoViewModel : ViewModel() {
             }
             onSuccess(reservacionesList)
         }.addOnFailureListener { exception ->
-            // Manejar errores aquí
+            // Handle errors here
         }
     }
 
@@ -35,7 +35,7 @@ class ReservacionEstacionamientoViewModel : ViewModel() {
             val estacionamiento = document.toObject(DataDrawerDTO::class.java)
             estacionamiento?.let { onSuccess(it) }
         }.addOnFailureListener { exception ->
-            // Manejar errores aquí
+            // Handle errors here
         }
     }
 
@@ -51,7 +51,7 @@ class ReservacionEstacionamientoViewModel : ViewModel() {
             }
             onSuccess(turnosList)
         }.addOnFailureListener { exception ->
-            // Manejar errores aquí
+            // Handle errors here
         }
     }
 
@@ -64,7 +64,7 @@ class ReservacionEstacionamientoViewModel : ViewModel() {
                 onSuccess()
             }
             .addOnFailureListener { exception ->
-                // Manejar errores aquí
+                // Handle errors here
             }
     }
 }
