@@ -133,7 +133,8 @@ fun DetalleOficinas(
             if(userData.typeId == 0){
            Button(
                onClick = {  deleteViewModel.deleteArea(idArea)
-                           navController.navigate("Oficinas")}
+                   navController.navigate("Oficinas")
+                         }
                ,
                modifier = Modifier
                    .padding(horizontal = 19.dp)
