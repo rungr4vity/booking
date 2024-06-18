@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-@Preview
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 
 @Composable

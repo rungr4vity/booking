@@ -35,10 +35,19 @@ import androidx.navigation.NavController
 import com.example.firebasenotes.R
 import com.example.firebasenotes.viewModels.LoginViewModel
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.VisualTransformation
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -46,6 +55,8 @@ import androidx.compose.ui.graphics.Color
 fun LoginView(navController: NavController, loginVM: LoginViewModel) {
     var state = loginVM.state
     var context = LocalContext.current
+    var showPassword by remember { mutableStateOf(value = false) }
+    var password by remember { mutableStateOf("") }
 
 
     Scaffold(
@@ -85,8 +96,8 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
 
 //                var email by remember { mutableStateOf("") }
 //                var password by remember { mutableStateOf("") }
-                var email by remember { mutableStateOf("francisco.perez@isita.com.mx") }
-                var password by remember { mutableStateOf("12345678") }
+                var email by remember { mutableStateOf(email_shared) }
+                var password by remember { mutableStateOf("") }
 
                 Text(text = "Inicio de sesión", Modifier.padding(bottom = 20.dp))
 
@@ -99,16 +110,24 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                         .padding(horizontal = 15.dp)
                 )
                 Spacer(modifier = Modifier.padding(bottom = 10.dp))
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text(text = "contraseña") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp),
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+//                OutlinedTextField(
+//                    value = password,
+//                    onValueChange = { password = it },
+//                    label = { Text(text = "contraseña") },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 15.dp),
+//                    visualTransformation = PasswordVisualTransformation(),
+//                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+//
+//                )
+                PasswordTextField(
+                    label = "Password",
+                    password = password,
+                    onPasswordChange = { password = it }
                 )
+
+
 
                 Spacer(modifier = Modifier.padding(bottom = 20.dp))
                 Button(
@@ -129,6 +148,85 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
             }
         }
     }
+}
+
+@Composable
+fun PasswordTextField(
+    label: String,
+    password: String,
+    onPasswordChange: (String) -> Unit
+) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = password,
+        onValueChange = onPasswordChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp),
+        label = { Text(label) },
+        singleLine = true,
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        trailingIcon = {
+            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                Icon(imageVector = image, contentDescription = null)
+            }
+        }
+    )
+}
+
+@Composable
+fun PasswordField(password:String,onTextFieldChanged:(String)-> Unit) {
+    var showPassword by remember { mutableStateOf(value = false) }
+
+    TextField(
+        value = password,
+        onValueChange = {onTextFieldChanged(it)},
+        modifier = Modifier.fillMaxWidth(),
+
+        placeholder = { Text(text = "Password")},
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        singleLine = true,
+        maxLines = 1,
+        shape = RoundedCornerShape(8.dp),
+        visualTransformation = if (showPassword) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        trailingIcon = {
+            if (showPassword) {
+                IconButton(onClick = { showPassword = false }) {
+                    Icon(
+                        imageVector = Icons.Filled.Visibility,
+                        contentDescription = "hide_password"
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = { showPassword = true }) {
+                    Icon(
+                        imageVector = Icons.Filled.VisibilityOff,
+                        contentDescription = "hide_password"
+                    )
+                }
+            }
+        },
+
+        colors = TextFieldDefaults.colors(
+            //setting the text field background when it is focused
+            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+
+            //setting the text field background when it is unfocused or initial state
+            unfocusedContainerColor = Color.Transparent,
+
+            //setting the text field background when it is disabled
+            disabledContainerColor = Color.Transparent,
+        ),
+    )
 }
 
 @Composable

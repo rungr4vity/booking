@@ -2,6 +2,8 @@ package com.example.firebasenotes.ViewMenu.Mipefil
 
 
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,6 +18,9 @@ import kotlinx.coroutines.tasks.await
 class DDViewModel : ViewModel() {
     val state = mutableStateOf(Data())
     private var documentId: String? = null
+    lateinit var context: Context
+
+
 
     init {
         try {
@@ -27,11 +32,19 @@ class DDViewModel : ViewModel() {
     }
 
     private fun getData() {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+
         viewModelScope.launch {
             val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
             if (!currentUserEmail.isNullOrEmpty()) {
                 val userData = getUserData(currentUserEmail)
+
                 state.value = userData.first
+
+                editor.putString("empresa", userData.first.empresa)
+                editor.apply()
+
                 documentId = userData.second
             }
         }
@@ -47,6 +60,11 @@ class DDViewModel : ViewModel() {
         return if (!querySnapshot.isEmpty) {
             val document = querySnapshot.documents[0]
             val result = document.toObject(Data::class.java)
+
+
+
+
+
             Pair(result ?: throw IllegalStateException("El usuario con el correo electrónico $email no tiene datos asociados."), document.id)
         } else {
             throw IllegalStateException("No se encontró ningún usuario con el correo electrónico $email.")

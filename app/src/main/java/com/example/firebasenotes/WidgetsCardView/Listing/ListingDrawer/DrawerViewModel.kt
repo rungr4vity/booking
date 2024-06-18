@@ -1,14 +1,19 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.models.horariosDTO
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -19,9 +24,23 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     val cajonList = mutableListOf<DataDrawer>()
 
 
-//.whereEqualTo("empresa", myEmpresa)
+    var retorna = ""
+    val empresa2 = db.collection("Usuarios")
+        .whereEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
+        .get()
+        .addOnSuccessListener { documents ->
+            for (document in documents) {
+                retorna = document.data?.get("empresa").toString()
+            }
+        }.addOnFailureListener {
+            Log.d("ERROR en getEmpresa", "ERROR:${it.localizedMessage}")
+        }
+        .await()
+
     try {
-        val querySnapshot = db.collection("Estacionamientos").get().await()
+        val querySnapshot = db.collection("Estacionamientos")
+            .whereEqualTo("empresa", retorna)
+            .get().await()
         for (document in querySnapshot.documents) {
             val numero = document.getLong("numero") ?: 0L
             val nombre = document.getString("nombre") ?: ""
@@ -45,7 +64,6 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     }
     return cajonList
 }
-
 
 data class users_short(
     val nombres: String,
@@ -85,10 +103,15 @@ class DrawerViewModel() : ViewModel() {
     val usuarios_short = mutableStateOf<List<users_short>>(emptyList())
     private val _horarios_dto = MutableLiveData<MutableList<horariosDTO>>(mutableListOf())
     val horarios_dto: LiveData<MutableList<horariosDTO>> get() = _horarios_dto
+    var empresa = mutableStateOf("")
+    lateinit var context: Context
+
+
 
 
     init {
         try {
+            //getEmpresa()
             getData()
             getUsuarios()
         }catch (e:Exception){
@@ -110,6 +133,32 @@ class DrawerViewModel() : ViewModel() {
 
     }
 
+    fun getEmpresa() {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        empresa.value =  sharedPreferences.getString("empresa", "") ?: ""
+        var ojo  = ""
+    }
+
+
+
+
+    suspend fun getEmpresa_(): String {
+        var retorna = ""
+        val db = FirebaseFirestore.getInstance()
+        val empresa = db.collection("Usuarios")
+            .whereEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    retorna = document.data?.get("empresa").toString()
+                }
+            }.addOnFailureListener {
+                Log.d("ERROR en getEmpresa", "ERROR:${it.localizedMessage}")
+            }
+            .await()
+
+        return retorna
+    }
     suspend fun getHorarios_year_day(dia:Int,ano:Int)
             :MutableList <horariosDTO> {
 
@@ -120,6 +169,7 @@ class DrawerViewModel() : ViewModel() {
 
             .whereEqualTo("ano", ano)
             .whereEqualTo("dia",dia)
+
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -162,6 +212,8 @@ class DrawerViewModel() : ViewModel() {
     private fun getData() {
 
         viewModelScope.launch {
+
+
             stateDrawer.value =
                 com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.FireStoreCajonData()
         }

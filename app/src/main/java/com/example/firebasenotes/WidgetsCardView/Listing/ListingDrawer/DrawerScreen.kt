@@ -88,6 +88,7 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
 
     val cajones = drawerViewModel.stateDrawer.value
     val userData = ddViewModel.state.value
+    //val empresa = userData.empresa
     //val user = usersViewModel.stateUsers.value
 
     val calendar = Calendar.getInstance()
@@ -150,6 +151,7 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
 
                 //var sharedPreferences = context.getSharedPreferences("shared_usuario", Context.MODE_PRIVATE)
                 //val myempresa = sharedPreferences.getString("empresa", null)
+
 
                 menHorarios = "Selecciona horario"
                 drawerViewModel.getAll(dayOfYear_,year)
