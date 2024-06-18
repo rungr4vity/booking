@@ -128,7 +128,6 @@ Spacer(modifier = Modifier.height(10.dp))
             onClick = {
 
                 Toast.makeText(Context, "Creando área...", Toast.LENGTH_SHORT).show()
-                navController.navigate("Oficinas")
                 if (nombre.isNotEmpty() && desc.isNotEmpty() && capacidad.isNotEmpty() && mobiliaria.isNotEmpty() && selectedImageUri != null) {
 
                     // Subir imagen a Firebase Storage
