@@ -453,6 +453,8 @@ fun DrawerContent(
 ) {
     CompositionLocalProvider(LocalContentColor provides Color.Black) {
         val userData = ddViewModel.state.value
+        val empresa = userData.empresa
+
         Column(
             modifier = Modifier
                 .padding(6.dp)
