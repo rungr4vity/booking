@@ -37,6 +37,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.firebasenotes.R
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.google.firebase.components.Component
@@ -87,77 +89,58 @@ fun ComponentAreas(
     val isDarkMode = isSystemInDarkTheme()
     CompositionLocalProvider(LocalContentColor provides if (isDarkMode) Color.White else Color.Black) {
 
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically,modifier = Modifier.padding(start = 10.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.ofi), // Reemplaza 'your_image' con el nombre de tu imagen
-                contentDescription = "Logo",
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding( horizontal = 2.dp)
+        Card(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .fillMaxWidth()
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp)) {
+                // Mostrar la imagen asociada al área
+                if (ar.imageUrl.isNotEmpty()) {
+                    Image(
+                        painter = rememberImagePainter(ar.imageUrl), // Usa una función rememberImagePainter para cargar la imagen desde la URL
+                        contentDescription = "Image",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(vertical = 10.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
+                Spacer(modifier = Modifier.width(16.dp))
 
-            )
+                Column(modifier = Modifier.weight(2f)) {
+                    Text(
+                        text = "${ar.nombre}",
+                        style = TextStyle(fontSize = 15.sp)
+                    )
 
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Cap. : ${ar.capacidad}",
+                        style = TextStyle(fontSize = 15.sp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Mob.: ${ar.mobilaria}",
+                        style = TextStyle(fontSize = 15.sp)
+                    )
+                }
 
-            Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
-            Column(modifier = Modifier.weight(2f)) {
+                // Navegación al detalle
                 Text(
-                    text = "${ar.nombre}",
-                    style = TextStyle(fontSize = 15.sp)
+                    text = "Detalle",
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate("DetalleOficinas/${ar.capacidad}/${ar.descripcion}/NA/${ar.mobilaria}/${ar.nombre}/${ar.id}")
+                        }
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 16.dp),
+                    color = if (isDarkMode) Color.White else Color.Blue
                 )
-
-
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Cap. : ${ar.capacidad}",
-                    style = TextStyle(fontSize = 15.sp)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Mob.: ${ar.mobilaria}",
-                    style = TextStyle(fontSize = 15.sp)
-                )
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(
-//                    text = "id: ${ar.id}",
-//                    style = TextStyle(fontSize = 12.sp)
-//                )
             }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Navegación al detalle
-            Text(
-                text = "Detalle",
-                modifier = Modifier
-                    .clickable {
-                        //navController.navigate("DetalleAlta")
-                       try
-                       {
-                           var id = {
-                               if(ar.id != null || ar.id != ""){
-                                   ar.id
-                               } else { "N/A" }
-                           }
-
-                           navController.navigate("DetalleOficinas/${ar.capacidad}/${ar.descripcion}/NA/${ar.mobilaria}/${ar.nombre}/${ar.id}")
-                       }
-                       catch (e:Exception)
-                       {
-                           Log.e("Error_AreaScreen", e.message.toString())
-                       }
-
-                    }
-                    .align(Alignment.CenterVertically)
-                    .padding(end = 16.dp),
-                color = if (isDarkMode) Color.White else Color.Black
-            )
         }
     }
-}}
+}

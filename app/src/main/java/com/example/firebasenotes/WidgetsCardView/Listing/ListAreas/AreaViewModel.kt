@@ -1,12 +1,9 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
-import android.annotation.SuppressLint
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -42,14 +39,25 @@ class AreaViewModel : ViewModel(){
 
 
     //CLASEE PARA AGREGAR REGISTRO
-    fun InsertDatosArea(capacidad:String, nombre:String, mobiliaria:String, descripcion:String) {
+    fun InsertDatosArea(
+        capacidad: String,
+        nombre: String,
+        mobiliaria: String,
+        descripcion: String,
+        imageUrl: String,
+        id: String = ""
+    ) {
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
             val date = hashMapOf(
                 "capacidad" to capacidad,
                 "descripcion" to descripcion,
                 "mobilaria" to mobiliaria,
-                "nombre" to nombre
+                "nombre" to nombre,
+                "imageUrl" to imageUrl,
+                "id" to id
+
+
             )
             db.collection("Oficinas").add(date)
 
