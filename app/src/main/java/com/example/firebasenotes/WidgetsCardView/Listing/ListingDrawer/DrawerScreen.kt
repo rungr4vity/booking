@@ -3,6 +3,7 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -71,6 +72,7 @@ import com.google.firebase.auth.auth
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import coil.compose.AsyncImage
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -393,14 +395,26 @@ fun ComponentDrawer(
                 .fillMaxWidth()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.est), // Reemplaza 'your_image' con el nombre de tu imagen
-                    contentDescription = "Logo",
+
+                val imageUri = Uri.parse(cajon.imagen)
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "Loaded image",
                     modifier = Modifier
                         .size(100.dp)
-//                        .padding(horizontal = 2.dp)
-
                 )
+
+
+//                Image(
+//                    painter = painterResource(id = R.drawable.est), // Reemplaza 'your_image' con el nombre de tu imagen
+//                    contentDescription = "Logo",
+//                    modifier = Modifier
+//                        .size(100.dp)
+////                        .padding(horizontal = 2.dp)
+//
+//                )
+
+
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column(modifier = Modifier.weight(2f)) {

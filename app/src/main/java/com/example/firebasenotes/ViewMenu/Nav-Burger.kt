@@ -1,4 +1,5 @@
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -62,6 +63,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navArgument
+import com.example.firebasenotes.MainActivity
 import com.example.firebasenotes.Oficinas.DetalleOficinas
 import com.example.firebasenotes.Oficinas.ListadoOficinas
 import com.example.firebasenotes.Oficinas.OficinasViewModel
@@ -94,6 +96,7 @@ import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.example.firebasenotes.views.login.LoginView
+import com.example.firebasenotes.views.login.TabsViews
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -426,10 +429,15 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     ViajeDetalle("Viaje de negocios")
                 }
 
+
                 composable("Cerrar sesión") {
                     FirebaseAuth.getInstance().signOut()
-                    var loginvm = LoginViewModel()
-                    LoginView(navController = navController, loginvm)
+                    //var loginVM = LoginViewModel()
+                    //LoginView(navController = navController, loginvm)
+                    //TabsViews(navController,loginVM)
+
+                    val intent = Intent(LocalContext.current, MainActivity::class.java)
+                    LocalContext.current.startActivity(intent)
 
 
                     BackHandler(true) {

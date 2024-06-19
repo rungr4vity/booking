@@ -2,21 +2,28 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.firebasenotes.Viaticos.FacturaAdd.AltaGastoNoDeducible
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.models.horariosDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 
 suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
@@ -47,6 +54,7 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
             val piso = document.getString("piso") ?: ""
             val empresa = document.getString("empresa") ?: ""
             val esEspecial = document.getBoolean("esEspecial") ?: false
+            val imagen = document.getString("imagen") ?: ""
 
             cajonList.add(
                 DataDrawer(
@@ -55,7 +63,8 @@ suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
                     piso = piso,
                     id = document.id,
                     empresa = empresa,
-                    esEspecial = esEspecial
+                    esEspecial = esEspecial,
+                    imagen = imagen
                 )
             )
         }
@@ -105,7 +114,7 @@ class DrawerViewModel() : ViewModel() {
     val horarios_dto: LiveData<MutableList<horariosDTO>> get() = _horarios_dto
     var empresa = mutableStateOf("")
     lateinit var context: Context
-
+    var myurl = mutableStateOf("")
 
 
 
@@ -225,30 +234,68 @@ class DrawerViewModel() : ViewModel() {
                       piso_edificio: String,
                       selectedOptionText: String,
                       esEspecial : Boolean,
-                      perteneceA: String
+                      perteneceA: String,
+                      imageUri: Uri,
+
     ){
 
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
 
-            val data = hashMapOf(
-                "numero" to numo_cajon,
-                "nombre" to nombre_cajon.trim(),
-                "piso" to piso_edificio.trim(),
-                "empresa" to selectedOptionText.trim(),
-                "esEspecial" to esEspecial,
-                "id" to "",
-                "perteneceA" to perteneceA
-            )
-            try {
-                val documentRef = db.collection("Estacionamientos").add(data).await()
-                Toast.makeText(context, "Datos insertados correctamente", Toast.LENGTH_SHORT).show()
+            val storageReference = FirebaseStorage.getInstance().reference
+            val imageRef = storageReference.child("images/estacionamientos/${UUID.randomUUID()}.jpg")
+            var cadena = ""
+            imageRef.putFile(imageUri)
+                .addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { uri ->
+                        cadena = uri.toString()
 
-            } catch (e: Exception) {
-                Log.e("Error",e.message.toString())
-            }
+                        saveEstacionamiento(context,numo_cajon,nombre_cajon,piso_edificio,
+                            selectedOptionText,esEspecial,perteneceA,cadena)
+                    }
+                }
+                .addOnFailureListener {
+                    // Manejo de errores si la carga falla
+                    println("Error al cargar la imagen: ${it.message}")
+                }
+
+
         }
-    }}
+    }
+}
+
+
+fun saveEstacionamiento(context:Context,
+                        numo_cajon: Int,
+                        nombre_cajon: String,
+                        piso_edificio: String,
+                        selectedOptionText: String,
+                        esEspecial : Boolean,
+                        perteneceA: String,
+                        myurl: String,) {
+
+    val data = hashMapOf(
+        "numero" to numo_cajon,
+        "nombre" to nombre_cajon.trim(),
+        "piso" to piso_edificio.trim(),
+        "empresa" to selectedOptionText.trim(),
+        "esEspecial" to esEspecial,
+        "id" to "",
+        "perteneceA" to perteneceA,
+        "imagen" to myurl,
+    )
+    val db2 = FirebaseFirestore.getInstance()
+    try {
+        val documentRef = db2.collection("Estacionamientos").add(data)
+        Toast.makeText(context, "Estacionamiento agregado", Toast.LENGTH_SHORT).show()
+
+    } catch (e: Exception) {
+        Log.e("Error estacionamiento",e.message.toString())
+    }
+}
+
+
+
 class DeleteDrawerViewModel : ViewModel() {
     val delete = mutableStateOf<List<DataDrawer>>(emptyList())
 
@@ -274,4 +321,13 @@ class DeleteDrawerViewModel : ViewModel() {
             }
         }
     }
+
+
+    fun uploadImageToFirebase(context: Context, monto:String, viajeId: String, imageUri: Uri, onUploadSuccess: () -> Unit) {
+
+    }
+
+
+
+
 }

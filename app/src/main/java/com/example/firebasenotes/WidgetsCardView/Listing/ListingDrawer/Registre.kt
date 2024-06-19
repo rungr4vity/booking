@@ -2,16 +2,30 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -33,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.rememberImagePainter
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -104,9 +120,45 @@ Spacer(modifier = Modifier.padding(5.dp))
                 .fillMaxWidth()
                 .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
         )
+        var imageUri by remember { mutableStateOf<Uri?>(null) }
+        var selectedImage by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
+        val getContent = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
 
+                imageUri = uri
+                //val inputStream = context.contentResolver.openInputStream(uri)
+                //selectedImage = BitmapFactory.decodeStream(inputStream)
 
+            }
+        }
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            imageUri = uri
+        }
 
+        Spacer(modifier = Modifier.padding(5.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.AddCircle,
+                contentDescription = " ",
+                modifier = Modifier.clickable {
+                    launcher.launch("image/*")
+                }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "Adjunta Imagen")
+
+            if (imageUri != null) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Imagen cargada",
+                    tint = Color.Green
+                )
+
+            }
+        }
 
         Spacer(modifier = Modifier.padding(5.dp))
         androidx.compose.material3.ExposedDropdownMenuBox(
@@ -194,6 +246,11 @@ Spacer(modifier = Modifier.padding(5.dp))
             shape = RoundedCornerShape(5.dp),
             onClick = {
 
+                if (imageUri == null) {
+                    Toast.makeText(context, "No se ha seleccionado una imagen", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+
                 drawerViewModel.insertarDatos(
                 context,
                 num_cajon.toInt(),
@@ -201,7 +258,7 @@ Spacer(modifier = Modifier.padding(5.dp))
                 piso_edificio,
                 selectedOptionText,
                     checkedState.value,
-                    selected_pertenece_id)
+                    selected_pertenece_id,imageUri ?: Uri.EMPTY)
 
 
                       num_cajon = ""
@@ -209,6 +266,7 @@ Spacer(modifier = Modifier.padding(5.dp))
                       piso_edificio = ""
                       selectedOptionText = "Empresa"
                       selected_perteneceText = "Asignado a"
+                      imageUri = Uri.EMPTY
                       },
 
             modifier = Modifier

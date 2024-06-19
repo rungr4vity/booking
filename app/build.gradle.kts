@@ -14,7 +14,7 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "1.4"
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -102,7 +102,7 @@ dependencies {
 
     implementation ("com.google.firebase:firebase-storage-ktx:20.0.0")
     implementation ("com.google.firebase:firebase-database-ktx:20.0.0")
-    implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation("io.coil-kt:coil-compose:2.0.0")
     implementation ("androidx.compose.material:material-icons-extended:1.3.1")
 
 
