@@ -49,6 +49,8 @@ import coil.compose.rememberImagePainter
 import com.example.firebasenotes.R
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.google.firebase.components.Component
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -134,7 +136,9 @@ fun ComponentAreas(
                     text = "Detalle",
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("DetalleOficinas/${ar.capacidad}/${ar.descripcion}/NA/${ar.mobilaria}/${ar.nombre}/${ar.id}")
+                            val encodedUrl =
+                                URLEncoder.encode(ar.imageUrl, StandardCharsets.UTF_8.toString())
+                            navController.navigate("DetalleOficinas/${ar.capacidad}/${ar.descripcion}/NA/${ar.mobilaria}/${ar.nombre}/${ar.id}/${encodedUrl}")
                         }
                         .align(Alignment.CenterVertically)
                         .padding(end = 16.dp),
