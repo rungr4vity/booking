@@ -18,7 +18,7 @@ import kotlinx.coroutines.tasks.await
 class DDViewModel : ViewModel() {
     val state = mutableStateOf(Data())
     private var documentId: String? = null
-    lateinit var context: Context
+//    lateinit var context: Context
 
 
 
@@ -32,8 +32,8 @@ class DDViewModel : ViewModel() {
     }
 
     private fun getData() {
-        val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+//        val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+//        val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
         viewModelScope.launch {
             val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
@@ -41,9 +41,9 @@ class DDViewModel : ViewModel() {
                 val userData = getUserData(currentUserEmail)
 
                 state.value = userData.first
-
-                editor.putString("empresa", userData.first.empresa)
-                editor.apply()
+//
+//                editor.putString("empresa", userData.first.empresa)
+//                editor.apply()
 
                 documentId = userData.second
             }
