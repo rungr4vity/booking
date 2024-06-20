@@ -3,6 +3,7 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 import android.R
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 
@@ -35,9 +36,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import coil.compose.AsyncImage
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.viewModels.LoginViewModel
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -55,13 +59,14 @@ fun Detalle(
     piso: String,
     esEspecial: Boolean,
     idEstacionamiento: String,
+    imagen: String,
     viewModel: LoginViewModel = LoginViewModel(),
     ddViewModel: DDViewModel = viewModel()
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(5.dp),
 
         ) {
         val userData = ddViewModel.state.value
@@ -85,27 +90,42 @@ fun Detalle(
 
         Column(
             modifier = Modifier
-                .padding(10.dp)
+                .padding(5.dp)
         ) {
-            Image(
-                painter = painterResource(id = com.example.firebasenotes.R.drawable.ofi2), // Reemplaza 'your_image' con el nombre de tu imagen
-                contentDescription = "",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
 
-
+            //val decodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
+            val imageUri = Uri.parse(imagen)
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "Loaded image",
+                modifier = Modifier
+                    .size(width = 300.dp, height = 200.dp)
+                    .align(Alignment.CenterHorizontally)
             )
-            Spacer(modifier = Modifier.size(30.dp))
+
+//            Image(
+//                painter = painterResource(id = com.example.firebasenotes.R.drawable.ofi2), // Reemplaza 'your_image' con el nombre de tu imagen
+//                contentDescription = "",
+//                modifier = Modifier.align(Alignment.CenterHorizontally)
+//
+//
+//            )
+            Spacer(modifier = Modifier.size(5.dp))
+
+
+
+
             Text(
                 text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(5.dp)
             )
             Text(
                 text = "Fecha ${LocalDate.now()}", fontWeight = FontWeight.Thin, fontSize = 20.sp,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(5.dp)
             )
-            Text(text = " $nombre  - $company", modifier = Modifier.padding(10.dp))
-            Text(text = "Cajon: ${cajon}", modifier = Modifier.padding(10.dp))
-            Text(text = "Piso: $piso", modifier = Modifier.padding(10.dp))
+            Text(text = " $nombre  - $company", modifier = Modifier.padding(5.dp))
+            Text(text = "Cajon: ${cajon}", modifier = Modifier.padding(5.dp))
+            Text(text = "Piso: $piso", modifier = Modifier.padding(5.dp))
 
             var esEspecial_string = if (esEspecial) "Si" else "No"
             //Text(text = "Pertenece a: $esEspecial_string", modifier = Modifier.padding(10.dp))
@@ -121,7 +141,7 @@ fun Detalle(
                     modifier = Modifier.padding(10.dp),
                 )
             }
-            Spacer(modifier = Modifier.size(40.dp))
+            Spacer(modifier = Modifier.size(30.dp))
 
 
 // poner filtro
@@ -129,7 +149,7 @@ fun Detalle(
                 Button(
                     onClick = { deleteDrawerViewModel.deleteData(idEstacionamiento) },
                     modifier = Modifier
-                        .padding(horizontal = 19.dp)
+                        .padding(horizontal = 10.dp)
                         .align(Alignment.End),
                     colors = ButtonDefaults.buttonColors(Color(0xFF800000))
                 ) {

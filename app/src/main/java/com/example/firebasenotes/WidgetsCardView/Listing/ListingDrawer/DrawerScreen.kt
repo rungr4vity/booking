@@ -3,6 +3,7 @@ package com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -71,6 +72,9 @@ import com.google.firebase.auth.auth
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import coil.compose.AsyncImage
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -254,8 +258,6 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                 println()
                 //cajones.filter { it.id in opsHorarios.map { it.idEstacionamiento } }
                 //var final = cajones.filterNot { it.id in opsHorarios }
-
-
                 //Log.d("myempresa",myempresa.toString())
 
 
@@ -301,34 +303,41 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
 
 
 
+                             val encontrado = opsHorarios.find { it.idEstacionamiento == cajon.id && it.nombre == menHorarios }
 
-                                if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
-                                    var valor = opsHorarios.find { it.nombre == menHorarios }
-                                    var todoDia = opsHorarios.find { it.nombre == "Todo el día" }
+                             if(encontrado != null)
+                             {
 
+                             } else {
+                                 ComponentDrawer(cajon = cajon, navController = navController)
+                             }
 
-
-                                    if (valor != null || todoDia != null) {
-                                        //Toast.makeText(context, "El cajon ${cajon.numero} esta reservado", Toast.LENGTH_SHORT).show()
-                                        //remove
-                                    } else {
-
-                                        if(menHorarios == "Todo el día" && opsHorarios.isNotEmpty()){
-
-                                        } else {
-                                            ComponentDrawer(
-                                                cajon = cajon,
-                                                navController = navController
-                                            )
-                                        }
-
-
-
-
-                                        //Toast.makeText(context, "El cajon ${cajon.numero} no esta reservado", Toast.LENGTH_SHORT).show()
-                                    }
-
-                                }
+//                                if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
+//
+//                                    var valor = opsHorarios.find { it.nombre == menHorarios }
+//                                    var todoDia = opsHorarios.find { it.nombre == "Todo el día" }
+//
+//
+//
+//                                    if (valor != null || todoDia != null) {
+//                                        //Toast.makeText(context, "El cajon ${cajon.numero} esta reservado", Toast.LENGTH_SHORT).show()
+//                                        //remove
+//                                    } else {
+//
+//                                        if(menHorarios == "Todo el día" && opsHorarios.isNotEmpty()){
+//
+//                                        } else {
+//                                            ComponentDrawer(
+//                                                cajon = cajon,
+//                                                navController = navController
+//                                            )
+//                                        }
+//
+//
+//                                        //Toast.makeText(context, "El cajon ${cajon.numero} no esta reservado", Toast.LENGTH_SHORT).show()
+//                                    }
+//
+//                                }
                             } else {
                                 ComponentDrawer(cajon = cajon, navController = navController)
                             }
@@ -380,7 +389,10 @@ fun ComponentDrawer(
             modifier = Modifier
                 .clickable {
 
-                    navController.navigate("DetalleCajon/${cajon.nombre}/${cajon.empresa}/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}",
+                    val encodedUrl = URLEncoder.encode(cajon.imagen, StandardCharsets.UTF_8.toString())
+                    navController.navigate("DetalleCajon/${cajon.nombre}/${cajon.empresa}" +
+                            "/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}" +
+                            "/${encodedUrl}",
                         navOptions { // Use the Kotlin DSL for building NavOptions
                             anim {
                                 enter = android.R.animator.fade_in
@@ -393,14 +405,26 @@ fun ComponentDrawer(
                 .fillMaxWidth()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.est), // Reemplaza 'your_image' con el nombre de tu imagen
-                    contentDescription = "Logo",
+
+                val imageUri = Uri.parse(cajon.imagen)
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "Loaded image",
                     modifier = Modifier
                         .size(100.dp)
-//                        .padding(horizontal = 2.dp)
-
                 )
+
+
+//                Image(
+//                    painter = painterResource(id = R.drawable.est), // Reemplaza 'your_image' con el nombre de tu imagen
+//                    contentDescription = "Logo",
+//                    modifier = Modifier
+//                        .size(100.dp)
+////                        .padding(horizontal = 2.dp)
+//
+//                )
+
+
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column(modifier = Modifier.weight(2f)) {
