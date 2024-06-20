@@ -232,14 +232,15 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
 
 
-                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}",
+                composable("DetalleCajon/{nombre}/{company}/{cajon}/{piso}/{esEspecial}/{idEstacionamiento}/{imagen}",
                     arguments = listOf(
                         navArgument("nombre") { type = NavType.StringType },
                         navArgument("company") { type = NavType.StringType },
                         navArgument("cajon") { type = NavType.StringType },
                         navArgument("piso") { type = NavType.StringType },
                         navArgument("esEspecial") { type = NavType.BoolType },
-                        navArgument("idEstacionamiento") { type = NavType.StringType }
+                        navArgument("idEstacionamiento") { type = NavType.StringType },
+                        navArgument("imagen") { type = NavType.StringType }
                     )) {
 
                     val nombre = it.arguments?.getString("nombre") ?: ""
@@ -250,6 +251,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
                     val esEspecialString = if (esEspecial) "1" else "0"
                     val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
+                    val imagen = it.arguments?.getString("imagen") ?: ""
 
 
                     val context = LocalContext.current
@@ -261,7 +263,8 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         cajon,
                         piso,
                         esEspecial,
-                        idEstacionamiento
+                        idEstacionamiento,
+                        imagen
                     )
                 }
                 composable("Cat Areas") {
