@@ -3,6 +3,7 @@ package com.example.firebasenotes.Oficinas
 import android.R
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 
@@ -32,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaViewModelDOS
 
@@ -55,6 +58,7 @@ fun DetalleOficinas(
     mobilaria: String,
     nombre: String,
     idArea: String,
+    imageUrl: String,
     viewModel: OficinasViewModel = OficinasViewModel(),
     deleteViewModel: AreaViewModelDOS = AreaViewModelDOS(),
     ddViewModel: DDViewModel = viewModel()
@@ -94,13 +98,22 @@ fun DetalleOficinas(
         Column(modifier = Modifier
             .padding(10.dp)
         ) {
-            Image(
-                painter = painterResource(id = com.example.firebasenotes.R.drawable.ofi2), // Reemplaza 'your_image' con el nombre de tu imagen
-                contentDescription = "",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-
-
+//            Image(
+//                painter = rememberImagePainter(imageUrl), // Reemplaza 'your_image' con el nombre de tu imagen
+//                contentDescription = "",
+//                modifier = Modifier.align(Alignment.CenterHorizontally)
+//
+//
+//            )
+            val imageUrl = Uri.parse(imageUrl)
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(200.dp)
             )
+
             Spacer(modifier = Modifier.size(30.dp))
                 Text(
                     text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
@@ -131,7 +144,10 @@ fun DetalleOficinas(
             Spacer(modifier = Modifier.size(60.dp))
 
             if(userData.typeId == 0){
-           Button(onClick = {  deleteViewModel.deleteArea(idArea)}
+           Button(
+               onClick = {  deleteViewModel.deleteArea(idArea)
+                   navController.navigate("Oficinas")
+                         }
                ,
                modifier = Modifier
                    .padding(horizontal = 19.dp)

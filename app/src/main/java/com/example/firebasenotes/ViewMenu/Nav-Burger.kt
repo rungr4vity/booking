@@ -199,7 +199,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
 
 
                 composable(
-                    "DetalleOficinas/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}",
+                    "DetalleOficinas/{capacidad}/{descripcion}/{id}/{mobilaria}/{nombre}/{idArea}/{imageUrl}",
                     arguments = listOf(
                         navArgument("capacidad") { type = NavType.StringType },
                         navArgument("descripcion") { type = NavType.StringType },
@@ -207,6 +207,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         navArgument("mobilaria") { type = NavType.StringType },
                         navArgument("nombre") { type = NavType.StringType },
                         navArgument("idArea") { type = NavType.StringType },
+                        navArgument("imageUrl") { type = NavType.StringType }
                     )
                 ) {
 
@@ -218,6 +219,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val mobilaria = it.arguments?.getString("mobilaria") ?: ""
                     val nombre = it.arguments?.getString("nombre") ?: ""
                     val idArea = it.arguments?.getString("idArea") ?: ""
+                    val imageUrl = it.arguments?.getString("imageUrl") ?: ""
 
                     DetalleOficinas(
                         navController = navController,
@@ -228,6 +230,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         mobilaria,
                         nombre,
                         idArea,
+                        imageUrl,
                     )
                 }
 
