@@ -1,5 +1,6 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,6 +38,35 @@ class AreaViewModel : ViewModel(){
         }
     }
 
+
+
+    // Función para actualizar la oficina en Firestore
+    fun actualizarOficina(
+        idArea: String,
+        nombre: String,
+        descripcion: String,
+        capacidad: String,
+        mobilaria: String,
+        id: String
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val oficinasRef = db.collection("Oficinas").document(idArea)
+
+
+
+        oficinasRef.update(
+            mapOf(
+                "nombre" to nombre,
+                "descripcion" to descripcion,
+                "capacidad" to capacidad,
+                "mobilaria" to mobilaria
+        )
+        ).addOnSuccessListener {
+            Log.d("ActualizarOficina", "Oficina actualizada con éxito")
+        }.addOnFailureListener { e ->
+            Log.e("ActualizarOficina", "Error al actualizar la oficina", e)
+        }
+    }
 
     //CLASEE PARA AGREGAR REGISTRO
     fun InsertDatosArea(

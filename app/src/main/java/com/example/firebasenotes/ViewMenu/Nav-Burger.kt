@@ -1,7 +1,5 @@
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,15 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,14 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -62,12 +53,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navArgument
 import com.example.firebasenotes.MainActivity
 import com.example.firebasenotes.Oficinas.DetalleOficinas
+import com.example.firebasenotes.Oficinas.EditarOficinas
+
 import com.example.firebasenotes.Oficinas.ListadoOficinas
 import com.example.firebasenotes.Oficinas.OficinasViewModel
-import com.example.firebasenotes.Oficinas.ReservaOficinas
 import com.example.firebasenotes.Oficinas.ReservaOficinas_extension
 import com.example.firebasenotes.Viaticos.FacturaAdd.DDViaticos
 import com.example.firebasenotes.R
@@ -95,8 +86,6 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ReservacionOficinas.Rev
 import com.example.firebasenotes.bill.FilePickerForm
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
-import com.example.firebasenotes.views.login.LoginView
-import com.example.firebasenotes.views.login.TabsViews
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -451,6 +440,32 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         //Log.i("LOG_TAG", "Clicked back")
                     }
 
+                }
+                composable("EditarOficinas/{idArea}/{capacidad}/{descripcion}/{id}/ {mobilaria}/{nombre}",
+                    arguments = listOf(
+                        navArgument("idArea") { type = NavType.StringType },
+                        navArgument("capacidad") { type = NavType.StringType },
+                        navArgument("descripcion") { type = NavType.StringType },
+                        navArgument("id") { type = NavType.StringType },
+                        navArgument("mobilaria") { type = NavType.StringType },
+                        navArgument("nombre") { type = NavType.StringType },
+
+                    ) ){
+                    val idArea = it.arguments?.getString("idArea") ?: ""
+                    val capacidad = it.arguments?.getString("capacidad") ?: ""
+                    val descripcion = it.arguments?.getString("descripcion") ?: ""
+                    val id = it.arguments?.getString("id") ?: ""
+                    val mobilaria = it.arguments?.getString("mobilaria") ?: ""
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+
+                    EditarOficinas(
+                        idArea,
+                        capacidad,
+                        descripcion,
+                        id,
+                        mobilaria,
+                        nombre
+                    )
                 }
 
             }
