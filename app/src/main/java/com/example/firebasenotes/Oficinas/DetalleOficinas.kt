@@ -61,7 +61,8 @@ fun DetalleOficinas(
     imageUrl: String,
     viewModel: OficinasViewModel = OficinasViewModel(),
     deleteViewModel: AreaViewModelDOS = AreaViewModelDOS(),
-    ddViewModel: DDViewModel = viewModel()
+    ddViewModel: DDViewModel = viewModel(),
+
 ){
 
     // first comment
@@ -105,6 +106,7 @@ fun DetalleOficinas(
 //
 //
 //            )
+
             val imageUrl = Uri.parse(imageUrl)
             AsyncImage(
                 model = imageUrl,
@@ -115,6 +117,7 @@ fun DetalleOficinas(
             )
 
             Spacer(modifier = Modifier.size(30.dp))
+
                 Text(
                     text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp)
@@ -144,7 +147,22 @@ fun DetalleOficinas(
             Spacer(modifier = Modifier.size(60.dp))
 
             if(userData.typeId == 0){
-           Button(
+
+                Button(
+                    onClick = {
+                        navController.navigate("EditarOficinas/${idArea}/${capacidad}/${descripcion}/${id}/ ${mobilaria}/ ${nombre}")
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 19.dp)
+                        .align(Alignment.End),
+                    colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+                ) {
+                    Text(text = "Editar", color = Color.White)
+                }
+
+
+
+                Button(
                onClick = {  deleteViewModel.deleteArea(idArea)
                    navController.navigate("Oficinas")
                          }
@@ -156,6 +174,9 @@ fun DetalleOficinas(
             ) {
                 Text(text = "Eliminar",color = Color.White)
             }
+
+
+
             }
 
                 Button(

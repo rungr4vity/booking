@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.firebasenotes.R
 import com.example.firebasenotes.utils.ValidacionesHora
 import com.google.firebase.auth.FirebaseAuth
@@ -107,13 +108,22 @@ fun RevoficinaCard(revoficina: RevoficinasDTO, onDelete: () -> Unit) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ofi),
-                contentDescription = "Logo",
-                modifier = Modifier
-                    .size(140.dp)
-                    .padding(horizontal = 2.dp)
-            )
+//            Image(
+//                painter = painterResource(id = R.drawable.ofi),
+//                contentDescription = "Logo",
+//                modifier = Modifier
+//                    .size(140.dp)
+//                    .padding(horizontal = 2.dp)
+//            )
+            dataOfi?.let { oficina ->
+                Image(
+                    painter = rememberAsyncImagePainter(oficina.imageUrl),
+                    contentDescription = "Logo",
+                    modifier = Modifier
+                        .size(140.dp)
+                        .padding(horizontal = 2.dp)
+                )
+            }
 
             Column(
                 modifier = Modifier

@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.firebasenotes.R
 import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataDrawerDTO
 import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataReservations
@@ -101,7 +102,7 @@ fun ReservacionEstacionamientoCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.est),
+                painter = rememberAsyncImagePainter(estacionamiento?.imagen),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(140.dp)

@@ -15,7 +15,8 @@ data class DataDrawerDTO( //Datos Estacionamiento
     val piso: String = "",
     val id: String = "",
     val empresa: String = "",
-    val esEspecial: Boolean? = false
+    val esEspecial: Boolean? = false,
+    val imagen: String = ""
 )
 
 data class DataTurnos(

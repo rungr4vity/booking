@@ -16,4 +16,5 @@ data class DataOfi(
     var id : String="",
     val mobilaria: String="",
     val nombre: String="",
+    val imageUrl: String = ""
 )
