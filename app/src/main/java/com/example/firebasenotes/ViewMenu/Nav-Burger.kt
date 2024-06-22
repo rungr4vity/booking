@@ -82,8 +82,10 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaElimin
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.UpdateEstacionamiento
 import com.example.firebasenotes.WidgetsCardView.Listing.ReservacionOficinas.RevoficinasScreen
 import com.example.firebasenotes.bill.FilePickerForm
+import com.example.firebasenotes.estacionamientos.EstacionamientosViewModel
 import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -259,6 +261,62 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         imagen
                     )
                 }
+
+
+                composable("UpdateEstacionamiento/{idEstacionamiento}/{imagen}/{nombre}/{numero}"
+                       , arguments = listOf(
+                            navArgument("idEstacionamiento") { type = NavType.StringType },
+                            navArgument("imagen") { type = NavType.StringType },
+                            navArgument("nombre") { type = NavType.StringType },
+                            navArgument("numero") { type = NavType.StringType },
+                    ))
+                {
+
+                    val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
+                    val imagen = it.arguments?.getString("imagen") ?: ""
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    //val company = it.arguments?.getString("company") ?: ""
+                    val numero = it.arguments?.getString("numero") ?: ""
+
+                    val context = LocalContext.current
+                    val viewModel = EstacionamientosViewModel()
+                    UpdateEstacionamiento(
+                        viewModel,
+                        navController = navController,
+                        context,idEstacionamiento,imagen,nombre,numero
+                    )
+                }
+
+
+
+                composable("UpdateEstacionamiento_/{idEstacionamiento/{imagen}" +
+                        "/{nombre}/{company}/{cajon}/{piso}/{esEspecial}", arguments = listOf(
+                    navArgument("idEstacionamiento") { type = NavType.StringType },
+                    navArgument("imagen") { type = NavType.StringType },
+                    navArgument("nombre") { type = NavType.StringType },
+                    navArgument("company") { type = NavType.StringType },
+                    navArgument("cajon") { type = NavType.StringType },
+                    navArgument("piso") { type = NavType.StringType },
+                    navArgument("esEspecial") { type = NavType.BoolType },
+
+                ))
+                {
+
+                    val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
+                    val nombre = it.arguments?.getString("nombre") ?: ""
+                    val company = it.arguments?.getString("company") ?: ""
+                    val cajon = it.arguments?.getString("cajon") ?: ""
+                    val piso = it.arguments?.getString("piso") ?: ""
+                    val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
+                    val esEspecialString = if (esEspecial) "1" else "0"
+                    val imagen = it.arguments?.getString("imagen") ?: ""
+
+                    val context = LocalContext.current
+
+                }
+
+
+
                 composable("Cat Areas") {
                     ModAreaEliminar(areaViewModelDOS = viewModel(), navController = navController)
                 }
