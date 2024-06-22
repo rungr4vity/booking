@@ -499,7 +499,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     }
 
                 }
-                composable("EditarOficinas/{idArea}/{capacidad}/{descripcion}/{id}/ {mobilaria}/{nombre}",
+                composable("EditarOficinas/{idArea}/{capacidad}/{descripcion}/{id}/ {mobilaria}/{nombre}/{imagen}",
                     arguments = listOf(
                         navArgument("idArea") { type = NavType.StringType },
                         navArgument("capacidad") { type = NavType.StringType },
@@ -507,6 +507,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         navArgument("id") { type = NavType.StringType },
                         navArgument("mobilaria") { type = NavType.StringType },
                         navArgument("nombre") { type = NavType.StringType },
+                        navArgument("imagen") { type = NavType.StringType }
 
                     ) ){
                     val idArea = it.arguments?.getString("idArea") ?: ""
@@ -515,6 +516,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val id = it.arguments?.getString("id") ?: ""
                     val mobilaria = it.arguments?.getString("mobilaria") ?: ""
                     val nombre = it.arguments?.getString("nombre") ?: ""
+                    val imagen = it.arguments?.getString("imagen") ?: ""
 
                     EditarOficinas(
                         idArea,
@@ -522,7 +524,8 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                         descripcion,
                         id,
                         mobilaria,
-                        nombre
+                        nombre,
+                        imagen
                     )
                 }
 

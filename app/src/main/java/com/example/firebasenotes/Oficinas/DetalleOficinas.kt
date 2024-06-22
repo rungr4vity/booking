@@ -39,6 +39,8 @@ import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaViewModelDOS
 
 import com.example.firebasenotes.models.oficinasDTO
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 import java.time.Instant
 import java.time.LocalDate
@@ -107,9 +109,9 @@ fun DetalleOficinas(
 //
 //            )
 
-            val imageUrl = Uri.parse(imageUrl)
+            val imageUrl_ = Uri.parse(imageUrl)
             AsyncImage(
-                model = imageUrl,
+                model = imageUrl_,
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -150,7 +152,9 @@ fun DetalleOficinas(
 
                 Button(
                     onClick = {
-                        navController.navigate("EditarOficinas/${idArea}/${capacidad}/${descripcion}/${id}/ ${mobilaria}/ ${nombre}")
+
+                        val encodedUrl = URLEncoder.encode(imageUrl, StandardCharsets.UTF_8.toString())
+                        navController.navigate("EditarOficinas/${idArea}/${capacidad}/${descripcion}/${id}/ ${mobilaria}/ ${nombre}/ ${encodedUrl}")
                     },
                     modifier = Modifier
                         .padding(horizontal = 19.dp)

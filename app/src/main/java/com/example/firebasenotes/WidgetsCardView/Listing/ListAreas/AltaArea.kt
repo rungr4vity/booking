@@ -133,7 +133,7 @@ Spacer(modifier = Modifier.height(10.dp))
                     // Subir imagen a Firebase Storage
                     val storageRef = Firebase.storage.reference
                     val uuid = UUID.randomUUID().toString()
-                    val imageRef = storageRef.child("images/$uuid")
+                    val imageRef = storageRef.child("images/oficinas/$uuid.jpg")
                     val uploadTask = imageRef.putFile(selectedImageUri!!.toUri())
 
                     uploadTask.addOnSuccessListener {
