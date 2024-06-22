@@ -41,6 +41,7 @@ import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.viewModels.LoginViewModel
 import java.net.URLDecoder
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.time.LocalDate
@@ -146,6 +147,45 @@ fun Detalle(
 
 // poner filtro
             if (userData.typeId == 0) {
+                Button(
+                    onClick = {
+
+
+
+
+                        val encodedUrl = URLEncoder.encode(imagen, StandardCharsets.UTF_8.toString())
+                        navController.navigate("UpdateEstacionamiento/$idEstacionamiento/$encodedUrl/$nombre/$cajon"
+                                ,
+                            navOptions { // Use the Kotlin DSL for building NavOptions
+                                anim {
+                                    enter = R.animator.fade_in
+                                    exit = R.animator.fade_out
+                                }
+                            })
+//                        navController.navigate("UpdateEstacionamiento/$idEstacionamiento/" +
+//                                "$encodedUrl/$nombre/$company/$cajon/" +
+//                                "$piso/$esEspecial",
+//                            navOptions { // Use the Kotlin DSL for building NavOptions
+//                                anim {
+//                                    enter = R.animator.fade_in
+//                                    exit = R.animator.fade_out
+//                                }
+//                            })
+
+
+
+
+
+                              },
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .align(Alignment.End),
+                    colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+                ) {
+                    Text(text = "Editar",color = Color.White)
+                }
+
+
                 Button(
                     onClick = { deleteDrawerViewModel.deleteData(idEstacionamiento) },
                     modifier = Modifier
