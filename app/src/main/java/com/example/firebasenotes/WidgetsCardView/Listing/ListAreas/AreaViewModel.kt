@@ -1,12 +1,17 @@
 package com.example.firebasenotes.WidgetsCardView.Listing.ListAreas
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 suspend fun DataFromArea() : MutableList <DataAreas>{
     val db = FirebaseFirestore.getInstance()
@@ -38,6 +43,46 @@ class AreaViewModel : ViewModel(){
         }
     }
 
+    fun updatePhoto(context: Context, imagen: String, updatedImage: Uri, oficinaId: String) {
+
+        val storageReference = FirebaseStorage.getInstance().reference
+        val desertRef = storageReference.child("images/oficinas/$imagen")
+
+        desertRef.delete().addOnSuccessListener {
+
+            val storage = FirebaseStorage.getInstance().reference
+            val imageRef = storage.child("images/oficinas/${UUID.randomUUID()}.jpg")
+            imageRef.putFile(updatedImage)
+                .addOnSuccessListener {
+
+                    imageRef.downloadUrl.addOnSuccessListener { uri ->
+                        val downloadUrl = uri.toString()
+                        var instance = FirebaseFirestore.getInstance()
+
+                        val dto = hashMapOf(
+
+                            "imageUrl" to downloadUrl
+                        )
+
+                        instance.collection("Oficinas").document(oficinaId)
+                            .update(dto as Map<String, Any>).addOnSuccessListener {
+                                Toast.makeText(context, "Imagen actualizada", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(context, "Error al implementar imagen oficina : ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+
+                }.addOnFailureListener {
+                    Toast.makeText(context, "Error al actualizar la imagen", Toast.LENGTH_SHORT).show()
+                }
+
+        }.addOnFailureListener {
+            // Uh-oh, an error occurred!
+            Toast.makeText(context, "Error al eliminar la imagen", Toast.LENGTH_SHORT).show()
+        }
+
+    }
 
 
     // Función para actualizar la oficina en Firestore
