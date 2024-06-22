@@ -154,7 +154,7 @@ fun Detalle(
 
 
                         val encodedUrl = URLEncoder.encode(imagen, StandardCharsets.UTF_8.toString())
-                        navController.navigate("UpdateEstacionamiento/$idEstacionamiento/$encodedUrl/$nombre/$cajon"
+                        navController.navigate("UpdateEstacionamiento/$idEstacionamiento/$encodedUrl/$nombre/$cajon/$company"
                                 ,
                             navOptions { // Use the Kotlin DSL for building NavOptions
                                 anim {

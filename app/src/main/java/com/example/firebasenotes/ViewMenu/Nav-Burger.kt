@@ -263,19 +263,20 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
 
 
-                composable("UpdateEstacionamiento/{idEstacionamiento}/{imagen}/{nombre}/{numero}"
+                composable("UpdateEstacionamiento/{idEstacionamiento}/{imagen}/{nombre}/{numero}/{company}"
                        , arguments = listOf(
                             navArgument("idEstacionamiento") { type = NavType.StringType },
                             navArgument("imagen") { type = NavType.StringType },
                             navArgument("nombre") { type = NavType.StringType },
                             navArgument("numero") { type = NavType.StringType },
+                            navArgument("company") { type = NavType.StringType },
                     ))
                 {
 
                     val idEstacionamiento = it.arguments?.getString("idEstacionamiento") ?: ""
                     val imagen = it.arguments?.getString("imagen") ?: ""
                     val nombre = it.arguments?.getString("nombre") ?: ""
-                    //val company = it.arguments?.getString("company") ?: ""
+                    val company = it.arguments?.getString("company") ?: ""
                     val numero = it.arguments?.getString("numero") ?: ""
 
                     val context = LocalContext.current
@@ -283,7 +284,7 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     UpdateEstacionamiento(
                         viewModel,
                         navController = navController,
-                        context,idEstacionamiento,imagen,nombre,numero
+                        context,idEstacionamiento,imagen,nombre,numero,company
                     )
                 }
 
