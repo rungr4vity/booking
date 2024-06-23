@@ -55,14 +55,14 @@ fun UpdateEstacionamiento (
     nombre: String,
     numero: String,
     company: String,
+    piso: String,
+    esEspecial: Boolean,
     drawerViewModel: DrawerViewModel = viewModel(),
-//    piso: String,
-//    esEspecial: Boolean
 
 ) {
 
         var expanded_user  by remember { mutableStateOf(false) }
-        val checkedState: MutableState<Boolean> = remember { mutableStateOf(true) }
+        val checkedState: MutableState<Boolean> = remember { mutableStateOf(esEspecial) }
         val perteneceA = drawerViewModel.usuarios_short.value
         var selected_perteneceText  by remember { mutableStateOf("Asignado a") }
         var selected_pertenece_id  by remember { mutableStateOf("") }
@@ -74,8 +74,9 @@ fun UpdateEstacionamiento (
 
         var nombre by remember { mutableStateOf(nombre) }
         var numero by remember { mutableStateOf(numero) }
-        var text3 by remember { mutableStateOf("") }
+        var piso by remember { mutableStateOf(piso) }
         var imagen_original = imagen
+         var imagen_boolean by remember { mutableStateOf(true) }
         var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(imagen)) }
 
         val context = LocalContext.current
@@ -84,7 +85,9 @@ fun UpdateEstacionamiento (
             onResult = { uri: Uri? ->
                 if (uri != null) {
                     imageUri = uri
+                    imagen_boolean = false
                 } else {
+                    imagen_boolean = true
                     imageUri = Uri.parse(imagen)
                 }
             }
@@ -125,36 +128,41 @@ Row() {
                 .padding(bottom = 16.dp),
             contentScale = ContentScale.Crop
         )
-        // inside pic
-        Button(modifier= Modifier.padding(start = 10.dp),
-            onClick = {
-                var imagen_jpg = ""
-                val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
-                var decode = encodedUrl.split("/")
-
-                decode.forEach {
-                    if(it.contains(".jpg")) {
-                        imagen_jpg = it
-                    }
-                }
-                var ultima = imagen_jpg.split("?")
-
-                if(ultima.size > 1) {
-                    imagen_jpg = ultima[0]
-                }
-                viewModel.updatePhoto(context,imagen_jpg,imageUri ?: Uri.EMPTY,idEstacionamianto)
-            },
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors( Color(0xFF4CBB17)),
-        ) {
-            Text(text = "Cambiar",color = Color.White)
-        }
-
     }
-
-
-
 }
+            if (!imagen_boolean) {
+                // inside pic
+                Button(
+                    modifier = Modifier.padding(start = 10.dp).fillMaxWidth(),
+                    onClick = {
+                        var imagen_jpg = ""
+                        val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
+                        var decode = encodedUrl.split("/")
+
+                        decode.forEach {
+                            if (it.contains(".jpg")) {
+                                imagen_jpg = it
+                            }
+                        }
+                        var ultima = imagen_jpg.split("?")
+
+                        if (ultima.size > 1) {
+                            imagen_jpg = ultima[0]
+                        }
+                        viewModel.updatePhoto(
+                            context,
+                            imagen_jpg,
+                            imageUri ?: Uri.EMPTY,
+                            idEstacionamianto
+                        )
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xFF4CBB17)),
+                ) {
+                    Text(text = "Cambiar", color = Color.White)
+                }
+
+            }
 
             Row(Modifier.fillMaxWidth().padding(5.dp)) {
 
@@ -178,16 +186,29 @@ Row() {
                     .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
             )
 
-            Spacer(modifier = Modifier.padding(5.dp))
+            Row(modifier = Modifier.fillMaxWidth().padding(5.dp)){
+
+
+
             TextField(
                 value =  numero,
                 onValueChange = {  numero = it },
                 label = { androidx.compose.material.Text("Num.") }
                 ,modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
+                    .weight(1f)
+                    .padding(end = 5.dp)
             )
 
+
+            TextField(
+                value =  piso,
+                onValueChange = {  piso = it },
+                label = { androidx.compose.material.Text("Piso") }
+                ,modifier = Modifier
+                    .weight(1f)
+
+            )
+}
 
             Spacer(modifier = Modifier.padding(5.dp))
             androidx.compose.material3.ExposedDropdownMenuBox(
@@ -279,7 +300,7 @@ Row() {
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
                //println(imagen_jpg)
-                viewModel.updateInfo(context,idEstacionamianto,nombre,numero)
+                viewModel.updateInfo(context,idEstacionamianto,nombre,numero,piso,esEspecial,selected_pertenece_id)
 
             },
                 shape = RoundedCornerShape(5.dp),
