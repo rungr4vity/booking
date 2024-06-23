@@ -263,13 +263,15 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                 }
 
 
-                composable("UpdateEstacionamiento/{idEstacionamiento}/{imagen}/{nombre}/{numero}/{company}"
+                composable("UpdateEstacionamiento/{idEstacionamiento}/{imagen}/{nombre}/{numero}/{company}/{piso}/{esEspecial}"
                        , arguments = listOf(
                             navArgument("idEstacionamiento") { type = NavType.StringType },
                             navArgument("imagen") { type = NavType.StringType },
                             navArgument("nombre") { type = NavType.StringType },
                             navArgument("numero") { type = NavType.StringType },
                             navArgument("company") { type = NavType.StringType },
+                            navArgument("piso") { type = NavType.StringType },
+                            navArgument("esEspecial") { type = NavType.StringType },
                     ))
                 {
 
@@ -278,13 +280,16 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     val nombre = it.arguments?.getString("nombre") ?: ""
                     val company = it.arguments?.getString("company") ?: ""
                     val numero = it.arguments?.getString("numero") ?: ""
+                    val piso = it.arguments?.getString("piso") ?: ""
+                    val esEspecial = it.arguments?.getBoolean("esEspecial") ?: false
+                    val esEspecialString = if (esEspecial) "1" else "0"
 
                     val context = LocalContext.current
                     val viewModel = EstacionamientosViewModel()
                     UpdateEstacionamiento(
                         viewModel,
                         navController = navController,
-                        context,idEstacionamiento,imagen,nombre,numero,company
+                        context,idEstacionamiento,imagen,nombre,numero,company,piso,esEspecial
                     )
                 }
 

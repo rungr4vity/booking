@@ -53,13 +53,17 @@ class EstacionamientosViewModel: ViewModel() {
     }
 
 
-    fun updateInfo(context:Context,estacionamientoId:String,nombre: String,numero: String) {
+    fun updateInfo(context:Context,estacionamientoId:String,nombre: String,numero: String,piso: String,esEspecial: Boolean,
+                   perteneceA: String) {
 
                         var instance = FirebaseFirestore.getInstance()
 
                         val dto = hashMapOf(
                             "nombre" to nombre,
-                            "numero" to numero.toInt()
+                            "numero" to numero.toInt(),
+                            "piso" to piso,
+                            "esEspecial" to esEspecial,
+                            "perteneceA" to perteneceA
                         )
 
                         instance.collection("Estacionamientos").document(estacionamientoId)
