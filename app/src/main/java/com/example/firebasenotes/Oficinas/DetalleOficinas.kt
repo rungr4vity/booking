@@ -148,12 +148,11 @@ fun DetalleOficinas(
                 }
             Spacer(modifier = Modifier.size(60.dp))
 
-            if(userData.typeId == 0){
+
 
                 Button(
                     onClick = {
-
-                        val encodedUrl = URLEncoder.encode(imageUrl, StandardCharsets.UTF_8.toString())
+                        val encodedUrl = URLEncoder.encode(imageUrl.trim(), StandardCharsets.UTF_8.toString())
                         navController.navigate("EditarOficinas/${idArea}/${capacidad}/${descripcion}/${id}/ ${mobilaria}/ ${nombre}/ ${encodedUrl}")
                     },
                     modifier = Modifier
@@ -164,6 +163,7 @@ fun DetalleOficinas(
                     Text(text = "Editar", color = Color.White)
                 }
 
+            if(userData.typeId == 0){
 
 
                 Button(

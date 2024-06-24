@@ -4,17 +4,23 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 suspend fun DataFromArea() : MutableList <DataAreas>{
     val db = FirebaseFirestore.getInstance()
+
     val areas = mutableListOf<DataAreas>()
     val querySnapshot = db.collection("Oficinas").get().await()
     querySnapshot.query
@@ -33,9 +39,13 @@ suspend fun DataFromArea() : MutableList <DataAreas>{
 }
 
 class AreaViewModel : ViewModel(){
+    private val _variable = MutableStateFlow<String>("Inicial")
+    val uiState: StateFlow<String> = _variable
+
     val statearea = mutableStateOf<List<DataAreas>>(emptyList())
     init {
         getData()
+
     }
     private fun getData() {
         viewModelScope.launch {
@@ -43,6 +53,22 @@ class AreaViewModel : ViewModel(){
         }
     }
 
+    fun imgArea(idArea: String){
+        val imageUrlState = MutableStateFlow<Uri?>(null)
+
+        Firebase.firestore.collection("Oficinas").document(idArea)
+            .get()
+            .addOnSuccessListener { document ->
+
+                val imageUrl = document.getString("imageUrl")
+                imageUrl?.let {
+//                    imageUrlState.value = Uri.parse(it)
+                    _variable.value = it
+
+                }
+            }
+
+    }
     fun updatePhoto(context: Context, imagen: String, updatedImage: Uri, oficinaId: String) {
 
         val storageReference = FirebaseStorage.getInstance().reference
@@ -83,6 +109,16 @@ class AreaViewModel : ViewModel(){
         }
 
     }
+    private suspend fun getImageUrlFromFirestore(documentId: String): String? {
+        val firestore = Firebase.firestore
+        return try {
+            val document = firestore.collection("Oficinas").document(documentId).get().await()
+            document.getString("imageUrl")
+        } catch (e: Exception) {
+            // Manejar errores aquí, como falta de conexión o errores de Firestore
+            null
+        }
+    }
 
 
     // Función para actualizar la oficina en Firestore
@@ -111,6 +147,28 @@ class AreaViewModel : ViewModel(){
         }.addOnFailureListener { e ->
             Log.e("ActualizarOficina", "Error al actualizar la oficina", e)
         }
+    }
+    fun fetchOfficeImages(idArea: String): List<DataAreas> {
+        val db = Firebase.firestore
+        val officeList = mutableListOf<DataAreas>()
+
+        db.collection("Oficinas")
+            .whereEqualTo("idArea", idArea)
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    val imageUrl = document.getString("imageUrl")
+                    if (imageUrl != null) {
+                        officeList.add(DataAreas(idArea, imageUrl))
+                    }
+                }
+
+            }
+            .addOnFailureListener { exception ->
+                // Manejo de errores
+            }
+
+        return officeList
     }
 
     //CLASEE PARA AGREGAR REGISTRO

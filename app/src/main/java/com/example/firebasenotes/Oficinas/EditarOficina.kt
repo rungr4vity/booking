@@ -53,9 +53,11 @@ fun EditarOficinas(
     areaViewModel: AreaViewModel = viewModel()
 ) {
     var nombreText by remember { mutableStateOf(nombre) }
-    var descripcionText by remember { mutableStateOf(descripcion) }
+    var mobText by remember { mutableStateOf(mobilaria) }
     var capacidadText by remember { mutableStateOf(capacidad) }
-    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(imagen)) }
+
+    val ejemplo = imagen.toString().trim()
+    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(ejemplo)) }
 
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
@@ -63,8 +65,9 @@ fun EditarOficinas(
         onResult = { uri: Uri? ->
             if (uri != null) {
                 imageUri = uri
+                println()
             } else {
-                imageUri = Uri.parse(imagen)
+                imageUri = Uri.parse(ejemplo)
             }
         }
     )
@@ -73,11 +76,16 @@ fun EditarOficinas(
         imageUri?.let {
 
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .size(200.dp)
+
+
             )
             // inside pic
             //Text(text = "Selected image: $imagen")
@@ -133,9 +141,9 @@ fun EditarOficinas(
 
         // Campo para editar la descripción
         OutlinedTextField(
-            value = descripcionText,
-            onValueChange = { descripcionText = it },
-            label = { Text("Descripción") },
+            value = mobText,
+            onValueChange = {mobText = it },
+            label = { Text("Mobilaria") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -158,9 +166,9 @@ fun EditarOficinas(
                 areaViewModel.actualizarOficina(
                     idArea = idArea,
                     nombre = nombreText,
-                    descripcion = descripcionText,
+                    descripcion = descripcion,
                     capacidad = capacidadText,
-                    mobilaria = mobilaria,
+                    mobilaria = mobText,
                     id = id
                 )
 

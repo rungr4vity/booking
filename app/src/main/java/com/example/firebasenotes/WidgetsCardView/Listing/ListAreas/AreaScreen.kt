@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.firebasenotes.R
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
@@ -100,7 +101,7 @@ fun ComponentAreas(
                 // Mostrar la imagen asociada al área
                 if (ar.imageUrl.isNotEmpty()) {
                     Image(
-                        painter = rememberImagePainter(ar.imageUrl), // Usa una función rememberImagePainter para cargar la imagen desde la URL
+                        painter = rememberAsyncImagePainter(ar.imageUrl), // Usa una función rememberImagePainter para cargar la imagen desde la URL
                         contentDescription = "Image",
                         modifier = Modifier
                             .size(100.dp)
@@ -113,13 +114,13 @@ fun ComponentAreas(
 
                 Column(modifier = Modifier.weight(2f)) {
                     Text(
-                        text = "${ar.nombre}",
+                        text = "Nombre: ${ar.nombre}",
                         style = TextStyle(fontSize = 15.sp)
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Cap. : ${ar.capacidad}",
+                        text = "Cap.: ${ar.capacidad}",
                         style = TextStyle(fontSize = 15.sp)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
