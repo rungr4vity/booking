@@ -120,12 +120,12 @@ fun ComponentAreas(
 
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Cap.: ${ar.capacidad}",
+                        text = "Capacidad Pers.: ${ar.capacidad}",
                         style = TextStyle(fontSize = 15.sp)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Mob.: ${ar.mobilaria}",
+                        text = "Mobiliaria: ${ar.mobilaria}",
                         style = TextStyle(fontSize = 15.sp)
                     )
                 }

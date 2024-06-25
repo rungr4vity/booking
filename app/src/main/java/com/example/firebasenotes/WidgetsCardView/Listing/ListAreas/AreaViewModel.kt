@@ -92,10 +92,12 @@ class AreaViewModel : ViewModel(){
 
                         instance.collection("Oficinas").document(oficinaId)
                             .update(dto as Map<String, Any>).addOnSuccessListener {
-                                Toast.makeText(context, "Imagen actualizada", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(context, "Imagen actualizada", Toast.LENGTH_SHORT).show()
+//
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(context, "Error al implementar imagen oficina : ${e.message}", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(context, "Error al implementar imagen oficina : ${e.message}", Toast.LENGTH_SHORT).show()
+//
                             }
                     }
 
@@ -137,10 +139,10 @@ class AreaViewModel : ViewModel(){
 
         oficinasRef.update(
             mapOf(
-                "nombre" to nombre,
-                "descripcion" to descripcion,
-                "capacidad" to capacidad,
-                "mobilaria" to mobilaria
+                "nombre" to nombre.trim(),
+                "descripcion" to descripcion.trim(),
+                "capacidad" to capacidad.trim(),
+                "mobilaria" to mobilaria.trim(),
         )
         ).addOnSuccessListener {
             Log.d("ActualizarOficina", "Oficina actualizada con éxito")
@@ -183,10 +185,10 @@ class AreaViewModel : ViewModel(){
         viewModelScope.launch {
             val db = FirebaseFirestore.getInstance()
             val date = hashMapOf(
-                "capacidad" to capacidad,
-                "descripcion" to descripcion,
-                "mobilaria" to mobiliaria,
-                "nombre" to nombre,
+                "capacidad" to capacidad.trim(),
+                "descripcion" to descripcion.trim(),
+                "mobilaria" to mobiliaria.trim(),
+                "nombre" to nombre.trim(),
                 "imageUrl" to imageUrl,
                 "id" to id
 
