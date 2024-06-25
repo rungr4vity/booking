@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,14 +51,21 @@ fun EditarOficinas(
     mobilaria: String,
     nombre : String,
     imagen : String,
-    areaViewModel: AreaViewModel = viewModel()
+    areaViewModel: AreaViewModel = viewModel(),
+    oficinasViewModel: OficinasViewModel = viewModel()
 ) {
     var nombreText by remember { mutableStateOf(nombre) }
     var mobText by remember { mutableStateOf(mobilaria) }
     var capacidadText by remember { mutableStateOf(capacidad) }
 
     val ejemplo = imagen.toString().trim()
+
+
     var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(ejemplo)) }
+
+    //val imageUri by oficinasViewModel.flow_image.collectAsState()
+    //oficinasViewModel.setImageUri(Uri.parse(ejemplo))
+
 
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
@@ -65,8 +73,10 @@ fun EditarOficinas(
         onResult = { uri: Uri? ->
             if (uri != null) {
                 imageUri = uri
+                //oficinasViewModel.setImageUri(uri)
                 println()
             } else {
+                //oficinasViewModel.setImageUri(Uri.parse(ejemplo))
                 imageUri = Uri.parse(ejemplo)
             }
         }
@@ -92,7 +102,10 @@ fun EditarOficinas(
         }
 
 
-        Row(Modifier.fillMaxWidth().padding(5.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
             androidx.compose.material.Button(onClick = { launcher.launch("image/*") },
                 shape = RoundedCornerShape(5.dp),
                 colors = androidx.compose.material.ButtonDefaults.buttonColors( Color(0xFF800000)),

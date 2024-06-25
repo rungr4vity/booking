@@ -1,6 +1,7 @@
 package com.example.firebasenotes.Oficinas
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -12,6 +13,7 @@ import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.models.oficinasDTO
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -48,6 +50,14 @@ class OficinasViewModel(
 
     val stateOficina = mutableStateOf<List<oficinasDTO>>(emptyList())
 
+
+    // Flow
+    private var _flow_image: MutableStateFlow<Uri> = MutableStateFlow(Uri.EMPTY)
+    val flow_image get() = _flow_image
+
+    fun setImageUri(uri: Uri) {
+        _flow_image.value = uri
+    }
 
     fun reservacionOficina(
         context: Context,
