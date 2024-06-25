@@ -44,18 +44,18 @@ import java.nio.charset.StandardCharsets
 @Composable
 fun EditarOficinas(
     idArea: String,
-    capacidad : String,
+    capacidad: String,
     descripcion: String,
     id: String,
     mobilaria: String,
-    nombre : String,
-    imagen : String,
+    nombre: String,
+    imagen: String,
     areaViewModel: AreaViewModel = viewModel()
 ) {
     var nombreText by remember { mutableStateOf(nombre) }
     var mobText by remember { mutableStateOf(mobilaria) }
     var capacidadText by remember { mutableStateOf(capacidad) }
-
+    val Context = LocalContext.current
     val ejemplo = imagen.toString().trim()
     var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(ejemplo)) }
 
@@ -72,7 +72,7 @@ fun EditarOficinas(
         }
     )
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         imageUri?.let {
 
             AsyncImage(
@@ -90,45 +90,51 @@ fun EditarOficinas(
             // inside pic
             //Text(text = "Selected image: $imagen")
         }
+        Spacer(modifier = Modifier.height(16.dp))
 
+        androidx.compose.material.Button(
+            onClick = {
+                Toast.makeText(Context, "Imagen seleccionada", Toast.LENGTH_SHORT).show()
 
-        Row(Modifier.fillMaxWidth().padding(5.dp)) {
-            androidx.compose.material.Button(onClick = { launcher.launch("image/*") },
-                shape = RoundedCornerShape(5.dp),
-                colors = androidx.compose.material.ButtonDefaults.buttonColors( Color(0xFF800000)),
+                launcher.launch("image/*")
+
+            },
+            shape = RoundedCornerShape(5.dp),
+            colors = androidx.compose.material.ButtonDefaults.buttonColors(Color(0xFF800000)),
+
             ) {
-                androidx.compose.material.Text(text = "Seleccionar imagen",color = Color.White)
-            }
-
-            androidx.compose.material.Button(modifier= Modifier.padding(start = 10.dp),
-                onClick = {
-                    var imagen_jpg = ""
-                    val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
-                    var decode = encodedUrl.split("/")
-
-                    decode.forEach {
-                        if(it.contains(".jpg")) {
-                            imagen_jpg = it
-                        }
-                    }
-
-                    var ultima = imagen_jpg.split("?")
-
-                    if(ultima.size > 1) {
-                        imagen_jpg = ultima[0]
-                    }
-//                    viewModel.updatePhoto(context,imagen_jpg,imageUri ?: Uri.EMPTY,idEstacionamianto)
-                    areaViewModel.updatePhoto(context,imagen_jpg,imageUri ?: Uri.EMPTY,idArea)
-                },
-                shape = RoundedCornerShape(5.dp),
-                colors = androidx.compose.material.ButtonDefaults.buttonColors( Color(0xFF800000)),
-
-
-                ) {
-                androidx.compose.material.Text(text = "Actualizar",color = Color.White)
-            }
+            androidx.compose.material.Text(text = "Seleccionar imagen", color = Color.White)
         }
 
+//            androidx.compose.material.Button(modifier= Modifier.padding(start = 10.dp),
+//                onClick = {
+//                    var imagen_jpg = ""
+//                    val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
+//                    var decode = encodedUrl.split("/")
+//
+//                    decode.forEach {
+//                        if(it.contains(".jpg")) {
+//                            imagen_jpg = it
+//                        }
+//                    }
+//
+//                    var ultima = imagen_jpg.split("?")
+//
+//                    if(ultima.size > 1) {
+//                        imagen_jpg = ultima[0]
+//                    }
+////                    viewModel.updatePhoto(context,imagen_jpg,imageUri ?: Uri.EMPTY,idEstacionamianto)
+//                    areaViewModel.updatePhoto(context,imagen_jpg,imageUri ?: Uri.EMPTY,idArea)
+//                },
+//                shape = RoundedCornerShape(5.dp),
+//                colors = androidx.compose.material.ButtonDefaults.buttonColors( Color(0xFF800000)),
+//
+//
+//                ) {
+//                androidx.compose.material.Text(text = "Actualizar",color = Color.White)
+//            }
+
+    Spacer(modifier = Modifier.height(16.dp))
         // Campo para editar el nombre
         OutlinedTextField(
             value = nombreText,
@@ -142,8 +148,8 @@ fun EditarOficinas(
         // Campo para editar la descripción
         OutlinedTextField(
             value = mobText,
-            onValueChange = {mobText = it },
-            label = { Text("Mobilaria") },
+            onValueChange = { mobText = it },
+            label = { Text("Mobiliaria") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -153,13 +159,13 @@ fun EditarOficinas(
         OutlinedTextField(
             value = capacidadText,
             onValueChange = { capacidadText = it },
-            label = { Text("Capacidad") },
+            label = { Text("Capacidad de personas") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        val Context = LocalContext.current
+        Spacer(modifier = Modifier.height(40.dp))
+
         // Botón de guardar cambios
         Button(
             onClick = {
@@ -173,11 +179,37 @@ fun EditarOficinas(
                 )
 
                 Toast.makeText(Context, "Cambios guardados", Toast.LENGTH_SHORT).show()
+
+                // Check if a new image has been selected
+                if (imageUri != Uri.parse(imagen.trim())) {
+                    var imagen_jpg = ""
+                    val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
+                    var decode = encodedUrl.split("/")
+
+                    decode.forEach {
+                        if (it.contains(".jpg")) {
+                            imagen_jpg = it
+                        }
+                    }
+
+                    var ultima = imagen_jpg.split("?")
+
+                    if (ultima.size > 1) {
+                        imagen_jpg = ultima[0]
+                    }
+
+                    areaViewModel.updatePhoto(context, imagen_jpg, imageUri ?: Uri.EMPTY, idArea)
+                }
             },
-            modifier = Modifier.fillMaxWidth(),
+
+            shape = RoundedCornerShape(5.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF800000))
         ) {
             Text("Guardar cambios", color = Color.White)
         }
+
     }
 }
