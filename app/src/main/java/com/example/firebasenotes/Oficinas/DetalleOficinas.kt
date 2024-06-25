@@ -121,7 +121,7 @@ fun DetalleOficinas(
                     .size(200.dp)
             )
 
-            Spacer(modifier = Modifier.size(30.dp))
+            Spacer(modifier = Modifier.size(20.dp))
 
                 Text(
                     text = "Detalle", fontWeight = FontWeight.Bold, fontSize = 20.sp,
@@ -133,7 +133,7 @@ fun DetalleOficinas(
                     modifier = Modifier.padding(10.dp)
                 )
                 Text(text = " $nombre", modifier = Modifier.padding(10.dp))
-                Text(text = "Capacidad: ${capacidad}", modifier = Modifier.padding(10.dp))
+                Text(text = "Capacidad de personas: ${capacidad}", modifier = Modifier.padding(10.dp))
                 Text(text = "$descripcion", modifier = Modifier.padding(10.dp))
 
 
@@ -149,10 +149,9 @@ fun DetalleOficinas(
                         modifier = Modifier.padding(10.dp))
 
                 }
-            Spacer(modifier = Modifier.size(60.dp))
+            Spacer(modifier = Modifier.size(20.dp))
 
-
-
+            if(userData.typeId == 0){
                 Button(
                     onClick = {
                         val encodedUrl = URLEncoder.encode(imageUrl.trim(), StandardCharsets.UTF_8.toString())
@@ -165,8 +164,6 @@ fun DetalleOficinas(
                 ) {
                     Text(text = "Editar", color = Color.White)
                 }
-
-            if(userData.typeId == 0){
 
 
                 Button(
@@ -181,9 +178,6 @@ fun DetalleOficinas(
             ) {
                 Text(text = "Eliminar",color = Color.White)
             }
-
-
-
             }
 
                 Button(
