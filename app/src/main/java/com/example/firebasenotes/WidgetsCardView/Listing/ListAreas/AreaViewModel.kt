@@ -6,8 +6,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DataDrawer
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -42,16 +46,47 @@ class AreaViewModel : ViewModel(){
     private val _variable = MutableStateFlow<String>("Inicial")
     val uiState: StateFlow<String> = _variable
 
-    val statearea = mutableStateOf<List<DataAreas>>(emptyList())
-    init {
-        getData()
+    val statearea_ = MutableLiveData<MutableList<DataAreas>>(mutableListOf())
+    val statearea:LiveData<MutableList<DataAreas>>  get () = statearea_
 
+
+    init {
+//        getData()
+
+    }
+
+    private val _officeDetails = MutableStateFlow<DataAreas?>(null)
+    val officeDetails: StateFlow<DataAreas?> = _officeDetails
+
+
+    fun fetchOfficeDetails(idArea: String) {
+        viewModelScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Oficinas").document(idArea)
+                .get()
+                .addOnSuccessListener { document ->
+                    val office = document.toObject(DataAreas::class.java)
+                    _officeDetails.value = office
+                }
+                .addOnFailureListener { e ->
+                    // Manejar errores aquí
+                    _officeDetails.value = null
+                }
+        }
+    }
+    fun getDataInfo(){
+        viewModelScope.launch {
+            getData()
+        }
     }
     private fun getData() {
         viewModelScope.launch {
-           statearea.value = com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DataFromArea()
+//           statearea.value = com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.DataFromArea()
+            val areas = DataFromArea() // Obtener datos desde Firestore
+            statearea_.value = areas
         }
     }
+
 
     fun imgArea(idArea: String){
         val imageUrlState = MutableStateFlow<Uri?>(null)
@@ -69,6 +104,21 @@ class AreaViewModel : ViewModel(){
             }
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     fun updatePhoto(context: Context, imagen: String, updatedImage: Uri, oficinaId: String) {
 
         val storageReference = FirebaseStorage.getInstance().reference
