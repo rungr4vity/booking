@@ -72,6 +72,7 @@ fun EditarOficinas(
         }
     )
 
+
     Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         imageUri?.let {
 

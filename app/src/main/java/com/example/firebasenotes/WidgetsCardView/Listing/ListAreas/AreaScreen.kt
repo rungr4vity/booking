@@ -34,6 +34,9 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,7 +63,8 @@ fun AreaScreen (
     navController: NavController,
     ddViewModel: DDViewModel = viewModel()
 ) {
-    val are = areaViewModel.statearea.value
+//    val are = areaViewModel.statearea.value
+    val are : List<DataAreas> by areaViewModel.statearea.observeAsState(listOf())
     val userData = ddViewModel.state.value
     Box(modifier = Modifier.fillMaxSize()) {
     LazyColumn {
@@ -68,6 +72,11 @@ fun AreaScreen (
             ComponentAreas(ar = areas, navController = navController)
         }
     }
+
+        LaunchedEffect(Unit) {
+            areaViewModel.getDataInfo()
+        }
+
 if(userData.typeId == 0){
     FloatingActionButton(
         onClick = {
