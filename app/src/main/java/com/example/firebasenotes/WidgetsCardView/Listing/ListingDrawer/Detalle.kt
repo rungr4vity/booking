@@ -20,6 +20,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +63,8 @@ fun Detalle(
     idEstacionamiento: String,
     imagen: String,
     viewModel: LoginViewModel = LoginViewModel(),
-    ddViewModel: DDViewModel = viewModel()
+    ddViewModel: DDViewModel = viewModel(),
+    drawerViewModel: DrawerViewModel = viewModel()
 ) {
     Scaffold(
         modifier = Modifier
@@ -204,6 +206,10 @@ fun Detalle(
             Button(
                 onClick = {
                     if (!esEspecial) {
+
+
+
+
                         navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}/${idEstacionamiento}",
                             navOptions { // Use the Kotlin DSL for building NavOptions
                                 anim {
