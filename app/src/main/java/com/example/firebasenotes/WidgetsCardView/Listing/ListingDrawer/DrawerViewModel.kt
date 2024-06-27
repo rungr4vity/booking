@@ -28,8 +28,11 @@ import java.util.UUID
 
 suspend fun FireStoreCajonData(): MutableList<DataDrawer> {
     val db = FirebaseFirestore.getInstance()
-    val cajonList = mutableListOf<DataDrawer>()
+    var cajonList = mutableListOf<DataDrawer>()
 
+    if (!cajonList.isNotEmpty()) {
+        cajonList = emptyList<DataDrawer>().toMutableList()
+    }
 
     var retorna = ""
     val empresa2 = db.collection("Usuarios")
@@ -108,11 +111,26 @@ suspend fun getUsuarios_(): MutableList<users_short> {
 
 
 class DrawerViewModel() : ViewModel() {
-    val stateDrawer = mutableStateOf<List<DataDrawer>>(emptyList())
     val usuarios_short = mutableStateOf<List<users_short>>(emptyList())
+    val stateDrawer2 = mutableStateOf<List<DataDrawer>>(emptyList())
+
+
+
+
+
+    private val stateDrawer_ = MutableLiveData<MutableList<DataDrawer>>(mutableListOf())
+    val stateDrawer: LiveData<MutableList<DataDrawer>> get() = stateDrawer_
+
+
     private val _horarios_dto = MutableLiveData<MutableList<horariosDTO>>(mutableListOf())
     val horarios_dto: LiveData<MutableList<horariosDTO>> get() = _horarios_dto
     var empresa = mutableStateOf("")
+
+
+
+
+
+
     lateinit var context: Context
     var myurl = mutableStateOf("")
 
@@ -132,12 +150,13 @@ class DrawerViewModel() : ViewModel() {
     fun reload() {
         viewModelScope.launch {
             getData()
+
         }
     }
 
     fun getAll(ano:Int,dia:Int) {
         viewModelScope.launch {
-            _horarios_dto.value = getHorarios_year_day(ano,dia)
+            _horarios_dto.value = getHorarios_year_day(dia,ano)
         }
 
     }
@@ -222,8 +241,8 @@ class DrawerViewModel() : ViewModel() {
 
         viewModelScope.launch {
 
-
-            stateDrawer.value =
+            // old was without underscore
+            stateDrawer_.value =
                 com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.FireStoreCajonData()
         }
     }

@@ -90,7 +90,11 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
     //sharedPreferences.getString("empresa", "Verifigas")
 
 
-    val cajones = drawerViewModel.stateDrawer.value
+
+
+    //val cajones = drawerViewModel.stateDrawer.value
+    val cajones: List<DataDrawer> by drawerViewModel.stateDrawer.observeAsState(listOf())
+
     val userData = ddViewModel.state.value
     //val empresa = userData.empresa
     //val user = usersViewModel.stateUsers.value
@@ -105,13 +109,18 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
     var year by remember { mutableStateOf(calendar.get(Calendar.YEAR)) }
 
     var expansion_Horarios by remember { mutableStateOf(false) }
-    var menHorarios by remember { mutableStateOf("Selecciona horario") }
+    var menHorarios by remember { mutableStateOf("Disponibles") }
+    var menHorarios_valor by remember { mutableStateOf(-1) }
 
 
     //val opsHorarios: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
     val opsHorarios: List<horariosDTO> by drawerViewModel.horarios_dto.observeAsState(listOf())
     Log.d("opsHorarios",opsHorarios.toString())
 
+    LaunchedEffect(Unit) {
+            drawerViewModel.reload()
+            drawerViewModel.getAll(year,dayOfYear_)
+    }
 
     val context = LocalContext.current
     if (showDatePicker) {
@@ -119,6 +128,7 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
 
         LaunchedEffect(Unit) {
             DatePickerDialog(
+
                 context,
                 { _, selectedYear, selectedMonth, selectedDay ->
                     calendar.set(selectedYear, selectedMonth, selectedDay)
@@ -127,12 +137,18 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                     dayOfYear_ = calendar.get(Calendar.DAY_OF_YEAR)
                     year = selectedYear
                     showDatePicker = false
+
+
+                    drawerViewModel.getAll(year,dayOfYear_)
+                    drawerViewModel.reload()
+                    menHorarios = "Disponibles"
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
 
             ).show()
+
         }
 
         showDatePicker = false
@@ -157,9 +173,9 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                 //val myempresa = sharedPreferences.getString("empresa", null)
 
 
-                menHorarios = "Selecciona horario"
-                drawerViewModel.getAll(dayOfYear_,year)
-                drawerViewModel.reload()
+                //menHorarios = "Selecciona horario"
+//                drawerViewModel.getAll(year,dayOfYear_)
+//                drawerViewModel.reload()
                 showDatePicker = true
 
 
@@ -171,19 +187,6 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                 value = text3,
                 onValueChange = {
                     text3 = it
-
-                    var dia = dayOfYear_
-                    var anio = year
-
-
-
-                    menHorarios = "Selecciona horario"
-                    drawerViewModel.getAll(dayOfYear_,year)
-                    drawerViewModel.reload()
-
-
-
-
                                 },
                 label = { androidx.compose.material.Text("Fecha") },
                 modifier = Modifier
@@ -227,9 +230,20 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
                         DropdownMenuItem(text = { Text(option.value) }, onClick = {
 
                             menHorarios = option.value
+                            when (option.key) {
+                                0 -> menHorarios_valor = 0
+                                1 -> menHorarios_valor = 1
+                                2 -> menHorarios_valor = 2
+                                3 -> menHorarios_valor = 3
+                            }
                             expansion_Horarios = false
-                            drawerViewModel.getAll(dayOfYear_,year)
+
+
+
+                            drawerViewModel.getAll(year,dayOfYear_)
                             drawerViewModel.reload()
+
+                            println()
                         },
                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                         )
@@ -238,86 +252,126 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
             }
         }
 
-        androidx.compose.material3.Button(
-            shape = RoundedCornerShape(5.dp), onClick = {
-
-
-                var dia = dayOfYear_
-                var anio = year
-
-                drawerViewModel.getAll(dayOfYear_,year)
-                drawerViewModel.reload()
-
-
-                // cajones //all  (idEstacionaminto)
-                // opsHorarios //reservados (idEstacionamiento,valor,texto)
-                var todos = cajones
-                var reservados = opsHorarios
-
-
-                println()
-                //cajones.filter { it.id in opsHorarios.map { it.idEstacionamiento } }
-                //var final = cajones.filterNot { it.id in opsHorarios }
-                //Log.d("myempresa",myempresa.toString())
-
-
-                cajones.forEach { cajon ->
-                    if (menHorarios != "Selecciona horario") {
-
-                        if (opsHorarios.isNotEmpty()) {
-                            if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
-                                var valor = opsHorarios.find { it.nombre == menHorarios }
-                                if (valor != null) {
-                                    //Toast.makeText(context, "El cajon ${cajon.numero} esta reservado", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    //Toast.makeText(context, "El cajon ${cajon.numero} no esta reservado", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-
-            },
-            colors = ButtonDefaults.buttonColors(Color(0xFF800000)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)
-        ) {
-            androidx.compose.material.Text(text = "Buscar", color = Color.White)
-        }
+//        androidx.compose.material3.Button(
+//            shape = RoundedCornerShape(5.dp), onClick = {
+//                //drawerViewModel.getAll(dayOfYear_,year)
+//                //drawerViewModel.reload()
+//
+//                // cajones //all  (idEstacionaminto)
+//                // opsHorarios //reservados (idEstacionamiento,valor,texto)
+//
+//                Toast.makeText(context, "Day of the year: $dayOfYear_ and year: $year", Toast.LENGTH_SHORT).show()
+//
+//                println()
+//                //cajones.filter { it.id in opsHorarios.map { it.idEstacionamiento } }
+//                //var final = cajones.filterNot { it.id in opsHorarios }
+//                //Log.d("myempresa",myempresa.toString())
+//            },
+//            colors = ButtonDefaults.buttonColors(Color(0xFF800000)),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(5.dp)
+//        ) {
+//            androidx.compose.material.Text(text = "Buscar", color = Color.White)
+//        }
 
 
         CompositionLocalProvider(LocalContentColor provides Color.Black) {
             Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     try {
+
+
                         items(cajones) { cajon ->
+//                            if (menHorarios != "Selecciona horario") {
+//                            }
 
-                            if (menHorarios != "Selecciona horario") {
+                            //if (opsHorarios.isNotEmpty()) { }
+
+//                                val encontrado = opsHorarios.find {
+//                                    it.idEstacionamiento == cajon.id
+//                                            && (it.nombre == menHorarios || it.valor == 3)
+//                                }
+
+                                val encontrado = opsHorarios.find {
+                                    it.idEstacionamiento == cajon.id
+                                            && (it.nombre == menHorarios)
+                                }
+
+                                val todoDia = opsHorarios.find {
+                                    it.idEstacionamiento == cajon.id
+                                            && it.valor == 3
+                                }
+
+                                val somenHorarios = opsHorarios.find {
+                                    it.idEstacionamiento == cajon.id
+                                            && (it.valor == 0 || it.valor == 1 || it.valor == 2 || it.valor == 3)
+                                }
+
+                                if (todoDia != null) {
+
+                                } else {
+                                    if (menHorarios != "Disponibles") {
+                                        if (encontrado == null) {
+                                            if(menHorarios_valor == 3 && somenHorarios != null){
+
+                                            } else
+                                            {
+                                                ComponentDrawer(cajon = cajon, navController = navController)
+                                            }
+
+                                        }
+
+                                    } else {
+
+                                            ComponentDrawer(cajon = cajon, navController = navController)
 
 
-                            // logica
-                            if (opsHorarios.isNotEmpty()) {
+                                    }
+
+
+                                }
 
 
 
-                             val encontrado = opsHorarios.find { it.idEstacionamiento == cajon.id && it.nombre == menHorarios }
 
-                             if(encontrado != null)
-                             {
 
-                             } else {
-                                 ComponentDrawer(cajon = cajon, navController = navController)
-                             }
-
-//                                if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
+//                                if (encontrado != null || todoDia != null){
 //
+//                                } else {
+//                                    ComponentDrawer(cajon = cajon, navController = navController)
+//                                }
+
+                            }
+
+
+
+
+
+
+//                                if (menHorarios == "Selecciona horario") {
+//                                if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
+//                                    ComponentDrawer(
+//                                        cajon = cajon,
+//                                        navController = navController
+//                                    )
+//                                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //                                    var valor = opsHorarios.find { it.nombre == menHorarios }
 //                                    var todoDia = opsHorarios.find { it.nombre == "Todo el día" }
-//
-//
 //
 //                                    if (valor != null || todoDia != null) {
 //                                        //Toast.makeText(context, "El cajon ${cajon.numero} esta reservado", Toast.LENGTH_SHORT).show()
@@ -332,18 +386,18 @@ fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: 
 //                                                navController = navController
 //                                            )
 //                                        }
-//
-//
-//                                        //Toast.makeText(context, "El cajon ${cajon.numero} no esta reservado", Toast.LENGTH_SHORT).show()
 //                                    }
-//
-//                                }
-                            } else {
-                                ComponentDrawer(cajon = cajon, navController = navController)
-                            }
-                        }
 
-                        }
+
+
+
+
+
+
+                            //}
+
+
+
                     } catch (e: Exception) {
                         Log.e("ErrorLazy", e.toString())
                     }
@@ -389,7 +443,8 @@ fun ComponentDrawer(
             modifier = Modifier
                 .clickable {
 
-                    val encodedUrl = URLEncoder.encode(cajon.imagen, StandardCharsets.UTF_8.toString())
+                    val encodedUrl =
+                        URLEncoder.encode(cajon.imagen, StandardCharsets.UTF_8.toString())
                     navController.navigate("DetalleCajon/${cajon.nombre}/${cajon.empresa}" +
                             "/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}" +
                             "/${encodedUrl}",

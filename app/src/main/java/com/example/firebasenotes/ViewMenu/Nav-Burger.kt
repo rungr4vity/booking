@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,6 +83,7 @@ import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.ModAreaElimin
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DeleteDrawer
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerScreen
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DrawerViewModel
 import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.UpdateEstacionamiento
 import com.example.firebasenotes.WidgetsCardView.Listing.ReservacionOficinas.RevoficinasScreen
 import com.example.firebasenotes.bill.FilePickerForm
@@ -90,6 +92,7 @@ import com.example.firebasenotes.viaje.ViajeDetalle
 import com.example.firebasenotes.viewModels.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -169,6 +172,17 @@ fun App(ddViewModel: DDViewModel = viewModel()) {
                     MiPerfil()
                 }
                 composable("Estacionamientos") {
+
+                    LaunchedEffect(Unit) {
+
+                        val drawerViewModel = DrawerViewModel()
+                        val year = Calendar.getInstance().get(Calendar.YEAR)
+                        val dayOfYear_ = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+
+                        drawerViewModel.reload()
+                        drawerViewModel.getAll(year,dayOfYear_)
+                    }
+
                     DrawerScreen(navController = navController)
 
                 }

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
+import com.example.firebasenotes.models.horariosDTO
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.viewModels.LoginViewModel
 import java.net.URLDecoder
@@ -62,7 +65,8 @@ fun Detalle(
     idEstacionamiento: String,
     imagen: String,
     viewModel: LoginViewModel = LoginViewModel(),
-    ddViewModel: DDViewModel = viewModel()
+    ddViewModel: DDViewModel = viewModel(),
+    drawerViewModel: DrawerViewModel = viewModel()
 ) {
     Scaffold(
         modifier = Modifier
@@ -88,6 +92,14 @@ fun Detalle(
         }
         val opsHorarios: List<horariosModel> by viewModel.horarios.observeAsState(listOf())
         var menHorarios by remember { mutableStateOf(opsHorarios) }
+
+        val opsHorarios_: List<horariosDTO> by drawerViewModel.horarios_dto.observeAsState(listOf())
+        LaunchedEffect(Unit) {
+            //drawerViewModel.reload()
+            drawerViewModel.getAll(today.year,dayOfYear)
+        }
+
+        val listado = opsHorarios_.filter { it.idEstacionamiento == idEstacionamiento }
 
         Column(
             modifier = Modifier
@@ -130,14 +142,24 @@ fun Detalle(
 
             var esEspecial_string = if (esEspecial) "Si" else "No"
             //Text(text = "Pertenece a: $esEspecial_string", modifier = Modifier.padding(10.dp))
-            Text(
-                text = "Disponible",
-                fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
-                modifier = Modifier.padding(10.dp)
-            )
-            menHorarios.forEach {
+
+            if(!listado.isEmpty()){
                 Text(
-                    text = it.nombre,
+                    text = "Reservado desde:",
+                    fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
+                    modifier = Modifier.padding(10.dp)
+                )
+
+                listado.forEach {
+                    Text(
+                        text = it.nombre,
+                        fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
+                        modifier = Modifier.padding(10.dp),
+                    )
+                }
+            } else {
+                Text(
+                    text = "Disponible todo el día",
                     fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
                     modifier = Modifier.padding(10.dp),
                 )
@@ -145,61 +167,44 @@ fun Detalle(
             Spacer(modifier = Modifier.size(30.dp))
 
 
-// poner filtro
+
             if (userData.typeId == 0) {
-                Button(
-                    onClick = {
 
 
+                Row() {
+                    Button(
+                        onClick = {
+                            val encodedUrl =
+                                URLEncoder.encode(imagen, StandardCharsets.UTF_8.toString())
+                            navController.navigate("UpdateEstacionamiento/$idEstacionamiento/$encodedUrl/$nombre/$cajon/$company/" +
+                                    "$piso/$esEspecial",
+                                navOptions { // Use the Kotlin DSL for building NavOptions
+                                    anim {
+                                        enter = R.animator.fade_in
+                                        exit = R.animator.fade_out
+                                    }
+                                })
 
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp),
+                            //.align(Alignment.End),
+                        colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+                    ) {
+                        Text(text = "Editar", color = Color.White)
+                    }
 
-                        val encodedUrl = URLEncoder.encode(imagen, StandardCharsets.UTF_8.toString())
-                        navController.navigate("UpdateEstacionamiento/$idEstacionamiento/$encodedUrl/$nombre/$cajon/$company/" +
-                                "$piso/$esEspecial"
-                                ,
-                            navOptions { // Use the Kotlin DSL for building NavOptions
-                                anim {
-                                    enter = R.animator.fade_in
-                                    exit = R.animator.fade_out
-                                }
-                            })
-//                        navController.navigate("UpdateEstacionamiento/$idEstacionamiento/" +
-//                                "$encodedUrl/$nombre/$company/$cajon/" +
-//                                "$piso/$esEspecial",
-//                            navOptions { // Use the Kotlin DSL for building NavOptions
-//                                anim {
-//                                    enter = R.animator.fade_in
-//                                    exit = R.animator.fade_out
-//                                }
-//                            })
-
-
-
-
-
-                              },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .align(Alignment.End),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF800000))
-                ) {
-                    Text(text = "Editar",color = Color.White)
-                }
-
-
-                Button(
-                    onClick = { deleteDrawerViewModel.deleteData(idEstacionamiento) },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .align(Alignment.End),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF800000))
-                ) {
-                    Text(text = "Eliminar",color = Color.White)
+                    Button(
+                        onClick = { deleteDrawerViewModel.deleteData(idEstacionamiento) },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp),
+                            //.align(Alignment.End),
+                        colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+                    ) {
+                        Text(text = "Eliminar", color = Color.White)
+                    }
                 }
             }
-
-
-
 
             Button(
                 onClick = {

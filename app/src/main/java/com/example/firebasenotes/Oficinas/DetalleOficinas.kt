@@ -20,6 +20,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -64,6 +65,7 @@ fun DetalleOficinas(
     viewModel: OficinasViewModel = OficinasViewModel(),
     deleteViewModel: AreaViewModelDOS = AreaViewModelDOS(),
     ddViewModel: DDViewModel = viewModel(),
+    oficinasViewModel: OficinasViewModel = OficinasViewModel()
 
 ){
 
@@ -71,10 +73,7 @@ fun DetalleOficinas(
     Scaffold(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
-
-        ,
-
+            .padding(10.dp),
         ) {
 
 
@@ -108,6 +107,10 @@ fun DetalleOficinas(
 //
 //
 //            )
+
+
+            //val imageUrl_ by oficinasViewModel.flow_image.collectAsState()
+            //oficinasViewModel.setImageUri(Uri.parse(imageUrl))
 
             val imageUrl_ = Uri.parse(imageUrl)
             AsyncImage(
