@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -40,9 +41,11 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
+import com.example.firebasenotes.estacionamientos.EstacionamientosViewModel
 import com.example.firebasenotes.models.horariosDTO
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.viewModels.LoginViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -66,8 +69,32 @@ fun Detalle(
     imagen: String,
     viewModel: LoginViewModel = LoginViewModel(),
     ddViewModel: DDViewModel = viewModel(),
-    drawerViewModel: DrawerViewModel = viewModel()
+    drawerViewModel: DrawerViewModel = viewModel(),
+    estViewModel: EstacionamientosViewModel = viewModel()
 ) {
+    val estacionamiento by estViewModel.estacionamientos.collectAsState()
+
+    var nombre_ by remember { mutableStateOf(nombre) }
+    var company_ by remember { mutableStateOf(company) }
+    var cajon_ by remember { mutableStateOf(cajon) }
+    var piso_ by remember { mutableStateOf(piso) }
+    var esEspecial_ by remember { mutableStateOf(false) }
+    var imagen_ by remember { mutableStateOf(imagen) }
+
+    LaunchedEffect(Unit) {
+
+        estViewModel.getData(idEstacionamiento) { est ->
+            nombre_ = est.nombre
+            company_ = est.empresa
+            cajon_ = est.numero.toString()
+            piso_ = est.piso
+            esEspecial_ = est.esEspecial ?: false
+            imagen_ = est.imagen
+        }
+
+    }
+
+
     Scaffold(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,7 +134,7 @@ fun Detalle(
         ) {
 
             //val decodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
-            val imageUri = Uri.parse(imagen)
+            val imageUri = Uri.parse(imagen_)
             AsyncImage(
                 model = imageUri,
                 contentDescription = "Loaded image",
@@ -136,11 +163,11 @@ fun Detalle(
                 text = "Fecha ${LocalDate.now()}", fontWeight = FontWeight.Thin, fontSize = 20.sp,
                 modifier = Modifier.padding(5.dp)
             )
-            Text(text = " $nombre  - $company", modifier = Modifier.padding(5.dp))
-            Text(text = "Cajon: ${cajon}", modifier = Modifier.padding(5.dp))
-            Text(text = "Piso: $piso", modifier = Modifier.padding(5.dp))
+            Text(text = " $nombre_  - $company_", modifier = Modifier.padding(5.dp))
+            Text(text = "Cajon: $cajon_", modifier = Modifier.padding(5.dp))
+            Text(text = "Piso: $piso_", modifier = Modifier.padding(5.dp))
 
-            var esEspecial_string = if (esEspecial) "Si" else "No"
+            var esEspecial_string = if (esEspecial_) "Si" else "No"
             //Text(text = "Pertenece a: $esEspecial_string", modifier = Modifier.padding(10.dp))
 
             if(!listado.isEmpty()){
@@ -175,9 +202,9 @@ fun Detalle(
                     Button(
                         onClick = {
                             val encodedUrl =
-                                URLEncoder.encode(imagen, StandardCharsets.UTF_8.toString())
-                            navController.navigate("UpdateEstacionamiento/$idEstacionamiento/$encodedUrl/$nombre/$cajon/$company/" +
-                                    "$piso/$esEspecial",
+                                URLEncoder.encode(imagen_, StandardCharsets.UTF_8.toString())
+                            navController.navigate("UpdateEstacionamiento/$idEstacionamiento/$encodedUrl/$nombre_/$cajon_/$company_/" +
+                                    "$piso_/$esEspecial_",
                                 navOptions { // Use the Kotlin DSL for building NavOptions
                                     anim {
                                         enter = R.animator.fade_in
@@ -209,7 +236,7 @@ fun Detalle(
             Button(
                 onClick = {
                     if (!esEspecial) {
-                        navController.navigate("ReservacionCajones_extension/${nombre}/${company}/ ${cajon}/ ${piso}/${esEspecial}/${idEstacionamiento}",
+                        navController.navigate("ReservacionCajones_extension/${nombre_}/${company_}/${cajon_}/${piso_}/${esEspecial_}/${idEstacionamiento}",
                             navOptions { // Use the Kotlin DSL for building NavOptions
                                 anim {
                                     enter = R.animator.fade_in
@@ -231,10 +258,10 @@ fun Detalle(
                     .padding(horizontal = 16.dp),
                 colors = ButtonDefaults.buttonColors(Color(0xFF800000))
             ) {
-                Text(text = "Reservar ${cajon}", color = Color.White)
+                Text(text = "Reservar $cajon_", color = Color.White)
             } // end button
 
-            if (esEspecial) {
+            if (esEspecial_) {
                 Text(text = "Cajón especial *", modifier = Modifier.padding(10.dp))
             } else {
                 Text(text = "Cajón normal", modifier = Modifier.padding(10.dp))

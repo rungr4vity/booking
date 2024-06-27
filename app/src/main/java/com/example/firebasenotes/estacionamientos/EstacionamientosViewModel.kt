@@ -2,17 +2,24 @@ package com.example.firebasenotes.estacionamientos
 
 import android.content.Context
 import android.net.Uri
+import android.provider.ContactsContract.Data
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import com.example.firebasenotes.WidgetsCardView.Listing.ListReservations.DataDrawerDTO
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.DataDrawer
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.util.UUID
 
 class EstacionamientosViewModel: ViewModel() {
 
+    private val _estacionamientos = MutableStateFlow<DataDrawerDTO>(DataDrawerDTO())
+    val estacionamientos: StateFlow<DataDrawerDTO> = _estacionamientos
 
-    fun updatePhoto(context:Context,imagen: String,updatedImage: Uri,estacionamientoId: String) {
+    fun updatePhoto(context:Context,imagen: String,updatedImage: Uri,estacionamientoId: String,onSuccess: (String) -> Unit) {
 
         val storageReference = FirebaseStorage.getInstance().reference
         val desertRef = storageReference.child("images/estacionamientos/$imagen")
@@ -34,7 +41,8 @@ class EstacionamientosViewModel: ViewModel() {
 
                         instance.collection("Estacionamientos").document(estacionamientoId)
                             .update(dto as Map<String, Any>).addOnSuccessListener {
-                                Toast.makeText(context, "Imagen actualizada", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(context, "Imagen actualizada", Toast.LENGTH_SHORT).show()
+                                onSuccess("ok")
                             }
                             .addOnFailureListener { e ->
                                 Toast.makeText(context, "Error al agregar gasto No deducible : ${e.message}", Toast.LENGTH_SHORT).show()
@@ -51,7 +59,6 @@ class EstacionamientosViewModel: ViewModel() {
         }
 
     }
-
 
     fun updateInfo(context:Context,estacionamientoId:String,nombre: String,numero: String,piso: String,esEspecial: Boolean,
                    perteneceA: String) {
@@ -75,8 +82,19 @@ class EstacionamientosViewModel: ViewModel() {
                             }
     }
 
+    fun getData(idEstacionamiento: String, onSuccess: (DataDrawerDTO) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val estacionamientoRef = db.collection("Estacionamientos").document(idEstacionamiento)
 
+        estacionamientoRef.get().addOnSuccessListener { document ->
+            val estacionamiento = document.toObject(DataDrawerDTO::class.java)
+            _estacionamientos.value = estacionamiento ?: DataDrawerDTO()
 
+            estacionamiento?.let { onSuccess(it) }
+        }.addOnFailureListener { exception ->
+            // Handle errors here
+        }
+    }
 
 
 
