@@ -62,9 +62,6 @@ class DDViewModel : ViewModel() {
             val result = document.toObject(Data::class.java)
 
 
-
-
-
             Pair(result ?: throw IllegalStateException("El usuario con el correo electrónico $email no tiene datos asociados."), document.id)
         } else {
             throw IllegalStateException("No se encontró ningún usuario con el correo electrónico $email.")

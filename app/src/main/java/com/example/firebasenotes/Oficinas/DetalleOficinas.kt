@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -37,6 +39,7 @@ import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.example.firebasenotes.ViewMenu.Mipefil.DDViewModel
+import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaViewModel
 import com.example.firebasenotes.WidgetsCardView.Listing.ListAreas.AreaViewModelDOS
 
 import com.example.firebasenotes.models.oficinasDTO
@@ -65,10 +68,15 @@ fun DetalleOficinas(
     viewModel: OficinasViewModel = OficinasViewModel(),
     deleteViewModel: AreaViewModelDOS = AreaViewModelDOS(),
     ddViewModel: DDViewModel = viewModel(),
-    oficinasViewModel: OficinasViewModel = OficinasViewModel()
+    oficinasViewModel: OficinasViewModel = OficinasViewModel(),
+    areaViewModel: AreaViewModel = viewModel()
 
 ){
 
+    val officeDetails by areaViewModel.officeDetails.collectAsState()
+LaunchedEffect (Unit){
+areaViewModel.fetchOfficeDetails(idArea)
+}
     // first comment
     Scaffold(
         modifier = Modifier
@@ -112,14 +120,23 @@ fun DetalleOficinas(
             //val imageUrl_ by oficinasViewModel.flow_image.collectAsState()
             //oficinasViewModel.setImageUri(Uri.parse(imageUrl))
 
-            val imageUrl_ = Uri.parse(imageUrl)
-            AsyncImage(
-                model = imageUrl_,
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .size(200.dp)
-            )
+//            val imageUrl_ = Uri.parse(imageUrl)
+//            AsyncImage(
+//                model = imageUrl_,
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .align(Alignment.CenterHorizontally)
+//                    .size(200.dp)
+//            )
+            officeDetails?.let { details ->
+                AsyncImage(
+                    model = details.imageUrl ?: "",
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .size(200.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.size(20.dp))
 
@@ -132,16 +149,17 @@ fun DetalleOficinas(
                     text = "Fecha ${LocalDate.now()}", fontWeight = FontWeight.Thin, fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp)
                 )
-                Text(text = " $nombre", modifier = Modifier.padding(10.dp))
-                Text(text = "Capacidad de personas: ${capacidad}", modifier = Modifier.padding(10.dp))
-                Text(text = "$descripcion", modifier = Modifier.padding(10.dp))
+            officeDetails?.let { details ->
+                Text(text = "Nombre: ${details.nombre}", modifier = Modifier.padding(10.dp))
+                Text(text = "Capacidad de personas: ${details.capacidad}", modifier = Modifier.padding(10.dp))
+                Text(text = "Descripción: ${details.descripcion}", modifier = Modifier.padding(10.dp))
+            }
 
-
-                Text(
-                    text = "Reservado: ",
-                    fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
-                    modifier = Modifier.padding(10.dp)
-                )
+//                Text(
+//                    text = "Reservado: ",
+//                    fontWeight = FontWeight.Medium, fontSize = 15.sp, color = Color.Blue,
+//                    modifier = Modifier.padding(10.dp)
+//                )
                 oficinasHorarios.forEach {
                     Text(text = "Horario: ${String.format("%.2f",(it.horaInicial.toFloat() / 60))}  " +
                             ": ${String.format("%.2f",(it.horafinal.toFloat() / 60))}",
@@ -151,35 +169,40 @@ fun DetalleOficinas(
                 }
             Spacer(modifier = Modifier.size(20.dp))
 
-            if(userData.typeId == 0){
-                Button(
-                    onClick = {
-                        val encodedUrl = URLEncoder.encode(imageUrl.trim(), StandardCharsets.UTF_8.toString())
-                        navController.navigate("EditarOficinas/${idArea}/${capacidad}/${descripcion}/${id}/ ${mobilaria}/ ${nombre}/ ${encodedUrl}")
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 19.dp)
-                        .align(Alignment.End),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF800000))
-                ) {
-                    Text(text = "Editar", color = Color.White)
+            if(userData.typeId == 0) {
+                Row() {
+                    Button(
+                        onClick = {
+                            val encodedUrl = URLEncoder.encode(
+                                imageUrl.trim(),
+                                StandardCharsets.UTF_8.toString()
+                            )
+                            navController.navigate("EditarOficinas/${idArea}/${capacidad}/${descripcion}/${id}/ ${mobilaria}/ ${nombre}/ ${encodedUrl}")
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 19.dp),
+//                            .align(Alignment.End),
+                        colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+                    ) {
+                        Text(text = "Editar", color = Color.White)
+                    }
+
+
+                    Button(
+                        onClick = {
+                            deleteViewModel.deleteArea(idArea)
+                            navController.navigate("Oficinas")
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 19.dp)
+//                            .align(Alignment.End),
+                                ,
+                        colors = ButtonDefaults.buttonColors(Color(0xFF800000))
+                    ) {
+                        Text(text = "Eliminar", color = Color.White)
+                    }
                 }
-
-
-                Button(
-               onClick = {  deleteViewModel.deleteArea(idArea)
-                   navController.navigate("Oficinas")
-                         }
-               ,
-               modifier = Modifier
-                   .padding(horizontal = 19.dp)
-                   .align(Alignment.End),
-               colors = ButtonDefaults.buttonColors(Color(0xFF800000))
-            ) {
-                Text(text = "Eliminar",color = Color.White)
             }
-            }
-
                 Button(
                     onClick = {
                         navController.navigate("ReservaOficinas_extension/${capacidad}/${descripcion}/${id}/ ${mobilaria}/ ${nombre}/ ${idArea}",
