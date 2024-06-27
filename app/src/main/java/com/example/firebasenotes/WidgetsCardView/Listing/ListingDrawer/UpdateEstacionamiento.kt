@@ -131,36 +131,38 @@ Row() {
     }
 }
             if (!imagen_boolean) {
-                // inside pic
-                Button(
-                    modifier = Modifier.padding(start = 10.dp).fillMaxWidth(),
-                    onClick = {
-                        var imagen_jpg = ""
-                        val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
-                        var decode = encodedUrl.split("/")
-
-                        decode.forEach {
-                            if (it.contains(".jpg")) {
-                                imagen_jpg = it
-                            }
-                        }
-                        var ultima = imagen_jpg.split("?")
-
-                        if (ultima.size > 1) {
-                            imagen_jpg = ultima[0]
-                        }
-                        viewModel.updatePhoto(
-                            context,
-                            imagen_jpg,
-                            imageUri ?: Uri.EMPTY,
-                            idEstacionamianto
-                        )
-                    },
-                    shape = RoundedCornerShape(5.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF4CBB17)),
-                ) {
-                    Text(text = "Cambiar", color = Color.White)
-                }
+                // green button
+//                Button(
+//                    modifier = Modifier.padding(start = 10.dp).fillMaxWidth(),
+//                    onClick = {
+//                        var imagen_jpg = ""
+//                        val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
+//                        var decode = encodedUrl.split("/")
+//
+//                        decode.forEach {
+//                            if (it.contains(".jpg")) {
+//                                imagen_jpg = it
+//                            }
+//                        }
+//                        var ultima = imagen_jpg.split("?")
+//
+//                        if (ultima.size > 1) {
+//                            imagen_jpg = ultima[0]
+//                        }
+//                        viewModel.updatePhoto(
+//                            context,
+//                            imagen_jpg,
+//                            imageUri ?: Uri.EMPTY,
+//                            idEstacionamianto
+//                        ){
+//                            println(it)
+//                        }
+//                    },
+//                    shape = RoundedCornerShape(5.dp),
+//                    colors = ButtonDefaults.buttonColors(Color(0xFF4CBB17)),
+//                ) {
+//                    Text(text = "Cambiar", color = Color.White)
+//                }
 
             }
 
@@ -299,8 +301,43 @@ Row() {
 
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-               //println(imagen_jpg)
-                viewModel.updateInfo(context,idEstacionamianto,nombre,numero,piso,esEspecial,selected_pertenece_id)
+
+                if (!imagen_boolean) {
+
+                    var imagen_jpg = ""
+                    val encodedUrl = URLDecoder.decode(imagen, StandardCharsets.UTF_8.toString())
+                    var decode = encodedUrl.split("/")
+
+                    decode.forEach {
+                        if (it.contains(".jpg")) {
+                            imagen_jpg = it
+                        }
+                    }
+                    var ultima = imagen_jpg.split("?")
+
+                    if (ultima.size > 1) {
+                        imagen_jpg = ultima[0]
+                    }
+
+                    viewModel.updatePhoto(
+                        context,
+                        imagen_jpg,
+                        imageUri ?: Uri.EMPTY,
+                        idEstacionamianto
+                    ) {
+
+                    }
+                }
+
+                viewModel.updateInfo(
+                    context,
+                    idEstacionamianto,
+                    nombre,
+                    numero,
+                    piso,
+                    esEspecial,
+                    selected_pertenece_id
+                )
 
             },
                 shape = RoundedCornerShape(5.dp),
