@@ -57,41 +57,42 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.firebasenotes.MainActivity
-import com.example.firebasenotes.view.DetalleOficinas
-import com.example.firebasenotes.view.EditarOficinas
+import com.example.firebasenotes.presentation.view.DetalleOficinas
+import com.example.firebasenotes.presentation.view.EditarOficinas
 
 
-import com.example.firebasenotes.viewModel.OficinasViewModel
-import com.example.firebasenotes.view.ReservaOficinas_extension
-import com.example.firebasenotes.view.DDViaticos
+import com.example.firebasenotes.presentation.viewModel.OficinasViewModel
+import com.example.firebasenotes.presentation.view.ReservaOficinas_extension
+import com.example.firebasenotes.presentation.view.DDViaticos
 import com.example.firebasenotes.R
-import com.example.firebasenotes.viewModel.SharedPreferencesManager
-import com.example.firebasenotes.view.detalleUser
+import com.example.firebasenotes.WidgetsCardView.Listing.ListingDrawer.Detalle
+import com.example.firebasenotes.presentation.viewModel.SharedPreferencesManager
+import com.example.firebasenotes.presentation.view.detalleUser
 
-import com.example.firebasenotes.view.listUsers
+import com.example.firebasenotes.presentation.view.listUsers
 
-import com.example.firebasenotes.view.crearViaje
-import com.example.firebasenotes.view.ViaticosScreen
-import com.example.firebasenotes.view.AltCajon
-import com.example.firebasenotes.view.MiPerfil
+import com.example.firebasenotes.presentation.view.crearViaje
+import com.example.firebasenotes.presentation.view.ViaticosScreen
+import com.example.firebasenotes.presentation.view.AltCajon
+import com.example.firebasenotes.presentation.view.MiPerfil
 
-import com.example.firebasenotes.view.ReservacionCajones_extension
-import com.example.firebasenotes.view.ActualizarPerfil
-import com.example.firebasenotes.viewModel.DDViewModel
-import com.example.firebasenotes.view.PerfilScreen
-import com.example.firebasenotes.view.AltaArea
-import com.example.firebasenotes.view.AreaScreen
+import com.example.firebasenotes.presentation.view.ReservacionCajones_extension
+import com.example.firebasenotes.presentation.view.ActualizarPerfil
+import com.example.firebasenotes.presentation.viewModel.DDViewModel
+import com.example.firebasenotes.presentation.view.PerfilScreen
+import com.example.firebasenotes.presentation.view.AltaArea
+import com.example.firebasenotes.presentation.view.AreaScreen
 
 
-import com.example.firebasenotes.view.Detalle
-import com.example.firebasenotes.view.DrawerScreen
-import com.example.firebasenotes.viewModel.DrawerViewModel
-import com.example.firebasenotes.view.UpdateEstacionamiento
-import com.example.firebasenotes.view.RevoficinasScreen
-import com.example.firebasenotes.bill.FilePickerForm
-import com.example.firebasenotes.viewModel.EstacionamientosViewModel
-import com.example.firebasenotes.viaje.ViajeDetalle
-import com.example.firebasenotes.viewModel.LoginViewModel
+
+import com.example.firebasenotes.presentation.view.DrawerScreen
+import com.example.firebasenotes.presentation.viewModel.DrawerViewModel
+import com.example.firebasenotes.presentation.view.UpdateEstacionamiento
+import com.example.firebasenotes.presentation.view.RevoficinasScreen
+import com.example.firebasenotes.domain.bill.FilePickerForm
+import com.example.firebasenotes.presentation.viewModel.EstacionamientosViewModel
+import com.example.firebasenotes.presentation.view.ViajeDetalle
+import com.example.firebasenotes.presentation.viewModel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import java.util.Calendar

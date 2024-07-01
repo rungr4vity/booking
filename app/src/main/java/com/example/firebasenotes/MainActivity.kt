@@ -10,8 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.firebasenotes.navigation.NavManager
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
-import com.example.firebasenotes.viewModel.LoginViewModel
-import com.example.firebasenotes.viewModel.NotesViewModel
+import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.presentation.viewModel.NotesViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
