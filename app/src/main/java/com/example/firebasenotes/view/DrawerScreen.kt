@@ -1,0 +1,500 @@
+package com.example.firebasenotes.view
+
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.net.Uri
+import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.navOptions
+import com.example.firebasenotes.viewModel.DDViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.runtime.livedata.observeAsState
+import com.example.firebasenotes.models.horariosDTO
+import coil.compose.AsyncImage
+import com.example.firebasenotes.viewModel.DrawerViewModel
+import com.example.firebasenotes.models.DataDrawer
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("SuspiciousIndentation")
+@Composable
+fun DrawerScreen(drawerViewModel: DrawerViewModel = viewModel(), navController: NavController,
+                 ddViewModel: DDViewModel = viewModel()
+
+) {
+    //val context = LocalContext.current
+    //var sharedPreferences = context.getSharedPreferences("shared_usuario", Context.MODE_PRIVATE)
+    //var myempresa = "Verifigas"
+    //sharedPreferences.getString("empresa", "Verifigas")
+
+
+
+
+    //val cajones = drawerViewModel.stateDrawer.value
+    val cajones: List<DataDrawer> by drawerViewModel.stateDrawer.observeAsState(listOf())
+
+    val userData = ddViewModel.state.value
+    //val empresa = userData.empresa
+    //val user = usersViewModel.stateUsers.value
+
+    val calendar = Calendar.getInstance()
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val initialDate = dateFormat.format(calendar.time)
+    var text3 by remember { mutableStateOf(initialDate) }
+    var showDatePicker by remember { mutableStateOf(false) }
+    var date by remember { mutableStateOf(initialDate) }
+    var dayOfYear_ by remember { mutableStateOf(calendar.get(Calendar.DAY_OF_YEAR)) }
+    var year by remember { mutableStateOf(calendar.get(Calendar.YEAR)) }
+
+    var expansion_Horarios by remember { mutableStateOf(false) }
+    var menHorarios by remember { mutableStateOf("Disponibles") }
+    var menHorarios_valor by remember { mutableStateOf(-1) }
+
+
+    //val opsHorarios: List<horariosModel> by loginVM.horarios.observeAsState(listOf())
+    val opsHorarios: List<horariosDTO> by drawerViewModel.horarios_dto.observeAsState(listOf())
+    Log.d("opsHorarios",opsHorarios.toString())
+
+    LaunchedEffect(Unit) {
+            drawerViewModel.reload()
+            drawerViewModel.getAll(year,dayOfYear_)
+    }
+
+    val context = LocalContext.current
+    if (showDatePicker) {
+        Log.d("showDatePicker",showDatePicker.toString())
+
+        LaunchedEffect(Unit) {
+            DatePickerDialog(
+
+                context,
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    calendar.set(selectedYear, selectedMonth, selectedDay)
+                    date = dateFormat.format(calendar.time)
+                    text3 = date  // Update text3 with the selected date
+                    dayOfYear_ = calendar.get(Calendar.DAY_OF_YEAR)
+                    year = selectedYear
+                    showDatePicker = false
+
+
+                    drawerViewModel.getAll(year,dayOfYear_)
+                    drawerViewModel.reload()
+                    menHorarios = "Disponibles"
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+
+            ).show()
+
+        }
+
+        showDatePicker = false
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+
+
+        Row(
+            //verticalAlignment = Alignment.CenterVertically,
+            //horizontalArrangement = Arrangement.spacedBy(0.dp)
+        ) {
+            IconButton(onClick = {
+
+
+                //var sharedPreferences = context.getSharedPreferences("shared_usuario", Context.MODE_PRIVATE)
+                //val myempresa = sharedPreferences.getString("empresa", null)
+
+
+                //menHorarios = "Selecciona horario"
+//                drawerViewModel.getAll(year,dayOfYear_)
+//                drawerViewModel.reload()
+                showDatePicker = true
+
+
+            }) {
+                Icon(Icons.Filled.DateRange, contentDescription = "Pick a Date")
+            }
+            androidx.compose.material.OutlinedTextField(
+                readOnly = true,
+                value = text3,
+                onValueChange = {
+                    text3 = it
+                                },
+                label = { androidx.compose.material.Text("Fecha") },
+                modifier = Modifier
+                    //.weight(1f)
+                    .padding(8.dp)
+
+            )
+        }
+        Row() {
+            val opsHorarios: MutableMap<Int,String> = mutableMapOf(
+                0 to "7:00 am - 12 pm",
+                1 to "12:00 am - 5  pm",
+                2 to "5:00 pm - 9:00 pm",
+                3 to "Todo el día")
+
+            IconButton(onClick = {  }) {
+                Icon(Icons.Filled.Timer, contentDescription = "Pick a Date")
+            }
+            ExposedDropdownMenuBox(expanded = expansion_Horarios , onExpandedChange = {expansion_Horarios  = !expansion_Horarios } ) {
+                OutlinedTextField(
+                    value = menHorarios,
+                    onValueChange = {
+
+
+
+                    },
+                    label = { androidx.compose.material.Text("Horarios") },
+                    readOnly = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                        .padding(top = 1.dp, start = 5.dp, end = 8.dp, bottom = 12.dp),
+                    //trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expansion_Horarios) }
+                )
+
+
+                ExposedDropdownMenu(
+                    expanded = expansion_Horarios,
+                    onDismissRequest = { expansion_Horarios = false }) {
+                    opsHorarios.forEach { option ->
+                        DropdownMenuItem(text = { Text(option.value) }, onClick = {
+
+                            menHorarios = option.value
+                            when (option.key) {
+                                0 -> menHorarios_valor = 0
+                                1 -> menHorarios_valor = 1
+                                2 -> menHorarios_valor = 2
+                                3 -> menHorarios_valor = 3
+                            }
+                            expansion_Horarios = false
+
+
+
+                            drawerViewModel.getAll(year,dayOfYear_)
+                            drawerViewModel.reload()
+
+                            println()
+                        },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        )
+                    }
+                }
+            }
+        }
+
+//        androidx.compose.material3.Button(
+//            shape = RoundedCornerShape(5.dp), onClick = {
+//                //drawerViewModel.getAll(dayOfYear_,year)
+//                //drawerViewModel.reload()
+//
+//                // cajones //all  (idEstacionaminto)
+//                // opsHorarios //reservados (idEstacionamiento,valor,texto)
+//
+//                Toast.makeText(context, "Day of the year: $dayOfYear_ and year: $year", Toast.LENGTH_SHORT).show()
+//
+//                println()
+//                //cajones.filter { it.id in opsHorarios.map { it.idEstacionamiento } }
+//                //var final = cajones.filterNot { it.id in opsHorarios }
+//                //Log.d("myempresa",myempresa.toString())
+//            },
+//            colors = ButtonDefaults.buttonColors(Color(0xFF800000)),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(5.dp)
+//        ) {
+//            androidx.compose.material.Text(text = "Buscar", color = Color.White)
+//        }
+
+
+        CompositionLocalProvider(LocalContentColor provides Color.Black) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    try {
+
+
+                        items(cajones) { cajon ->
+//                            if (menHorarios != "Selecciona horario") {
+//                            }
+
+                            //if (opsHorarios.isNotEmpty()) { }
+
+//                                val encontrado = opsHorarios.find {
+//                                    it.idEstacionamiento == cajon.id
+//                                            && (it.nombre == menHorarios || it.valor == 3)
+//                                }
+
+                                val encontrado = opsHorarios.find {
+                                    it.idEstacionamiento == cajon.id
+                                            && (it.nombre == menHorarios)
+                                }
+
+                                val todoDia = opsHorarios.find {
+                                    it.idEstacionamiento == cajon.id
+                                            && it.valor == 3
+                                }
+
+                                val somenHorarios = opsHorarios.find {
+                                    it.idEstacionamiento == cajon.id
+                                            && (it.valor == 0 || it.valor == 1 || it.valor == 2 || it.valor == 3)
+                                }
+
+                                if (todoDia != null) {
+
+                                } else {
+                                    if (menHorarios != "Disponibles") {
+                                        if (encontrado == null) {
+                                            if(menHorarios_valor == 3 && somenHorarios != null){
+
+                                            } else
+                                            {
+                                                ComponentDrawer(cajon = cajon, navController = navController)
+                                            }
+
+                                        }
+
+                                    } else {
+
+                                            ComponentDrawer(cajon = cajon, navController = navController)
+
+
+                                    }
+
+
+                                }
+
+
+
+
+
+//                                if (encontrado != null || todoDia != null){
+//
+//                                } else {
+//                                    ComponentDrawer(cajon = cajon, navController = navController)
+//                                }
+
+                            }
+
+
+
+
+
+
+//                                if (menHorarios == "Selecciona horario") {
+//                                if (cajon.id in opsHorarios.map { it.idEstacionamiento }) {
+//                                    ComponentDrawer(
+//                                        cajon = cajon,
+//                                        navController = navController
+//                                    )
+//                                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//                                    var valor = opsHorarios.find { it.nombre == menHorarios }
+//                                    var todoDia = opsHorarios.find { it.nombre == "Todo el día" }
+//
+//                                    if (valor != null || todoDia != null) {
+//                                        //Toast.makeText(context, "El cajon ${cajon.numero} esta reservado", Toast.LENGTH_SHORT).show()
+//                                        //remove
+//                                    } else {
+//
+//                                        if(menHorarios == "Todo el día" && opsHorarios.isNotEmpty()){
+//
+//                                        } else {
+//                                            ComponentDrawer(
+//                                                cajon = cajon,
+//                                                navController = navController
+//                                            )
+//                                        }
+//                                    }
+
+
+
+
+
+
+
+                            //}
+
+
+
+                    } catch (e: Exception) {
+                        Log.e("ErrorLazy", e.toString())
+                    }
+                }
+                if (userData.typeId == 0) {
+                    FloatingActionButton(
+                        onClick = {
+                            navController.navigate("Alta de Cajon")
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp),
+                        containerColor =  Color(0xFF800000)
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                    }
+                }
+
+            } // end box
+        }
+
+
+    }
+
+    }
+
+
+
+
+
+
+
+
+    @Composable
+fun ComponentDrawer(
+        cajon: DataDrawer,
+        navController: NavController
+) {
+    val isDarkMode = isSystemInDarkTheme()
+
+    CompositionLocalProvider(LocalContentColor provides if (isDarkMode) Color.White else Color.Black) {
+        Card(
+            modifier = Modifier
+                .clickable {
+
+                    val encodedUrl =
+                        URLEncoder.encode(cajon.imagen, StandardCharsets.UTF_8.toString())
+                    navController.navigate("DetalleCajon/${cajon.nombre}/${cajon.empresa}" +
+                            "/${cajon.numero.toString()}/${cajon.piso}/${cajon.esEspecial}/${cajon.id}" +
+                            "/${encodedUrl}",
+                        navOptions { // Use the Kotlin DSL for building NavOptions
+                            anim {
+                                enter = android.R.animator.fade_in
+                                exit = android.R.animator.fade_out
+                            }
+                        }
+                    )
+                }
+                .padding(horizontal = 6.dp, vertical = 6.dp)
+                .fillMaxWidth()
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp)) {
+
+                val imageUri = Uri.parse(cajon.imagen)
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "Loaded image",
+                    modifier = Modifier
+                        .size(100.dp)
+                )
+
+
+//                Image(
+//                    painter = painterResource(id = R.drawable.est), // Reemplaza 'your_image' con el nombre de tu imagen
+//                    contentDescription = "Logo",
+//                    modifier = Modifier
+//                        .size(100.dp)
+////                        .padding(horizontal = 2.dp)
+//
+//                )
+
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(modifier = Modifier.weight(2f)) {
+                    Text(
+                        text = "Nombre: ${cajon.nombre}",
+                        style = TextStyle(fontSize = 12.sp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Empresa: ${cajon.empresa}",
+                        style = TextStyle(fontSize = 12.sp)
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Cajon: ${cajon.numero.toString()}",
+                        style = TextStyle(fontSize = 12.sp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Piso: ${cajon.piso}",
+                        style = TextStyle(fontSize = 12.sp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "Detalle",
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 12.dp),
+                    color = if (isDarkMode) Color.White else Color.Blue // Cambiar el color del texto a blanco en modo oscuro
+                )
+            }
+        }
+    }
+
+}
+
+
+
