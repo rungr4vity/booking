@@ -32,9 +32,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
-import com.example.firebasenotes.presentation.viewModel.AreaViewModel
-import com.example.firebasenotes.presentation.viewModel.AreaViewModelDOS
-import com.example.firebasenotes.presentation.viewModel.OficinasViewModel
+import com.example.firebasenotes.oficinas.viewmodels.AreaViewModel
+import com.example.firebasenotes.oficinas.viewmodels.AreaViewModelDOS
+import com.example.firebasenotes.oficinas.viewmodels.OficinasViewModel
 import com.example.firebasenotes.presentation.viewModel.DDViewModel
 
 

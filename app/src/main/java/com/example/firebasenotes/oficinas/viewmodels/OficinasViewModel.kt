@@ -1,4 +1,4 @@
-package com.example.firebasenotes.presentation.viewModel
+package com.example.firebasenotes.oficinas.viewmodels
 
 import android.content.Context
 import android.net.Uri

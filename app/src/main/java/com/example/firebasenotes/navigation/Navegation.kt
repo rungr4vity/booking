@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.login.viewmodels.LoginViewModel
 import com.example.firebasenotes.presentation.viewModel.NotesViewModel
 import com.example.firebasenotes.presentation.view.TabsViews
 

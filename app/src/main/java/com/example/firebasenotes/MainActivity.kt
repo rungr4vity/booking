@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.firebasenotes.navigation.NavManager
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
-import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.login.viewmodels.LoginViewModel
 import com.example.firebasenotes.presentation.viewModel.NotesViewModel
 
 class MainActivity : ComponentActivity() {

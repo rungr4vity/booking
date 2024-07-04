@@ -42,8 +42,8 @@ import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.presentation.viewModel.DDViewModel
 import com.example.firebasenotes.presentation.viewModel.DeleteDrawerViewModel
 import com.example.firebasenotes.presentation.viewModel.DrawerViewModel
-import com.example.firebasenotes.presentation.viewModel.EstacionamientosViewModel
-import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.estacionamientos.viewmodels.EstacionamientosViewModel
+import com.example.firebasenotes.login.viewmodels.LoginViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.time.Instant

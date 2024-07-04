@@ -17,7 +17,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.firebasenotes.models.DataOfi
 import com.example.firebasenotes.models.RevoficinasDTO
 import com.example.firebasenotes.utils.ValidacionesHora
-import com.example.firebasenotes.presentation.viewModel.RevoficinasViewModel
+import com.example.firebasenotes.estacionamientos.viewmodels.RevoficinasViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 

@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.firebasenotes.presentation.viewModel.AreaViewModel
+import com.example.firebasenotes.oficinas.viewmodels.AreaViewModel
 
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets

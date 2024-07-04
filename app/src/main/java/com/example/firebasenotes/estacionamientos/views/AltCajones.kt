@@ -1,4 +1,4 @@
-package com.example.firebasenotes.presentation.view
+package com.example.firebasenotes.estacionamientos.views
 
 import android.annotation.SuppressLint
 import androidx.compose.material3.Scaffold

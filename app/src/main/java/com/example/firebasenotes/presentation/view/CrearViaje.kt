@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.firebasenotes.presentation.viewModel.UsersViewModel
+import com.example.firebasenotes.users.viewmodels.UsersViewModel
 import com.example.firebasenotes.presentation.viewModel.ViajeViewModel
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.example.firebasenotes.presentation.view
+package com.example.firebasenotes.estacionamientos.views
 
 
 import android.content.Context
@@ -36,7 +36,7 @@ import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.CircleCropTransformation
-import com.example.firebasenotes.presentation.viewModel.EstacionamientosViewModel
+import com.example.firebasenotes.estacionamientos.viewmodels.EstacionamientosViewModel
 import com.example.firebasenotes.presentation.viewModel.DrawerViewModel
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets

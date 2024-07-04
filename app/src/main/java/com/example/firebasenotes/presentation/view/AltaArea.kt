@@ -32,7 +32,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.example.firebasenotes.presentation.viewModel.AreaViewModel
+import com.example.firebasenotes.oficinas.viewmodels.AreaViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import java.util.UUID

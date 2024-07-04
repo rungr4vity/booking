@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.login.viewmodels.LoginViewModel
 
 
 class InputActivity: ComponentActivity() {

@@ -1,4 +1,4 @@
-package com.example.firebasenotes.presentation.viewModel
+package com.example.firebasenotes.estacionamientos.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.example.firebasenotes.models.DataOfi

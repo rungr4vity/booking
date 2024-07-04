@@ -61,7 +61,7 @@ import com.example.firebasenotes.presentation.view.DetalleOficinas
 import com.example.firebasenotes.presentation.view.EditarOficinas
 
 
-import com.example.firebasenotes.presentation.viewModel.OficinasViewModel
+import com.example.firebasenotes.oficinas.viewmodels.OficinasViewModel
 import com.example.firebasenotes.presentation.view.ReservaOficinas_extension
 import com.example.firebasenotes.presentation.view.DDViaticos
 import com.example.firebasenotes.R
@@ -73,7 +73,7 @@ import com.example.firebasenotes.presentation.view.listUsers
 
 import com.example.firebasenotes.presentation.view.crearViaje
 import com.example.firebasenotes.presentation.view.ViaticosScreen
-import com.example.firebasenotes.presentation.view.AltCajon
+import com.example.firebasenotes.estacionamientos.views.AltCajon
 import com.example.firebasenotes.presentation.view.MiPerfil
 
 import com.example.firebasenotes.presentation.view.ReservacionCajones_extension
@@ -87,12 +87,12 @@ import com.example.firebasenotes.presentation.view.AreaScreen
 
 import com.example.firebasenotes.presentation.view.DrawerScreen
 import com.example.firebasenotes.presentation.viewModel.DrawerViewModel
-import com.example.firebasenotes.presentation.view.UpdateEstacionamiento
+import com.example.firebasenotes.estacionamientos.views.UpdateEstacionamiento
 import com.example.firebasenotes.presentation.view.RevoficinasScreen
 import com.example.firebasenotes.domain.bill.FilePickerForm
-import com.example.firebasenotes.presentation.viewModel.EstacionamientosViewModel
+import com.example.firebasenotes.estacionamientos.viewmodels.EstacionamientosViewModel
 import com.example.firebasenotes.presentation.view.ViajeDetalle
-import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.login.viewmodels.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import java.util.Calendar

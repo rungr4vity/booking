@@ -1,4 +1,4 @@
-package com.example.firebasenotes.presentation.view
+package com.example.firebasenotes.estacionamientos.views
 
 
 import android.annotation.SuppressLint

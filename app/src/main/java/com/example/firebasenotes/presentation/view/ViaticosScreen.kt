@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.firebasenotes.presentation.viewModel.UsersViewModel
+import com.example.firebasenotes.users.viewmodels.UsersViewModel
 import com.example.firebasenotes.presentation.viewModel.ViajeViewModel
 import com.example.firebasenotes.presentation.viewModel.ViaticosViewModel
 import java.util.Date

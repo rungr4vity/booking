@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.firebasenotes.R
-import com.example.firebasenotes.presentation.viewModel.UsersViewModel
+import com.example.firebasenotes.users.viewmodels.UsersViewModel
 import com.example.firebasenotes.models.DataViaticos
 
 

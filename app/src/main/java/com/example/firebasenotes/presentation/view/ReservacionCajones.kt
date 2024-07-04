@@ -53,7 +53,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.firebasenotes.models.horariosModel
 import com.example.firebasenotes.ui.theme.FirebasenotesTheme
-import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.login.viewmodels.LoginViewModel
 import com.example.firebasenotes.presentation.viewModel.NotesViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth

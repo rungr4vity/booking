@@ -1,4 +1,4 @@
-package com.example.firebasenotes.presentation.viewModel
+package com.example.firebasenotes.users.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

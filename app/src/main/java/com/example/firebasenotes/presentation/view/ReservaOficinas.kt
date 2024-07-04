@@ -65,7 +65,7 @@ import java.util.*
 import java.text.SimpleDateFormat
 
 import androidx.compose.material.icons.filled.Timer
-import com.example.firebasenotes.presentation.viewModel.OficinasViewModel
+import com.example.firebasenotes.oficinas.viewmodels.OficinasViewModel
 
 
 class ReservaOficinas : ComponentActivity() {

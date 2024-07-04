@@ -1,7 +1,8 @@
-package com.example.firebasenotes.presentation.view
+package com.example.firebasenotes.login.views
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.firebasenotes.R
-import com.example.firebasenotes.presentation.viewModel.LoginViewModel
+import com.example.firebasenotes.login.viewmodels.LoginViewModel
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -43,6 +44,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.VisualTransformation
+import com.google.firebase.auth.FirebaseAuth
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -139,6 +141,32 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                 ) {
                     Text(text = "Entrar",
                         color = Color.White)
+                }
+
+
+
+                Button(
+                    onClick = {
+
+                        val auth = FirebaseAuth.getInstance()
+                        auth.sendPasswordResetEmail(email)
+                            .addOnCompleteListener{
+                                if(it.isSuccessful) {
+                                    Toast.makeText(context, "Un email fue enviado con instrucciones para restablecer tu contraseña", Toast.LENGTH_SHORT).show()
+
+                                }
+                            }
+
+
+
+
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                ){
+                    Text(text = "Olvidaste tu contraseña?")
                 }
             }
         }

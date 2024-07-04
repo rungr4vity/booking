@@ -20,7 +20,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.firebasenotes.models.DataDrawerDTO
 import com.example.firebasenotes.models.DataReservations
 import com.example.firebasenotes.models.DataTurnos
-import com.example.firebasenotes.presentation.viewModel.ReservacionEstacionamientoViewModel
+import com.example.firebasenotes.estacionamientos.viewmodels.ReservacionEstacionamientoViewModel
 import com.example.firebasenotes.utils.ValidacionesHora
 import com.google.firebase.auth.FirebaseAuth
 

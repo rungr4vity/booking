@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.firebasenotes.presentation.viewModel.AreaViewModel
+import com.example.firebasenotes.oficinas.viewmodels.AreaViewModel
 import com.example.firebasenotes.models.DataAreas
 import com.example.firebasenotes.presentation.viewModel.DDViewModel
 import java.net.URLEncoder
