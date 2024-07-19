@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.gms.google-services")
-
+    id("com.google.secrets_gradle_plugin") version "0.4"
 }
 
 android {
@@ -15,6 +15,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "2.3"
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
