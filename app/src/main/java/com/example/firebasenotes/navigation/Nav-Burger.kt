@@ -572,7 +572,7 @@ fun DrawerContent(
             Spacer(modifier = Modifier.height(2.dp))
 
             Image(
-                painter = painterResource(R.drawable.isita2), // Reemplaza R.drawable.logo_image con el ID de tu imagen
+                painter = painterResource(R.drawable.ofi), // Reemplaza R.drawable.logo_image con el ID de tu imagen
                 contentDescription = "",
                 modifier = Modifier
                     .padding(6.dp)

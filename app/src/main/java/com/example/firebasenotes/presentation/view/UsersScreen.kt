@@ -56,8 +56,8 @@ fun ComponentList(use : DataViaticos, navigateToUserDetail: () -> Unit) {
             // Mostrar la imagen de la empresa
             // Supongamos que tienes las imágenes de las empresas en tu carpeta 'res/drawable'
             val imagen = when (use.empresa) {
-                "Isita" -> R.drawable.isita2
-                "Verifigas" -> R.drawable.verifi
+                "Isita" -> R.drawable.ofi
+                "Verifigas" -> R.drawable.ofi2
                 else -> R.drawable.est // Imagen por defecto en caso de que la empresa no coincida
             }
 

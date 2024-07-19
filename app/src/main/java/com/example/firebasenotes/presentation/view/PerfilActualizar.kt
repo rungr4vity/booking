@@ -55,7 +55,7 @@ fun ActualizarPerfil(ddViewModel: DDViewModel = viewModel(), sharedPreferencesMa
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.isita3), // Reemplaza 'your_image' con el nombre de tu imagen
+                painter = painterResource(id = R.drawable.ofi), // Reemplaza 'your_image' con el nombre de tu imagen
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(180.dp)

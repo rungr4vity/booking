@@ -81,7 +81,7 @@ fun LoginView(navController: NavController, loginVM: LoginViewModel) {
                 // luis.montemayor@isita.com.mx
                 // 1412918Luis
                 Image(
-                    painter = painterResource(id = R.drawable.isita3), // Reemplaza 'your_image' con el nombre de tu imagen
+                    painter = painterResource(id = R.drawable.p1), // Reemplaza 'your_image' con el nombre de tu imagen
                     contentDescription = "Logo",
                     modifier = Modifier
                         .size(200.dp)

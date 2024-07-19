@@ -70,7 +70,7 @@ fun RegisterScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.isita3),
+            painter = painterResource(id = R.drawable.ofi),
             contentDescription = "Logo",
             modifier = Modifier.size(200.dp)
         )
